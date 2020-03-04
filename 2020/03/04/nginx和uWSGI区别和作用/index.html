@@ -47,21 +47,20 @@
   };
 </script>
 
-  <meta name="description" content="一、RBAC概述RBAC(Role-Based Access Control,基于角色的访问控制)，通过角色绑定权限，然后给用户划分角色。从企业的角度来说，基本上是按照角色来划分职能。比如，CEO，具有公司全局的权限；部门经理，具有部门全局的权限；部门主管，具有部门部分的权限；普通员工，具有部门一小部分权限。">
-<meta name="keywords" content="Django">
+  <meta name="description" content="nginx和uWSGI的区别 nginx和uWSGI都是web服务器，都可以用来部署django等服务 nginx：处理静态资源能力非常强，还可以提供 负载均衡、反向代理、攻击拦截等 uWSGI：单点部署，容易部署，性能差一些，可以支持的web协议多 django+nginx+uwsgi请求处理过程1、请求处理整体流程">
+<meta name="keywords" content="Web">
 <meta property="og:type" content="article">
-<meta property="og:title" content="基于 Django 的后台管理平台，采用 RBAC 权限管理机制">
-<meta property="og:url" content="http:&#x2F;&#x2F;obsessed.top&#x2F;2020&#x2F;02&#x2F;22&#x2F;%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86%E6%9C%BA%E5%88%B6&#x2F;index.html">
+<meta property="og:title" content="nginx和uWSGI区别和作用">
+<meta property="og:url" content="http:&#x2F;&#x2F;obsessed.top&#x2F;2020&#x2F;03&#x2F;04&#x2F;nginx%E5%92%8CuWSGI%E5%8C%BA%E5%88%AB%E5%92%8C%E4%BD%9C%E7%94%A8&#x2F;index.html">
 <meta property="og:site_name" content="Ares">
-<meta property="og:description" content="一、RBAC概述RBAC(Role-Based Access Control,基于角色的访问控制)，通过角色绑定权限，然后给用户划分角色。从企业的角度来说，基本上是按照角色来划分职能。比如，CEO，具有公司全局的权限；部门经理，具有部门全局的权限；部门主管，具有部门部分的权限；普通员工，具有部门一小部分权限。">
+<meta property="og:description" content="nginx和uWSGI的区别 nginx和uWSGI都是web服务器，都可以用来部署django等服务 nginx：处理静态资源能力非常强，还可以提供 负载均衡、反向代理、攻击拦截等 uWSGI：单点部署，容易部署，性能差一些，可以支持的web协议多 django+nginx+uwsgi请求处理过程1、请求处理整体流程">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http:&#x2F;&#x2F;obsessed.top&#x2F;2020&#x2F;02&#x2F;22&#x2F;%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86%E6%9C%BA%E5%88%B6&#x2F;462684-20190129231355786-1268233138.png">
-<meta property="og:image" content="http:&#x2F;&#x2F;obsessed.top&#x2F;2020&#x2F;02&#x2F;22&#x2F;%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86%E6%9C%BA%E5%88%B6&#x2F;462684-20190129231837693-35611593.png">
-<meta property="og:updated_time" content="2020-03-03T09:19:38.708Z">
+<meta property="og:image" content="http:&#x2F;&#x2F;obsessed.top&#x2F;2020&#x2F;03&#x2F;04&#x2F;nginx%E5%92%8CuWSGI%E5%8C%BA%E5%88%AB%E5%92%8C%E4%BD%9C%E7%94%A8&#x2F;1583286059097.png">
+<meta property="og:updated_time" content="2020-03-04T07:02:32.083Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http:&#x2F;&#x2F;obsessed.top&#x2F;2020&#x2F;02&#x2F;22&#x2F;%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86%E6%9C%BA%E5%88%B6&#x2F;462684-20190129231355786-1268233138.png">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;obsessed.top&#x2F;2020&#x2F;03&#x2F;04&#x2F;nginx%E5%92%8CuWSGI%E5%8C%BA%E5%88%AB%E5%92%8C%E4%BD%9C%E7%94%A8&#x2F;1583286059097.png">
 
-<link rel="canonical" href="http://obsessed.top/2020/02/22/%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86%E6%9C%BA%E5%88%B6/">
+<link rel="canonical" href="http://obsessed.top/2020/03/04/nginx%E5%92%8CuWSGI%E5%8C%BA%E5%88%AB%E5%92%8C%E4%BD%9C%E7%94%A8/">
 
 
 <script id="page-configurations">
@@ -75,7 +74,7 @@
   };
 </script>
 
-  <title>基于 Django 的后台管理平台，采用 RBAC 权限管理机制 | Ares</title>
+  <title>nginx和uWSGI区别和作用 | Ares</title>
   
 
 
@@ -215,7 +214,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://obsessed.top/2020/02/22/%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86%E6%9C%BA%E5%88%B6/">
+    <link itemprop="mainEntityOfPage" href="http://obsessed.top/2020/03/04/nginx%E5%92%8CuWSGI%E5%8C%BA%E5%88%AB%E5%92%8C%E4%BD%9C%E7%94%A8/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/20160228201627_f5vax.jpg">
@@ -228,7 +227,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          基于 Django 的后台管理平台，采用 RBAC 权限管理机制
+          nginx和uWSGI区别和作用
         </h1>
 
         <div class="post-meta">
@@ -237,24 +236,18 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2020-02-22 19:58:06" itemprop="dateCreated datePublished" datetime="2020-02-22T19:58:06+08:00">2020-02-22</time>
+              <time title="创建时间：2020-03-04 14:34:13 / 修改时间：15:02:32" itemprop="dateCreated datePublished" datetime="2020-03-04T14:34:13+08:00">2020-03-04</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-03-03 17:19:38" itemprop="dateModified" datetime="2020-03-03T17:19:38+08:00">2020-03-03</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Django/" itemprop="url" rel="index">
-                    <span itemprop="name">Django</span>
+                  <a href="/categories/Web/" itemprop="url" rel="index">
+                    <span itemprop="name">Web</span>
                   </a>
                 </span>
             </span>
@@ -270,20 +263,24 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="一、RBAC概述"><a href="#一、RBAC概述" class="headerlink" title="一、RBAC概述"></a>一、RBAC概述</h2><p>RBAC(Role-Based Access Control,基于角色的访问控制)，通过角色绑定权限，然后给用户划分角色。</p><p>从企业的角度来说，基本上是按照角色来划分职能。比如，CEO，具有公司全局的权限；部门经理，具有部门全局的权限；部门主管，具有部门部分的权限；普通员工，具有部门一小部分权限。</p><a id="more"></a>
+        <h2 id="nginx和uWSGI的区别"><a href="#nginx和uWSGI的区别" class="headerlink" title="nginx和uWSGI的区别"></a>nginx和uWSGI的区别</h2><ul>
+<li><strong>nginx</strong>和<strong>uWSGI</strong>都是web服务器，都可以用来部署django等服务</li>
+<li><strong>nginx</strong>：处理静态资源能力非常强，还可以提供 负载均衡、反向代理、攻击拦截等</li>
+<li><strong>uWSGI</strong>：单点部署，容易部署，性能差一些，可以支持的web协议多</li>
+</ul><h1 id="django-nginx-uwsgi请求处理过程"><a href="#django-nginx-uwsgi请求处理过程" class="headerlink" title="django+nginx+uwsgi请求处理过程"></a>django+nginx+uwsgi请求处理过程</h1><img src="/2020/03/04/nginx%E5%92%8CuWSGI%E5%8C%BA%E5%88%AB%E5%92%8C%E4%BD%9C%E7%94%A8/1583286059097.png" class title="流程图"><h3 id="1、请求处理整体流程"><a href="#1、请求处理整体流程" class="headerlink" title="1、请求处理整体流程"></a>1、请求处理整体流程</h3><a id="more"></a>
 
-<p>不同的角色，能够获取的资源是不一样的，所以RBAC就是按照这个思维为公司建设权限系统。</p>
-<p>角色的引入，让权限管理非常灵活。</p>
-<p>例如：某个员工要离职了，替换他的是一个新员工，这时你需要一一的告诉该新员工他应该做什么，他不能做什么，当工作项非常多的时候，这将是非常繁琐的过程，且非常容易出错。如果你把这个职位定义为某个角色，且为这个角色分配固定的权限，不管来多少新人，不管什么职位，只要他对号入座，权限自然就根据角色分配好。当新员工升职后，比如升职成主管或经理，你这时只是角色变换，权限自动分配给他。</p>
-<h2 id="二、流程图"><a href="#二、流程图" class="headerlink" title="二、流程图"></a>二、流程图</h2><p><strong><img src="/2020/02/22/%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86%E6%9C%BA%E5%88%B6/462684-20190129231355786-1268233138.png" class title="This is an test image"></strong> </p>
-<p>1、人员属于某个角色，首先给他分配角色，例如：总监、经理、主管、助理等；</p>
-<p>2、人员赋予角色后，则给他分配权限，不同的角色，规定有不同的权限。比如：总监级别，能够增删改查，无所不能；而经理级别，只能增改查，如果需要删除，则需要总监审批；主管只有增加和查看，修改需要向经理申请，让经理审批。</p>
-<p>3、不同的权限，实际上是对应数据库中的某张表，也就是Django中的某个model。</p>
-<h2 id="三、实现过程"><a href="#三、实现过程" class="headerlink" title="三、实现过程"></a>三、实现过程</h2><p><strong><img src="/2020/02/22/%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86%E6%9C%BA%E5%88%B6/462684-20190129231837693-35611593.png" class title="This is an test image"></strong> </p>
-<p>1、人员登录后，先验证用户是否OK；</p>
-<p>2、验证用户OK后，则根据人员属于什么角色，进行权限获取，并写入session中；</p>
-<p>3、用户登录成功，进入index页面，则根据用户session中的权限，展示不同的页面，正所谓：千人千面；</p>
-<p>4、用户根据不同的页面，进行不同的操作。</p>
+
+<p>nginx接收到浏览器发送过来的http请求，将包进行解析，分析url </p>
+<p><strong>静态文件请求：</strong>就直接访问用户给nginx配置的静态文件目录，直接返回用户请求的静态文件</p>
+<p><strong>动态接口请求：</strong>那么nginx就将请求转发给uWSGI，最后到达django处理</p>
+<h3 id="2、各模块作用"><a href="#2、各模块作用" class="headerlink" title="2、各模块作用"></a>2、各模块作用</h3><ol>
+<li><strong>nginx：</strong>是对外的服务器，外部浏览器通过url访问nginx，nginx主要处理静态请求</li>
+<li><strong>uWSGI：</strong>是对内的服务器，主要用来处理动态请求</li>
+<li><strong>uwsgi：</strong>是一种web协议，接收到请求之后将包进行处理，处理成wsgi可以接受的格式，并发给wsgi</li>
+<li><strong>wsgi：</strong>是python专用的web协议，根据请求调用应用程序（django）的某个文件，某个文件的某个函数</li>
+<li><strong>django：</strong>是真正干活的，查询数据等资源，把处理的结果再次返回给WSGI， WSGI 将返回值进行打包，打包成uwsgi能够接收的格式</li>
+<li>uwsgi接收wsgi发送的请求，并转发给nginx,nginx最终将返回值返回给浏览器</li>
+</ol>
 
     </div>
 
@@ -299,7 +296,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="http://obsessed.top/2020/02/22/%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86%E6%9C%BA%E5%88%B6/" title="基于 Django 的后台管理平台，采用 RBAC 权限管理机制">http://obsessed.top/2020/02/22/%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86%E6%9C%BA%E5%88%B6/</a>
+    <a href="http://obsessed.top/2020/03/04/nginx%E5%92%8CuWSGI%E5%8C%BA%E5%88%AB%E5%92%8C%E4%BD%9C%E7%94%A8/" title="nginx和uWSGI区别和作用">http://obsessed.top/2020/03/04/nginx%E5%92%8CuWSGI%E5%8C%BA%E5%88%AB%E5%92%8C%E4%BD%9C%E7%94%A8/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/null" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -310,7 +307,7 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/Django/" rel="tag"># Django</a>
+              <a href="/tags/Web/" rel="tag"># Web</a>
           </div>
 
         
@@ -319,13 +316,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/02/22/%E5%9F%BA%E4%BA%8ERedis%E5%AE%9E%E7%8E%B0%E7%9A%84%E5%8D%95%E7%82%B9%E7%99%BB%E5%BD%95/" rel="prev" title="基于Redis实现的单点登录">
-      <i class="fa fa-chevron-left"></i> 基于Redis实现的单点登录
+    <a href="/2020/03/04/%E6%B5%85%E8%B0%88uWSGI-uwsgi-WSGI%E7%9A%84%E5%8C%BA%E5%88%AB/" rel="prev" title="浅谈uWSGI,uwsgi,WSGI的区别">
+      <i class="fa fa-chevron-left"></i> 浅谈uWSGI,uwsgi,WSGI的区别
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2020/02/22/DRF%E6%A1%86%E6%9E%B6%E6%8F%90%E4%BE%9B%E6%A0%87%E5%87%86RESTfulAPI%E6%8E%A5%E5%8F%A3/" rel="next" title="DRF框架提供标准RESTful API接口">
-      DRF框架提供标准RESTful API接口 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -363,7 +357,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、RBAC概述"><span class="nav-text">一、RBAC概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、流程图"><span class="nav-text">二、流程图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、实现过程"><span class="nav-text">三、实现过程</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#nginx和uWSGI的区别"><span class="nav-text">nginx和uWSGI的区别</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#django-nginx-uwsgi请求处理过程"><span class="nav-text">django+nginx+uwsgi请求处理过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、请求处理整体流程"><span class="nav-text">1、请求处理整体流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、各模块作用"><span class="nav-text">2、各模块作用</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 

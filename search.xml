@@ -1,6 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>nginx和uWSGI区别和作用</title>
+    <url>/2020/03/04/nginx%E5%92%8CuWSGI%E5%8C%BA%E5%88%AB%E5%92%8C%E4%BD%9C%E7%94%A8/</url>
+    <content><![CDATA[<h2 id="nginx和uWSGI的区别"><a href="#nginx和uWSGI的区别" class="headerlink" title="nginx和uWSGI的区别"></a>nginx和uWSGI的区别</h2><ul>
+<li><strong>nginx</strong>和<strong>uWSGI</strong>都是web服务器，都可以用来部署django等服务</li>
+<li><strong>nginx</strong>：处理静态资源能力非常强，还可以提供 负载均衡、反向代理、攻击拦截等</li>
+<li><strong>uWSGI</strong>：单点部署，容易部署，性能差一些，可以支持的web协议多</li>
+</ul><h1 id="django-nginx-uwsgi请求处理过程"><a href="#django-nginx-uwsgi请求处理过程" class="headerlink" title="django+nginx+uwsgi请求处理过程"></a>django+nginx+uwsgi请求处理过程</h1><img src="/2020/03/04/nginx%E5%92%8CuWSGI%E5%8C%BA%E5%88%AB%E5%92%8C%E4%BD%9C%E7%94%A8/1583286059097.png" class title="流程图"><h3 id="1、请求处理整体流程"><a href="#1、请求处理整体流程" class="headerlink" title="1、请求处理整体流程"></a>1、请求处理整体流程</h3><a id="more"></a>
+
+
+<p>nginx接收到浏览器发送过来的http请求，将包进行解析，分析url </p>
+<p><strong>静态文件请求：</strong>就直接访问用户给nginx配置的静态文件目录，直接返回用户请求的静态文件</p>
+<p><strong>动态接口请求：</strong>那么nginx就将请求转发给uWSGI，最后到达django处理</p>
+<h3 id="2、各模块作用"><a href="#2、各模块作用" class="headerlink" title="2、各模块作用"></a>2、各模块作用</h3><ol>
+<li><strong>nginx：</strong>是对外的服务器，外部浏览器通过url访问nginx，nginx主要处理静态请求</li>
+<li><strong>uWSGI：</strong>是对内的服务器，主要用来处理动态请求</li>
+<li><strong>uwsgi：</strong>是一种web协议，接收到请求之后将包进行处理，处理成wsgi可以接受的格式，并发给wsgi</li>
+<li><strong>wsgi：</strong>是python专用的web协议，根据请求调用应用程序（django）的某个文件，某个文件的某个函数</li>
+<li><strong>django：</strong>是真正干活的，查询数据等资源，把处理的结果再次返回给WSGI， WSGI 将返回值进行打包，打包成uwsgi能够接收的格式</li>
+<li>uwsgi接收wsgi发送的请求，并转发给nginx,nginx最终将返回值返回给浏览器</li>
+</ol>
+]]></content>
+      <categories>
+        <category>Web</category>
+      </categories>
+      <tags>
+        <tag>Web</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>浅谈uWSGI,uwsgi,WSGI的区别</title>
+    <url>/2020/03/04/%E6%B5%85%E8%B0%88uWSGI-uwsgi-WSGI%E7%9A%84%E5%8C%BA%E5%88%AB/</url>
+    <content><![CDATA[<h2 id="要注意WSGI、uwsgi、uWSGI这三个概念的区分"><a href="#要注意WSGI、uwsgi、uWSGI这三个概念的区分" class="headerlink" title="要注意WSGI、uwsgi、uWSGI这三个概念的区分"></a>要注意WSGI、uwsgi、uWSGI这三个概念的区分</h2><ul>
+<li>WSGI是一种通信协议。</li>
+<li>uwsgi是一种线路协议而不是通信协议，在此常用于在uWSGI服务器与其他网络服务器的数据通信。</li>
+<li>而uWSGI是实现了uwsgi和WSGI两种协议的Web服务器。</li>
+</ul><h2 id="WSGI"><a href="#WSGI" class="headerlink" title="WSGI"></a>WSGI</h2><p><strong>WSGI是一种通信协议</strong>。WSGI 不是框架，也不是一个模块，而是介于 Web应用程序（Web框架）与 Web Server 之间交互的一种规范。只要大家都遵循WSGI规范实现 Web 框架，就可以 使用 Gunicorn 来运行，规范最早在 PEP333 中被提出。 </p><a id="more"></a>
+
+<img src="/2020/03/04/%E6%B5%85%E8%B0%88uWSGI-uwsgi-WSGI%E7%9A%84%E5%8C%BA%E5%88%AB/20181212210028151.png" class title="This is an test image">  
+
+<p>WSGI 规定了Web服务器（Server）和应用程序（Application）双方各自需要实现什么接口，以便两者能完美的配合使用，这个和 USB Type-C 规范很像， 只要手机和充电线都遵循了 Type-C 接口规范， 大家的充电线就可以复用，不同的是充电谁快谁慢的问题，而苹果没有遵循Type-C规范，所以只有他自家的线才能充苹果手机。</p>
+<p>一个完整的 Web 应用包含两部分，一个是服务器程序（Server），一个是应用程序（Application），服务器程序负责接收浏览器发送过来的请求，应用程序负责处理具体的业务逻辑。 比如我基于 Django 框架开发一个博客应用，部署在生产环境时会用 Gunicorn 或者 Uwsgi 作为服务器程序。</p>
+<p>Python 中 Web 框架非常多，Flask、Django、Bottle、Pyramid、Tornado 等等，甚至你也自己也可以造一个 Web 框架，那么这么多框架，为什么他们都可以用 Gunicorn 或者 Uwsgi 来部署呢？</p>
+<p>答案就是 WSGI 规范。</p>
+<h2 id="uwsgi"><a href="#uwsgi" class="headerlink" title="uwsgi"></a>uwsgi</h2><p>uwsgi是一个二进制协议，能够携带任何类型的信息。uwsgi数据包的前4个字节用于描述信息的类型。uwsgi协议主要工作在TCP方式下。uwsgi是一种线路协议而不是通信协议，在此常用于在uWSGI服务器与其他网络服务器的数据通信。 </p>
+<p>uwsgi协议是一个uWSGI服务器自有的协议，它用于定义传输信息的类型（type of information），每一个uwsgi packet前4byte为传输信息类型描述，它与WSGI相比是两样东西。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">Struct uwsgi_packet_header&#123;</span><br><span class="line">uint8_t modifier1;</span><br><span class="line">uint16_t datasize;</span><br><span class="line">uint8_t modifier2;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="uWSGI"><a href="#uWSGI" class="headerlink" title="uWSGI"></a>uWSGI</h2><p>uWSGI是一个快速的、自维护、对开发者和系统管理者友好的应用程序容器，是纯c语言开发的服务器。uWSGI是实现了uwsgi和WSGI两种协议的Web服务器。</p>
+<p>uWSGI是一个Web服务器，它实现了WSGI协议、uwsgi、http等协议。Nginx中HttpUwsgiModule的作用是与uWSGI服务器进行交换。WSGI是一种Web服务器网关接口。它是一个Web服务器（如nginx，uWSGI等服务器）与web应用（如用Flask框架写的程序）通信的一种规范。</p>
+<p>对于管理人员来说，uWSGI服务器提供了各种配置方法：命令行、环境变量、XML、INI、YAML、JSON、SQlite3数据库和LDAP。</p>
+<p>除此之外，它的设计完全模块化，这意味着，可以使用不同的插件以便满足不同的技术应用，从而实现兼容性</p>
+]]></content>
+      <categories>
+        <category>Web</category>
+      </categories>
+      <tags>
+        <tag>Web</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Django+uWSGI+Nginx的生产环境部署</title>
     <url>/2020/03/03/Django-uWSGI-Nginx%E7%9A%84%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2/</url>
     <content><![CDATA[<h2 id="1、Django-Uwsgi-Nginx-部署的作用"><a href="#1、Django-Uwsgi-Nginx-部署的作用" class="headerlink" title="1、Django + Uwsgi + Nginx 部署的作用"></a>1、Django + Uwsgi + Nginx 部署的作用</h2><p>   <strong>1、Django + Uwsgi + Nginx方案</strong></p><p> 　　　　　　<strong><img src="/2020/03/03/Django-uWSGI-Nginx%E7%9A%84%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2/DUN.png" class title="This is an test image"></strong> </p><p>　　1. web项目，使用nginx的目的是为了安全和负载均衡，配置了nginx做前端代理，uwsgi作后端代理的服务器。</p><p>　　2. 在处理来自Internet的请求时，要先经过nginx的处理，nginx把请求再交给uwsgi，经过uwsgi才能访问到项目本身。</p><a id="more"></a>
@@ -1323,40 +1385,6 @@
       </tags>
   </entry>
   <entry>
-    <title>关于MySQL</title>
-    <url>/2019/05/22/%E5%85%B3%E4%BA%8EMySQL/</url>
-    <content><![CDATA[<h2 id="什么是-MySQL？"><a href="#什么是-MySQL？" class="headerlink" title="什么是 MySQL？"></a>什么是 MySQL？</h2><ol>
-<li><strong>MySQL</strong> 是一个快速、多线程、多用户和强壮的SQL数据库服务器 </li>
-</ol>
-<h2 id="我们为什么使用MySQL"><a href="#我们为什么使用MySQL" class="headerlink" title="我们为什么使用MySQL"></a>我们为什么使用MySQL</h2><pre><code>1. 我们因为它开源免费，使用范围广泛，具有强大的索引和事务，能支持海量的数据</code></pre> <a id="more"></a>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h2 id="MySQL中的幻读，什么是幻读"><a href="#MySQL中的幻读，什么是幻读" class="headerlink" title="MySQL中的幻读，什么是幻读"></a>MySQL中的幻读，什么是幻读</h2><ol>
-<li>幻读一词摘自MySQL的官方手册</li>
-<li>幻读出现于在开启事务</li>
-</ol>
-]]></content>
-      <categories>
-        <category>MySQL</category>
-      </categories>
-      <tags>
-        <tag>MySQL</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Django</title>
     <url>/2019/05/22/Django/</url>
     <content><![CDATA[<h2 id="如何使用ImageField上传图片"><a href="#如何使用ImageField上传图片" class="headerlink" title="如何使用ImageField上传图片"></a>如何使用ImageField上传图片</h2><figure class="highlight"><table><tr><td class="code"><pre><span class="line"><span class="comment">#models</span></span><br><span class="line">img = models.ImageField(verbose_name=<span class="string">'描述图片'</span>,upload_to=<span class="string">'media'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#settings</span></span><br><span class="line">MEDIA_URL = <span class="string">'/media/'</span></span><br><span class="line">MEDIA_ROOT = os.path.join(BASE_DIR,<span class="string">'media'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#记得form表单写enctype</span></span><br><span class="line">&lt;form action=<span class="string">""</span> method=<span class="string">"post"</span> enctype=<span class="string">"multipart/form-data"</span>&gt; </span><br><span class="line">&lt;/form&gt;</span><br></pre></td></tr></table></figure>
@@ -1425,6 +1453,40 @@
       </categories>
       <tags>
         <tag>Django</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>关于MySQL</title>
+    <url>/2019/05/22/%E5%85%B3%E4%BA%8EMySQL/</url>
+    <content><![CDATA[<h2 id="什么是-MySQL？"><a href="#什么是-MySQL？" class="headerlink" title="什么是 MySQL？"></a>什么是 MySQL？</h2><ol>
+<li><strong>MySQL</strong> 是一个快速、多线程、多用户和强壮的SQL数据库服务器 </li>
+</ol>
+<h2 id="我们为什么使用MySQL"><a href="#我们为什么使用MySQL" class="headerlink" title="我们为什么使用MySQL"></a>我们为什么使用MySQL</h2><pre><code>1. 我们因为它开源免费，使用范围广泛，具有强大的索引和事务，能支持海量的数据</code></pre> <a id="more"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h2 id="MySQL中的幻读，什么是幻读"><a href="#MySQL中的幻读，什么是幻读" class="headerlink" title="MySQL中的幻读，什么是幻读"></a>MySQL中的幻读，什么是幻读</h2><ol>
+<li>幻读一词摘自MySQL的官方手册</li>
+<li>幻读出现于在开启事务</li>
+</ol>
+]]></content>
+      <categories>
+        <category>MySQL</category>
+      </categories>
+      <tags>
+        <tag>MySQL</tag>
       </tags>
   </entry>
   <entry>

@@ -47,21 +47,20 @@
   };
 </script>
 
-  <meta name="description" content="一、RBAC概述RBAC(Role-Based Access Control,基于角色的访问控制)，通过角色绑定权限，然后给用户划分角色。从企业的角度来说，基本上是按照角色来划分职能。比如，CEO，具有公司全局的权限；部门经理，具有部门全局的权限；部门主管，具有部门部分的权限；普通员工，具有部门一小部分权限。">
-<meta name="keywords" content="Django">
+  <meta name="description" content="要注意WSGI、uwsgi、uWSGI这三个概念的区分 WSGI是一种通信协议。 uwsgi是一种线路协议而不是通信协议，在此常用于在uWSGI服务器与其他网络服务器的数据通信。 而uWSGI是实现了uwsgi和WSGI两种协议的Web服务器。 WSGIWSGI是一种通信协议。WSGI 不是框架，也不是一个模块，而是介于 Web应用程序（Web框架）与 Web Server 之间交互的一种规范。只">
+<meta name="keywords" content="Web">
 <meta property="og:type" content="article">
-<meta property="og:title" content="基于 Django 的后台管理平台，采用 RBAC 权限管理机制">
-<meta property="og:url" content="http:&#x2F;&#x2F;obsessed.top&#x2F;2020&#x2F;02&#x2F;22&#x2F;%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86%E6%9C%BA%E5%88%B6&#x2F;index.html">
+<meta property="og:title" content="浅谈uWSGI,uwsgi,WSGI的区别">
+<meta property="og:url" content="http:&#x2F;&#x2F;obsessed.top&#x2F;2020&#x2F;03&#x2F;04&#x2F;%E6%B5%85%E8%B0%88uWSGI-uwsgi-WSGI%E7%9A%84%E5%8C%BA%E5%88%AB&#x2F;index.html">
 <meta property="og:site_name" content="Ares">
-<meta property="og:description" content="一、RBAC概述RBAC(Role-Based Access Control,基于角色的访问控制)，通过角色绑定权限，然后给用户划分角色。从企业的角度来说，基本上是按照角色来划分职能。比如，CEO，具有公司全局的权限；部门经理，具有部门全局的权限；部门主管，具有部门部分的权限；普通员工，具有部门一小部分权限。">
+<meta property="og:description" content="要注意WSGI、uwsgi、uWSGI这三个概念的区分 WSGI是一种通信协议。 uwsgi是一种线路协议而不是通信协议，在此常用于在uWSGI服务器与其他网络服务器的数据通信。 而uWSGI是实现了uwsgi和WSGI两种协议的Web服务器。 WSGIWSGI是一种通信协议。WSGI 不是框架，也不是一个模块，而是介于 Web应用程序（Web框架）与 Web Server 之间交互的一种规范。只">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http:&#x2F;&#x2F;obsessed.top&#x2F;2020&#x2F;02&#x2F;22&#x2F;%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86%E6%9C%BA%E5%88%B6&#x2F;462684-20190129231355786-1268233138.png">
-<meta property="og:image" content="http:&#x2F;&#x2F;obsessed.top&#x2F;2020&#x2F;02&#x2F;22&#x2F;%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86%E6%9C%BA%E5%88%B6&#x2F;462684-20190129231837693-35611593.png">
-<meta property="og:updated_time" content="2020-03-03T09:19:38.708Z">
+<meta property="og:image" content="http:&#x2F;&#x2F;obsessed.top&#x2F;2020&#x2F;03&#x2F;04&#x2F;%E6%B5%85%E8%B0%88uWSGI-uwsgi-WSGI%E7%9A%84%E5%8C%BA%E5%88%AB&#x2F;20181212210028151.png">
+<meta property="og:updated_time" content="2020-03-04T06:43:05.068Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http:&#x2F;&#x2F;obsessed.top&#x2F;2020&#x2F;02&#x2F;22&#x2F;%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86%E6%9C%BA%E5%88%B6&#x2F;462684-20190129231355786-1268233138.png">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;obsessed.top&#x2F;2020&#x2F;03&#x2F;04&#x2F;%E6%B5%85%E8%B0%88uWSGI-uwsgi-WSGI%E7%9A%84%E5%8C%BA%E5%88%AB&#x2F;20181212210028151.png">
 
-<link rel="canonical" href="http://obsessed.top/2020/02/22/%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86%E6%9C%BA%E5%88%B6/">
+<link rel="canonical" href="http://obsessed.top/2020/03/04/%E6%B5%85%E8%B0%88uWSGI-uwsgi-WSGI%E7%9A%84%E5%8C%BA%E5%88%AB/">
 
 
 <script id="page-configurations">
@@ -75,7 +74,7 @@
   };
 </script>
 
-  <title>基于 Django 的后台管理平台，采用 RBAC 权限管理机制 | Ares</title>
+  <title>浅谈uWSGI,uwsgi,WSGI的区别 | Ares</title>
   
 
 
@@ -215,7 +214,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://obsessed.top/2020/02/22/%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86%E6%9C%BA%E5%88%B6/">
+    <link itemprop="mainEntityOfPage" href="http://obsessed.top/2020/03/04/%E6%B5%85%E8%B0%88uWSGI-uwsgi-WSGI%E7%9A%84%E5%8C%BA%E5%88%AB/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/20160228201627_f5vax.jpg">
@@ -228,7 +227,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          基于 Django 的后台管理平台，采用 RBAC 权限管理机制
+          浅谈uWSGI,uwsgi,WSGI的区别
         </h1>
 
         <div class="post-meta">
@@ -237,24 +236,18 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2020-02-22 19:58:06" itemprop="dateCreated datePublished" datetime="2020-02-22T19:58:06+08:00">2020-02-22</time>
+              <time title="创建时间：2020-03-04 11:37:16 / 修改时间：14:43:05" itemprop="dateCreated datePublished" datetime="2020-03-04T11:37:16+08:00">2020-03-04</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-03-03 17:19:38" itemprop="dateModified" datetime="2020-03-03T17:19:38+08:00">2020-03-03</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Django/" itemprop="url" rel="index">
-                    <span itemprop="name">Django</span>
+                  <a href="/categories/Web/" itemprop="url" rel="index">
+                    <span itemprop="name">Web</span>
                   </a>
                 </span>
             </span>
@@ -270,20 +263,28 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="一、RBAC概述"><a href="#一、RBAC概述" class="headerlink" title="一、RBAC概述"></a>一、RBAC概述</h2><p>RBAC(Role-Based Access Control,基于角色的访问控制)，通过角色绑定权限，然后给用户划分角色。</p><p>从企业的角度来说，基本上是按照角色来划分职能。比如，CEO，具有公司全局的权限；部门经理，具有部门全局的权限；部门主管，具有部门部分的权限；普通员工，具有部门一小部分权限。</p><a id="more"></a>
+        <h2 id="要注意WSGI、uwsgi、uWSGI这三个概念的区分"><a href="#要注意WSGI、uwsgi、uWSGI这三个概念的区分" class="headerlink" title="要注意WSGI、uwsgi、uWSGI这三个概念的区分"></a>要注意WSGI、uwsgi、uWSGI这三个概念的区分</h2><ul>
+<li>WSGI是一种通信协议。</li>
+<li>uwsgi是一种线路协议而不是通信协议，在此常用于在uWSGI服务器与其他网络服务器的数据通信。</li>
+<li>而uWSGI是实现了uwsgi和WSGI两种协议的Web服务器。</li>
+</ul><h2 id="WSGI"><a href="#WSGI" class="headerlink" title="WSGI"></a>WSGI</h2><p><strong>WSGI是一种通信协议</strong>。WSGI 不是框架，也不是一个模块，而是介于 Web应用程序（Web框架）与 Web Server 之间交互的一种规范。只要大家都遵循WSGI规范实现 Web 框架，就可以 使用 Gunicorn 来运行，规范最早在 PEP333 中被提出。 </p><a id="more"></a>
 
-<p>不同的角色，能够获取的资源是不一样的，所以RBAC就是按照这个思维为公司建设权限系统。</p>
-<p>角色的引入，让权限管理非常灵活。</p>
-<p>例如：某个员工要离职了，替换他的是一个新员工，这时你需要一一的告诉该新员工他应该做什么，他不能做什么，当工作项非常多的时候，这将是非常繁琐的过程，且非常容易出错。如果你把这个职位定义为某个角色，且为这个角色分配固定的权限，不管来多少新人，不管什么职位，只要他对号入座，权限自然就根据角色分配好。当新员工升职后，比如升职成主管或经理，你这时只是角色变换，权限自动分配给他。</p>
-<h2 id="二、流程图"><a href="#二、流程图" class="headerlink" title="二、流程图"></a>二、流程图</h2><p><strong><img src="/2020/02/22/%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86%E6%9C%BA%E5%88%B6/462684-20190129231355786-1268233138.png" class title="This is an test image"></strong> </p>
-<p>1、人员属于某个角色，首先给他分配角色，例如：总监、经理、主管、助理等；</p>
-<p>2、人员赋予角色后，则给他分配权限，不同的角色，规定有不同的权限。比如：总监级别，能够增删改查，无所不能；而经理级别，只能增改查，如果需要删除，则需要总监审批；主管只有增加和查看，修改需要向经理申请，让经理审批。</p>
-<p>3、不同的权限，实际上是对应数据库中的某张表，也就是Django中的某个model。</p>
-<h2 id="三、实现过程"><a href="#三、实现过程" class="headerlink" title="三、实现过程"></a>三、实现过程</h2><p><strong><img src="/2020/02/22/%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86%E6%9C%BA%E5%88%B6/462684-20190129231837693-35611593.png" class title="This is an test image"></strong> </p>
-<p>1、人员登录后，先验证用户是否OK；</p>
-<p>2、验证用户OK后，则根据人员属于什么角色，进行权限获取，并写入session中；</p>
-<p>3、用户登录成功，进入index页面，则根据用户session中的权限，展示不同的页面，正所谓：千人千面；</p>
-<p>4、用户根据不同的页面，进行不同的操作。</p>
+<img src="/2020/03/04/%E6%B5%85%E8%B0%88uWSGI-uwsgi-WSGI%E7%9A%84%E5%8C%BA%E5%88%AB/20181212210028151.png" class title="This is an test image">  
+
+<p>WSGI 规定了Web服务器（Server）和应用程序（Application）双方各自需要实现什么接口，以便两者能完美的配合使用，这个和 USB Type-C 规范很像， 只要手机和充电线都遵循了 Type-C 接口规范， 大家的充电线就可以复用，不同的是充电谁快谁慢的问题，而苹果没有遵循Type-C规范，所以只有他自家的线才能充苹果手机。</p>
+<p>一个完整的 Web 应用包含两部分，一个是服务器程序（Server），一个是应用程序（Application），服务器程序负责接收浏览器发送过来的请求，应用程序负责处理具体的业务逻辑。 比如我基于 Django 框架开发一个博客应用，部署在生产环境时会用 Gunicorn 或者 Uwsgi 作为服务器程序。</p>
+<p>Python 中 Web 框架非常多，Flask、Django、Bottle、Pyramid、Tornado 等等，甚至你也自己也可以造一个 Web 框架，那么这么多框架，为什么他们都可以用 Gunicorn 或者 Uwsgi 来部署呢？</p>
+<p>答案就是 WSGI 规范。</p>
+<h2 id="uwsgi"><a href="#uwsgi" class="headerlink" title="uwsgi"></a>uwsgi</h2><p>uwsgi是一个二进制协议，能够携带任何类型的信息。uwsgi数据包的前4个字节用于描述信息的类型。uwsgi协议主要工作在TCP方式下。uwsgi是一种线路协议而不是通信协议，在此常用于在uWSGI服务器与其他网络服务器的数据通信。 </p>
+<p>uwsgi协议是一个uWSGI服务器自有的协议，它用于定义传输信息的类型（type of information），每一个uwsgi packet前4byte为传输信息类型描述，它与WSGI相比是两样东西。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Struct uwsgi_packet_header&#123;</span><br><span class="line">uint8_t modifier1;</span><br><span class="line">uint16_t datasize;</span><br><span class="line">uint8_t modifier2;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="uWSGI"><a href="#uWSGI" class="headerlink" title="uWSGI"></a>uWSGI</h2><p>uWSGI是一个快速的、自维护、对开发者和系统管理者友好的应用程序容器，是纯c语言开发的服务器。uWSGI是实现了uwsgi和WSGI两种协议的Web服务器。</p>
+<p>uWSGI是一个Web服务器，它实现了WSGI协议、uwsgi、http等协议。Nginx中HttpUwsgiModule的作用是与uWSGI服务器进行交换。WSGI是一种Web服务器网关接口。它是一个Web服务器（如nginx，uWSGI等服务器）与web应用（如用Flask框架写的程序）通信的一种规范。</p>
+<p>对于管理人员来说，uWSGI服务器提供了各种配置方法：命令行、环境变量、XML、INI、YAML、JSON、SQlite3数据库和LDAP。</p>
+<p>除此之外，它的设计完全模块化，这意味着，可以使用不同的插件以便满足不同的技术应用，从而实现兼容性</p>
 
     </div>
 
@@ -299,7 +300,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="http://obsessed.top/2020/02/22/%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86%E6%9C%BA%E5%88%B6/" title="基于 Django 的后台管理平台，采用 RBAC 权限管理机制">http://obsessed.top/2020/02/22/%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86%E6%9C%BA%E5%88%B6/</a>
+    <a href="http://obsessed.top/2020/03/04/%E6%B5%85%E8%B0%88uWSGI-uwsgi-WSGI%E7%9A%84%E5%8C%BA%E5%88%AB/" title="浅谈uWSGI,uwsgi,WSGI的区别">http://obsessed.top/2020/03/04/%E6%B5%85%E8%B0%88uWSGI-uwsgi-WSGI%E7%9A%84%E5%8C%BA%E5%88%AB/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/null" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -310,7 +311,7 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/Django/" rel="tag"># Django</a>
+              <a href="/tags/Web/" rel="tag"># Web</a>
           </div>
 
         
@@ -319,12 +320,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/02/22/%E5%9F%BA%E4%BA%8ERedis%E5%AE%9E%E7%8E%B0%E7%9A%84%E5%8D%95%E7%82%B9%E7%99%BB%E5%BD%95/" rel="prev" title="基于Redis实现的单点登录">
-      <i class="fa fa-chevron-left"></i> 基于Redis实现的单点登录
+    <a href="/2020/03/03/Django-uWSGI-Nginx%E7%9A%84%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2/" rel="prev" title="Django+uWSGI+Nginx的生产环境部署">
+      <i class="fa fa-chevron-left"></i> Django+uWSGI+Nginx的生产环境部署
     </a></div>
       <div class="post-nav-item">
-    <a href="/2020/02/22/DRF%E6%A1%86%E6%9E%B6%E6%8F%90%E4%BE%9B%E6%A0%87%E5%87%86RESTfulAPI%E6%8E%A5%E5%8F%A3/" rel="next" title="DRF框架提供标准RESTful API接口">
-      DRF框架提供标准RESTful API接口 <i class="fa fa-chevron-right"></i>
+    <a href="/2020/03/04/nginx%E5%92%8CuWSGI%E5%8C%BA%E5%88%AB%E5%92%8C%E4%BD%9C%E7%94%A8/" rel="next" title="nginx和uWSGI区别和作用">
+      nginx和uWSGI区别和作用 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -363,7 +364,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、RBAC概述"><span class="nav-text">一、RBAC概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、流程图"><span class="nav-text">二、流程图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、实现过程"><span class="nav-text">三、实现过程</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#要注意WSGI、uwsgi、uWSGI这三个概念的区分"><span class="nav-text">要注意WSGI、uwsgi、uWSGI这三个概念的区分</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#WSGI"><span class="nav-text">WSGI</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#uwsgi"><span class="nav-text">uwsgi</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#uWSGI"><span class="nav-text">uWSGI</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
