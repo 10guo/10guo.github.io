@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <link rel="alternate" href="/atom.xml" title="Ares" type="application/atom+xml">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://obsessed.top').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.5.0',
+    exturl: false,
+    sidebar: {"position":"left","Manual define the sidebar width. If commented, will be default for":null,"Muse | Mist":320,"Pisces | Gemini":240,"width":200,"display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="一、什么是RESTfulRESTful不是一种技术，而是一种接口规范，主要规范包括：1.请求方式、2.状态码、3、url规范、4、传参规范 请求方式method GET      ：从服务器取出资源（一项或多项） POST    ：在服务器新建一个资源 PUT      ：在服务器更新资源（客户端提供改变后的完整资源） PATCH  ：在服务器更新资源（客户端提供改变的属性） DELETE ：从服">
+<meta name="keywords" content="Django">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DRF框架提供标准RESTful API接口">
+<meta property="og:url" content="http:&#x2F;&#x2F;obsessed.top&#x2F;2020&#x2F;02&#x2F;22&#x2F;DRF%E6%A1%86%E6%9E%B6%E6%8F%90%E4%BE%9B%E6%A0%87%E5%87%86RESTfulAPI%E6%8E%A5%E5%8F%A3&#x2F;index.html">
+<meta property="og:site_name" content="Ares">
+<meta property="og:description" content="一、什么是RESTfulRESTful不是一种技术，而是一种接口规范，主要规范包括：1.请求方式、2.状态码、3、url规范、4、传参规范 请求方式method GET      ：从服务器取出资源（一项或多项） POST    ：在服务器新建一个资源 PUT      ：在服务器更新资源（客户端提供改变后的完整资源） PATCH  ：在服务器更新资源（客户端提供改变的属性） DELETE ：从服">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-02-24T01:19:04.992Z">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://obsessed.top/2020/02/22/DRF%E6%A1%86%E6%9E%B6%E6%8F%90%E4%BE%9B%E6%A0%87%E5%87%86RESTfulAPI%E6%8E%A5%E5%8F%A3/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>DRF框架提供标准RESTful API接口 | Ares</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ares</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Above all, don't lose hope.</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://obsessed.top/2020/02/22/DRF%E6%A1%86%E6%9E%B6%E6%8F%90%E4%BE%9B%E6%A0%87%E5%87%86RESTfulAPI%E6%8E%A5%E5%8F%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/20160228201627_f5vax.jpg">
+      <meta itemprop="name" content="Ares">
+      <meta itemprop="description" content="最重要的是，别放弃希望">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ares">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          DRF框架提供标准RESTful API接口
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-02-22 20:23:42" itemprop="dateCreated datePublished" datetime="2020-02-22T20:23:42+08:00">2020-02-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-02-24 09:19:04" itemprop="dateModified" datetime="2020-02-24T09:19:04+08:00">2020-02-24</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Django/" itemprop="url" rel="index">
+                    <span itemprop="name">Django</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="一、什么是RESTful"><a href="#一、什么是RESTful" class="headerlink" title="一、什么是RESTful"></a>一、什么是RESTful</h2><p>RESTful不是一种技术，而是一种接口规范，主要规范包括：1.请求方式、2.状态码、3、url规范、4、传参规范</p><ul>
+<li>请求方式method<ul>
+<li>GET      ：从服务器取出资源（一项或多项）</li>
+<li>POST    ：在服务器新建一个资源</li>
+<li>PUT      ：在服务器更新资源（客户端提供改变后的完整资源）</li>
+<li>PATCH  ：在服务器更新资源（客户端提供改变的属性）</li>
+<li>DELETE ：从服务器删除资源</li>
+</ul>
+</li>
+<li><strong>状态码</strong></li>
+</ul><a id="more"></a>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">'''1. 2XX请求成功'''</span></span><br><span class="line"><span class="comment"># 200 请求成功，一般用于GET与POST请求</span></span><br><span class="line"><span class="comment"># 201 Created - [POST/PUT/PATCH]：用户新建或修改数据成功。</span></span><br><span class="line"><span class="comment"># 202 Accepted - [*]：表示一个请求已经进入后台排队（异步任务）</span></span><br><span class="line"><span class="comment"># 204 NO CONTENT - [DELETE]：用户删除数据成功。</span></span><br><span class="line"><span class="string">'''2. 3XX重定向'''</span></span><br><span class="line"><span class="comment"># 301 NO CONTENT - 永久重定向</span></span><br><span class="line"><span class="comment"># 302 NO CONTENT - 临时重定向</span></span><br><span class="line"><span class="string">'''3. 4XX客户端错误'''</span></span><br><span class="line"><span class="comment"># 400 INVALID REQUEST - [POST/PUT/PATCH]：用户发出的请求有错误。</span></span><br><span class="line"><span class="comment"># 401 Unauthorized - [*]：表示用户没有权限（令牌、用户名、密码错误）。</span></span><br><span class="line"><span class="comment"># 403 Forbidden - [*] 表示用户得到授权（与401错误相对），但是访问是被禁止的。</span></span><br><span class="line"><span class="comment"># 404 NOT FOUND - [*]：用户发出的请求针对的是不存在的记录。</span></span><br><span class="line"><span class="comment"># 406 Not Acceptable - [GET]：用户请求的格式不可得（比如用户请求JSON格式，但是只有XML格式）。</span></span><br><span class="line"><span class="comment"># 410 Gone -[GET]：用户请求的资源被永久删除，且不会再得到的。</span></span><br><span class="line"><span class="comment"># 422 Unprocesable entity - [POST/PUT/PATCH] 当创建一个对象时，发生一个验证错误。</span></span><br><span class="line"><span class="string">'''4. 5XX服务端错误'''</span></span><br><span class="line"><span class="comment"># 500 INTERNAL SERVER ERROR - [*]：服务器内部错误，无法完成请求</span></span><br><span class="line"><span class="comment"># 501 Not Implemented     服务器不支持请求的功能，无法完成请求</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>面向资源编程： 路径，视网络上任何东西都是资源，均使用名词表示（可复数）<ul>
+<li>所有请求实际操作的都是数据库中的表，每一个表当做一个资源</li>
+<li>资源是一个名称，所以RESTful规范中URL只能有名称或名词的复数形式</li>
+</ul>
+</li>
+</ul>
+<h2 id="二、django的DRF"><a href="#二、django的DRF" class="headerlink" title="二、django的DRF"></a>二、django的DRF</h2><h3 id="1、认证和权限"><a href="#1、认证和权限" class="headerlink" title="1、认证和权限"></a>1、认证和权限</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserInfoViewSet</span><span class="params">(APIView)</span>:</span></span><br><span class="line">    authentication_classes = [authentication.IsAuthenticated,]  <span class="comment"># 用户认证模块</span></span><br><span class="line">    permission_classes = (authentication.IsOwnerOrReadOnly,)    <span class="comment"># 用户授权模块</span></span><br></pre></td></tr></table></figure>
+
+<p>urls.py：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.contrib <span class="keyword">import</span> admin</span><br><span class="line"><span class="keyword">from</span> django.urls <span class="keyword">import</span> path,re_path,include</span><br><span class="line"></span><br><span class="line">urlpatterns = [</span><br><span class="line">    path(<span class="string">'admin/'</span>, admin.site.urls),</span><br><span class="line">    re_path(<span class="string">r'users/'</span>,include((<span class="string">'users.urls'</span>, <span class="string">'users'</span>), namespace=<span class="string">'users'</span>))</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<p>users/urls.py：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.urls <span class="keyword">import</span> path,re_path,include</span><br><span class="line"><span class="keyword">from</span> users <span class="keyword">import</span> views</span><br><span class="line"></span><br><span class="line">urlpatterns = [</span><br><span class="line">    re_path(<span class="string">r'info'</span>, views.UserInfoViewSet.as_view(), name=<span class="string">'user'</span>),</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<p>users/views.py：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> rest_framework.views <span class="keyword">import</span> APIView</span><br><span class="line"><span class="keyword">from</span> django.http <span class="keyword">import</span> JsonResponse</span><br><span class="line"><span class="keyword">from</span> common.auth <span class="keyword">import</span> authentication</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserInfoViewSet</span><span class="params">(APIView)</span>:</span></span><br><span class="line">    authentication_classes = [authentication.IsAuthenticated,]</span><br><span class="line">    permission_classes = (authentication.IsOwnerOrReadOnly,)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        super(UserInfoViewSet, self).__init__()</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get</span><span class="params">(self, request, *args, **kwargs)</span>:</span></span><br><span class="line">        result = &#123;</span><br><span class="line">            <span class="string">'status'</span>: <span class="literal">True</span>,</span><br><span class="line">            <span class="string">'data'</span>: <span class="string">'response data'</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> JsonResponse(result, status=<span class="number">200</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">post</span><span class="params">(self, request, *args, **kwargs)</span>:</span></span><br><span class="line">        result = &#123;</span><br><span class="line">            <span class="string">'status'</span>: <span class="literal">True</span>,</span><br><span class="line">            <span class="string">'data'</span>: <span class="string">'response data'</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> JsonResponse(result, status=<span class="number">200</span>)</span><br></pre></td></tr></table></figure>
+
+<p>comm\auth\authentiication.py：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> rest_framework <span class="keyword">import</span> authentication</span><br><span class="line"><span class="keyword">from</span> rest_framework <span class="keyword">import</span> exceptions</span><br><span class="line"><span class="keyword">from</span> rest_framework <span class="keyword">import</span> permissions</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">IsOwnerOrReadOnly</span><span class="params">(permissions.BasePermission)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">has_permission</span><span class="params">(self, request, view)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> <span class="literal">False</span>:  <span class="comment"># 这里暂且不进行权限验证</span></span><br><span class="line">            <span class="keyword">raise</span> exceptions.ParseError(<span class="string">'您没有操作的权限'</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">IsAuthenticated</span><span class="params">(authentication.BaseAuthentication)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">authenticate</span><span class="params">(self, request)</span>:</span></span><br><span class="line">        auth = request.META.get(<span class="string">'HTTP_AUTHORIZATION'</span>, <span class="literal">None</span>)  <span class="comment"># 获取 header中的 Authorization</span></span><br><span class="line">        <span class="keyword">if</span> auth <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">            <span class="keyword">raise</span> exceptions.NotAuthenticated()</span><br><span class="line"></span><br><span class="line">        <span class="string">'''这里应该是验证token是否合法逻辑'''</span></span><br><span class="line">        <span class="comment"># token = Token.objects.filter(key=auth)</span></span><br><span class="line">        <span class="comment"># try:</span></span><br><span class="line">        <span class="comment">#     request.user = token[0].user</span></span><br><span class="line">        <span class="comment"># except IndexError:</span></span><br><span class="line">        <span class="comment">#     raise exceptions.NotAuthenticated('Invalid input Authenticated')</span></span><br><span class="line">        <span class="keyword">return</span> (request, <span class="literal">None</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">authenticate_header</span><span class="params">(self, request)</span>:</span></span><br><span class="line">        msg = <span class="string">'Invalid token.Please get token first'</span></span><br><span class="line">        <span class="keyword">return</span> exceptions.NotAuthenticated(msg)</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="2、序列化"><a href="#2、序列化" class="headerlink" title="2、序列化"></a>2、序列化</h3><p>users/model.py：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.db <span class="keyword">import</span> models</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserInfo</span><span class="params">(models.Model)</span>:</span></span><br><span class="line">    name = models.CharField(max_length=<span class="number">64</span>,unique=<span class="literal">True</span>)</span><br><span class="line">    ut = models.ForeignKey(to=<span class="string">'UserType'</span>, on_delete=models.CASCADE)</span><br><span class="line">    gp = models.ManyToManyField(to=<span class="string">'UserGroup'</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__str__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self.name</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserType</span><span class="params">(models.Model)</span>:</span></span><br><span class="line">    type_name = models.CharField(max_length=<span class="number">64</span>,unique=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__str__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self.type_name</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserGroup</span><span class="params">(models.Model)</span>:</span></span><br><span class="line">    group = models.CharField(max_length=<span class="number">64</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__str__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self.group</span><br></pre></td></tr></table></figure>
+
+<p>users/serializers.py：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> rest_framework <span class="keyword">import</span> serializers</span><br><span class="line"><span class="keyword">from</span> users.models <span class="keyword">import</span> UserInfo</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserInfoSerializer</span><span class="params">(serializers.Serializer)</span>:</span></span><br><span class="line">    name = serializers.CharField(min_length=<span class="number">3</span>,max_length=<span class="number">20</span>)                <span class="comment"># 显示普通字段</span></span><br><span class="line">    ut_id = serializers.IntegerField(write_only=<span class="literal">True</span>)                      <span class="comment"># 外键约束，关联字段要定义</span></span><br><span class="line">    ut = serializers.CharField(source=<span class="string">'ut.type_name'</span>,required=<span class="literal">False</span>)      <span class="comment"># 显示一对多字段名称</span></span><br><span class="line">    gp = serializers.SerializerMethodField(read_only=<span class="literal">True</span>)                 <span class="comment"># 自定义显示（显示多对多）</span></span><br><span class="line">    xxx = serializers.CharField(source=<span class="string">'name'</span>,required=<span class="literal">False</span>)              <span class="comment"># 也可以自定义显示字段名称</span></span><br><span class="line"></span><br><span class="line">    <span class="string">'''PrimaryKeyRelatedField和StringRelatedField：可以用对 一对多 和 多对多 关联对象序列化'''</span></span><br><span class="line">    <span class="comment"># gp = serializers.PrimaryKeyRelatedField(read_only=True, many=True)</span></span><br><span class="line">    <span class="comment"># gp = serializers.StringRelatedField(read_only=True,many=True)</span></span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Meta</span>:</span></span><br><span class="line">        model = UserInfo</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 自定义显示 多对多 字段</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_gp</span><span class="params">(self,row)</span>:</span></span><br><span class="line">        <span class="string">'''row: 传过来的正是 UserInfo表的对象'''</span></span><br><span class="line">        gp_obj_list = row.gp.all().values(<span class="string">'id'</span>,<span class="string">'group'</span>)  <span class="comment"># 获取用户所有组</span></span><br><span class="line">        <span class="keyword">return</span> gp_obj_list</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 定义创建语法</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">create</span><span class="params">(self, validated_data)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> UserInfo.objects.create(**validated_data)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 定义更新方法</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">update</span><span class="params">(self, instance, validated_data)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> validated_data.get(<span class="string">'name'</span>):</span><br><span class="line">            instance.name = validated_data[<span class="string">'name'</span>]</span><br><span class="line">        <span class="keyword">if</span> validated_data.get(<span class="string">'ut_id'</span>):</span><br><span class="line">            instance.ut_id = validated_data[<span class="string">'ut_id'</span>]</span><br><span class="line">        instance.save()</span><br><span class="line">        <span class="keyword">return</span> instance</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 定义单一字段验证的方法</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">validate_name</span><span class="params">(self, value)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> value == <span class="string">'root'</span>:</span><br><span class="line">            <span class="keyword">raise</span> serializers.ValidationError(<span class="string">'不能创建root管理员账号'</span>)</span><br><span class="line">        <span class="keyword">return</span> value</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 定义多字段验证方法</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">validate</span><span class="params">(self, attrs)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> attrs[<span class="string">'name'</span>] == <span class="string">'admin'</span>:</span><br><span class="line">            <span class="keyword">raise</span> serializers.ValidationError(<span class="string">'不能创建admin用户'</span>)</span><br><span class="line">        <span class="keyword">return</span> attrs</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 一对多序列化（反向查找）</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserTypeSerializer</span><span class="params">(serializers.Serializer)</span>:</span></span><br><span class="line">    type_name = serializers.CharField()</span><br><span class="line">    <span class="comment"># 法1一对多关联对象序列化：此字段将被序列化为关联对象的主键</span></span><br><span class="line">    userinfo_set = serializers.PrimaryKeyRelatedField(read_only=<span class="literal">True</span>, many=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 法2一对多关联对象序列化：此字段将被序列化为关联对象的字符串表示方式（即__str__方法的返回值）</span></span><br><span class="line">    <span class="comment"># userinfo_set = serializers.StringRelatedField(read_only=True,many=True)</span></span><br><span class="line">    <span class="comment"># 法3一对多关联对象序列化：使用关联对象的序列化器</span></span><br><span class="line">    <span class="comment"># userinfo_set = UserInfoSerializer(many=True)</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 多对多序列化（反向）</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserGroupSerializer</span><span class="params">(serializers.Serializer)</span>:</span></span><br><span class="line">    group = serializers.CharField()</span><br><span class="line">    <span class="comment"># 法1一对多关联对象序列化：此字段将被序列化为关联对象的主键</span></span><br><span class="line">    <span class="comment"># userinfo_set = serializers.PrimaryKeyRelatedField(read_only=True, many=True)</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 法2一对多关联对象序列化：此字段将被序列化为关联对象的字符串表示方式（即__str__方法的返回值）</span></span><br><span class="line">    <span class="comment"># userinfo_set = serializers.StringRelatedField(read_only=True,many=True)</span></span><br><span class="line">    <span class="comment"># 法3一对多关联对象序列化：使用关联对象的序列化器</span></span><br><span class="line">    <span class="comment"># userinfo_set = UserInfoSerializer(many=True)</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>序列化（正向查找）</strong> </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> rest_framework <span class="keyword">import</span> serializers</span><br><span class="line"><span class="keyword">from</span> users.models <span class="keyword">import</span> UserInfo</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserInfoSerializer</span><span class="params">(serializers.Serializer)</span>:</span></span><br><span class="line">    name = serializers.CharField(min_length=<span class="number">3</span>,max_length=<span class="number">20</span>)               <span class="comment"># 显示普通字段</span></span><br><span class="line">    ut = serializers.CharField(source=<span class="string">'ut.type_name'</span>,required=<span class="literal">False</span>)       <span class="comment"># 显示一对多字段名称</span></span><br><span class="line">    gp = serializers.SerializerMethodField(read_only=<span class="literal">True</span>)                 <span class="comment"># 自定义显示（显示多对多）</span></span><br><span class="line">    xxx = serializers.CharField(source=<span class="string">'name'</span>,required=<span class="literal">False</span>)              <span class="comment"># 也可以自定义显示字段名称</span></span><br><span class="line">    ut_id = serializers.IntegerField(write_only=<span class="literal">True</span>)                      <span class="comment"># 一对多关联字段定义(外键约束)</span></span><br><span class="line"></span><br><span class="line">    <span class="string">'''PrimaryKeyRelatedField和StringRelatedField：可以用对 一对多 和 多对多 关联对象序列化'''</span></span><br><span class="line">    <span class="comment"># gp = serializers.PrimaryKeyRelatedField(read_only=True, many=True)</span></span><br><span class="line">    <span class="comment"># gp = serializers.StringRelatedField(read_only=True,many=True)</span></span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Meta</span>:</span></span><br><span class="line">        model = UserInfo</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 自定义显示 多对多 字段</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_gp</span><span class="params">(self,row)</span>:</span></span><br><span class="line">        <span class="string">'''row: 传过来的正是 UserInfo表的对象'''</span></span><br><span class="line">        gp_obj_list = row.gp.all().values(<span class="string">'id'</span>,<span class="string">'group'</span>)  <span class="comment"># 获取用户所有组</span></span><br><span class="line">        <span class="keyword">return</span> gp_obj_list</span><br></pre></td></tr></table></figure>
+
+<p><strong>序列化（反向查找）</strong> </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserTypeSerializer</span><span class="params">(serializers.Serializer)</span>:</span></span><br><span class="line">    type_name = serializers.CharField()</span><br><span class="line">    <span class="comment"># 法1一对多关联对象序列化：此字段将被序列化为关联对象的主键</span></span><br><span class="line">    userinfo_set = serializers.PrimaryKeyRelatedField(read_only=<span class="literal">True</span>, many=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 法2一对多关联对象序列化：此字段将被序列化为关联对象的字符串表示方式（即__str__方法的返回值）</span></span><br><span class="line">    <span class="comment"># userinfo_set = serializers.StringRelatedField(read_only=True,many=True)</span></span><br><span class="line">    <span class="comment"># 法3一对多关联对象序列化：使用关联对象的序列化器</span></span><br><span class="line">    <span class="comment"># userinfo_set = UserInfoSerializer(many=True)</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>视图函数中使用序列化</strong> </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserInfoViewSet</span><span class="params">(APIView)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get</span><span class="params">(self, request, *args, **kwargs)</span>:</span></span><br><span class="line">        <span class="comment"># 一对多、多对多查询都是一样的语法</span></span><br><span class="line">        obj = users_model.UserInfo.objects.all()</span><br><span class="line">        ser = serializers.UserInfoSerializer(instance=obj,many=<span class="literal">True</span>)  <span class="comment"># 关联数据多条</span></span><br><span class="line">        <span class="comment"># ser = serializers.UserInfoSerializer(instance=obj[0])       # 关联数据一条</span></span><br><span class="line">        <span class="keyword">return</span> Response(ser.data, status=<span class="number">200</span>)</span><br></pre></td></tr></table></figure>
+
+<p><strong>使用反序列化保存数据</strong> </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">'''创建用户'''</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">post</span><span class="params">(self,request)</span>:</span></span><br><span class="line">    ser = serializers.UserInfoSerializer(data=request.data)</span><br><span class="line">    <span class="keyword">if</span> ser.is_valid():</span><br><span class="line">        ser.save()</span><br><span class="line">        <span class="keyword">return</span> Response(data=ser.data, status=<span class="number">201</span>)</span><br><span class="line">    <span class="keyword">return</span> Response(data=ser.errors,status=<span class="number">400</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="3、版本号"><a href="#3、版本号" class="headerlink" title="3、版本号"></a>3、版本号</h3><h3 id="4、限流"><a href="#4、限流" class="headerlink" title="4、限流"></a>4、限流</h3>
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Ares
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://obsessed.top/2020/02/22/DRF%E6%A1%86%E6%9E%B6%E6%8F%90%E4%BE%9B%E6%A0%87%E5%87%86RESTfulAPI%E6%8E%A5%E5%8F%A3/" title="DRF框架提供标准RESTful API接口">http://obsessed.top/2020/02/22/DRF%E6%A1%86%E6%9E%B6%E6%8F%90%E4%BE%9B%E6%A0%87%E5%87%86RESTfulAPI%E6%8E%A5%E5%8F%A3/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/null" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Django/" rel="tag"># Django</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/02/22/%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86%E6%9C%BA%E5%88%B6/" rel="prev" title="基于 Django 的后台管理平台，采用 RBAC 权限管理机制">
+      <i class="fa fa-chevron-left"></i> 基于 Django 的后台管理平台，采用 RBAC 权限管理机制
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/02/22/websocket/" rel="next" title="websocket">
+      websocket <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、什么是RESTful"><span class="nav-text">一、什么是RESTful</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、django的DRF"><span class="nav-text">二、django的DRF</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、认证和权限"><span class="nav-text">1、认证和权限</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、序列化"><span class="nav-text">2、序列化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、版本号"><span class="nav-text">3、版本号</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4、限流"><span class="nav-text">4、限流</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Ares"
+      src="/images/20160228201627_f5vax.jpg">
+  <p class="site-author-name" itemprop="name">Ares</p>
+  <div class="site-description" itemprop="description">最重要的是，别放弃希望</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">23</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/Aresea" title="GitHub → https:&#x2F;&#x2F;gitee.com&#x2F;Aresea" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/2441236144@qq.com" title="E-Mail → 2441236144@qq.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/null" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ares</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

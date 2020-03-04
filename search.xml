@@ -1,0 +1,1457 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>Django+uWSGI+Nginx的生产环境部署</title>
+    <url>/2020/03/03/Django-uWSGI-Nginx%E7%9A%84%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2/</url>
+    <content><![CDATA[<h2 id="1、Django-Uwsgi-Nginx-部署的作用"><a href="#1、Django-Uwsgi-Nginx-部署的作用" class="headerlink" title="1、Django + Uwsgi + Nginx 部署的作用"></a>1、Django + Uwsgi + Nginx 部署的作用</h2><p>   <strong>1、Django + Uwsgi + Nginx方案</strong></p><p> 　　　　　　<strong><img src="/2020/03/03/Django-uWSGI-Nginx%E7%9A%84%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2/DUN.png" class title="This is an test image"></strong> </p><p>　　1. web项目，使用nginx的目的是为了安全和负载均衡，配置了nginx做前端代理，uwsgi作后端代理的服务器。</p><p>　　2. 在处理来自Internet的请求时，要先经过nginx的处理，nginx把请求再交给uwsgi，经过uwsgi才能访问到项目本身。</p><a id="more"></a>
+
+
+
+<p>　<strong>2、Django + uwsgi方案</strong></p>
+<p>　　1. 没有nginx而只有uwsgi的服务器，则是Internet请求直接由uwsgi处理，并反馈到web项目中。</p>
+<p>　　2. nginx可以实现安全过滤，防DDOS等保护安全的操作，并且如果配置了多台服务器，nginx可以保证服务器的负载相对均衡。</p>
+<p>　　3. 而uwsgi则是一个web服务器，实现了WSGI协议(Web Server Gateway Interface)，http协议等，它可以接收和处理请求，发出响应等。<br>　　 所以只用uwsgi也是可以的。</p>
+<p>　<strong>3、nginx和uWSGI特点</strong></p>
+<p>　　　<strong>1）nginx的作用</strong></p>
+<p>　　　　　　1.反向代理，可以拦截一些web攻击，保护后端的web服务器</p>
+<p>　　　　　　2.负载均衡，根据轮询算法，分配请求到多节点web服务器</p>
+<p>　　　　　　3.缓存静态资源，加快访问速度，释放web服务器的内存占用，专项专用</p>
+<p>　　　2）uWSGI的适用**</p>
+<p>　　　　　　1.单节点服务器的简易部署</p>
+<p>　　　　　　2.轻量级，好部署</p>
+<h2 id="2、Django-Uwsgi-Nginx-的生产环境部署"><a href="#2、Django-Uwsgi-Nginx-的生产环境部署" class="headerlink" title="2、Django + Uwsgi + Nginx 的生产环境部署"></a>2、Django + Uwsgi + Nginx 的生产环境部署</h2><h3 id="1、在centos-7中安装python3环境"><a href="#1、在centos-7中安装python3环境" class="headerlink" title="1、在centos 7中安装python3环境"></a><strong>1、在centos 7中安装python3环境</strong></h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 1、yum更新yum源</span></span><br><span class="line">yum update</span><br><span class="line"><span class="comment"># 2、安装Python 3.7所需的依赖否则安装后没有pip3包</span></span><br><span class="line">yum install zlib-devel bzip2-devel openssl-devel ncurses-devel sqlite-devel readline-devel tk-devel libffi-devel gcc make</span><br><span class="line"><span class="comment"># 3、在官网下载所需版本，这里用的是3.7.0版本</span></span><br><span class="line">wget https://www.python.org/ftp/<span class="number">3.7</span><span class="number">.0</span>/Python<span class="number">-3.7</span><span class="number">.0</span>.tgz</span><br><span class="line"><span class="number">2</span>、安装Python</span><br><span class="line"></span><br><span class="line"><span class="comment"># 1、解压</span></span><br><span class="line">tar -xvf Python<span class="number">-3.7</span><span class="number">.0</span>.tgz</span><br><span class="line"></span><br><span class="line"><span class="comment">#2、配置编译</span></span><br><span class="line">cd Python<span class="number">-3.7</span><span class="number">.0</span></span><br><span class="line">./configure --prefix=/usr/local/python3  <span class="comment"># 配置编译的的路径（这里--prefix是指定编译安装的文件夹）</span></span><br><span class="line">./configure --enable-optimizations  <span class="comment"># 执行该代码后，会编译安装到 /usr/local/bin/ 下，且不用添加软连接或环境变量</span></span><br><span class="line">make &amp;&amp; make install</span><br><span class="line">ln -s /usr/local/python3/bin/python3 /usr/bin/python3  <span class="comment"># 添加软连接</span></span><br><span class="line">ln -s /usr/local/python3/bin/pip3 /usr/bin/pip3</span><br><span class="line"></span><br><span class="line"><span class="comment">#3、将/usr/local/python3/bin加入PATH</span></span><br><span class="line">[root@linux-node1 testProj]<span class="comment"># vim /etc/profile</span></span><br><span class="line"><span class="comment">#然后在文件末尾添加</span></span><br><span class="line">export PATH=$PATH:/usr/local/python3/bin</span><br><span class="line"></span><br><span class="line">[root@linux-node1 testProj]<span class="comment"># source /etc/profile # 修改完后，还需要让这个环境变量在配置信息中生效，执行命令</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="2、初始化一个django项目"><a href="#2、初始化一个django项目" class="headerlink" title="2、初始化一个django项目"></a><strong>2、初始化一个django项目</strong></h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">[root@node1 /]<span class="comment"># pip3 install django==2.0.4</span></span><br><span class="line">[root@node1 /]<span class="comment"># mkdir /code/</span></span><br><span class="line">[root@node1 /]<span class="comment"># cd /code/</span></span><br><span class="line">[root@node1 testProj]<span class="comment"># django-admin startproject mmcsite</span></span><br><span class="line">[root@node1 testProj]<span class="comment"># cd /code/mmcsite</span></span><br><span class="line">[root@node1 testProj]<span class="comment"># python3 manage.py runserver 0.0.0.0:8000</span></span><br><span class="line"><span class="comment"># 页面中访问：http://192.168.56.11:8000/</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="3、安装uwsgi-并使用uWSGI启动这个服务"><a href="#3、安装uwsgi-并使用uWSGI启动这个服务" class="headerlink" title="3、安装uwsgi 并使用uWSGI启动这个服务"></a><strong>3、安装uwsgi 并使用uWSGI启动这个服务</strong></h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="string">'''1. 安装uwsgi'''</span></span><br><span class="line">[root@node1 /]<span class="comment"># pip3 install uwsgi</span></span><br><span class="line">[root@node1 /]<span class="comment"># ln -s /usr/local/python3/bin/uwsgi /usr/bin/uwsgi</span></span><br><span class="line"></span><br><span class="line"><span class="string">'''2. 配置uwsgi.ini启动文件'''</span></span><br><span class="line">[root@node1 /]<span class="comment"># vim uwsgi.ini</span></span><br><span class="line">[uwsgi]</span><br><span class="line">socket = <span class="number">0.0</span><span class="number">.0</span><span class="number">.0</span>:<span class="number">3031</span></span><br><span class="line">chdir = /code/mmcsite</span><br><span class="line">wsgi-file = /code/mmcsite/wsgi.py</span><br><span class="line">processes = <span class="number">5</span></span><br><span class="line">threads = <span class="number">30</span></span><br><span class="line">master = true</span><br><span class="line">daemonize = /code/mmcsite/uwsgi.log</span><br><span class="line">module=mmcsite.wsgi</span><br><span class="line">pidfile = /code/mmcsite/uwsgi.pid</span><br><span class="line">chmod-socket=<span class="number">666</span></span><br><span class="line">enable-threads = true</span><br><span class="line"></span><br><span class="line"><span class="string">'''3. 使用uwsgi启动django：一定要在这个项目目录中'''</span></span><br><span class="line">[root@node1 /]<span class="comment"># uwsgi --http 192.168.26.128:80 --file mmcsite/wsgi.py --static-map=/static=static</span></span><br><span class="line">访问项目：http://<span class="number">192.168</span><span class="number">.26</span><span class="number">.128</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">[root@node1 /]<span class="comment"># vim /code/mmcsite/uwsgi.ini  # uwsgi.ini文件</span></span><br><span class="line">[uwsgi]</span><br><span class="line">socket = <span class="number">0.0</span><span class="number">.0</span><span class="number">.0</span>:<span class="number">3031</span>                  <span class="comment"># 指定socket监听的地址和端口</span></span><br><span class="line">chdir = /code/mmcsite                  <span class="comment"># 项目路径 </span></span><br><span class="line">wsgi-file = /code/mmcsite/wsgi.py      <span class="comment"># django的wsgi文件路径</span></span><br><span class="line">processes = <span class="number">5</span>                          <span class="comment"># 启动五个进程</span></span><br><span class="line">threads = <span class="number">30</span>                           <span class="comment"># 每个进程启动30个线程</span></span><br><span class="line">master = true</span><br><span class="line">daemonize = /code/mmcsite/uwsgi.log    <span class="comment"># 日志存放路径</span></span><br><span class="line">module=mmcsite.wsgi                    <span class="comment"># 使用mmcsite.wsgi模块</span></span><br><span class="line">pidfile = /code/mmcsite/uwsgi.pid      <span class="comment"># uwsgi启动进程id存放路径</span></span><br><span class="line">chmod-socket=<span class="number">666</span>                       <span class="comment"># socket权限</span></span><br><span class="line">enable-threads = true                  <span class="comment"># 允许用内嵌的语言启动线程，这将允许你在app程序中产生一个子线程</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="4、安装配置nginx"><a href="#4、安装配置nginx" class="headerlink" title="4、安装配置nginx"></a>4、安装配置nginx</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="string">'''1. 配置nginx YUM源'''</span></span><br><span class="line">[root@node1 /] vim /etc/yum.repos.d/nginx.repo</span><br><span class="line"><span class="string">'''</span></span><br><span class="line"><span class="string">[nginx]</span></span><br><span class="line"><span class="string">name=nginx repo</span></span><br><span class="line"><span class="string"># 下面这行centos根据你自己的操作系统修改比如：OS/rehel</span></span><br><span class="line"><span class="string"># 6是你Linux系统的版本，可以通过URL查看路径是否正确</span></span><br><span class="line"><span class="string">baseurl=http://nginx.org/packages/centos/7/$basearch/</span></span><br><span class="line"><span class="string">gpgcheck=0</span></span><br><span class="line"><span class="string">enabled=1</span></span><br><span class="line"><span class="string">'''</span></span><br><span class="line"><span class="string">'''2. 安装nginx'''</span></span><br><span class="line">[root@node1 /] yum -y install nginx</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">[root@node1 /]<span class="comment"># vim /etc/nginx/conf.d/django.conf </span></span><br><span class="line">server &#123;</span><br><span class="line">    listen       <span class="number">8888</span>;</span><br><span class="line">    server_name  <span class="number">192.168</span><span class="number">.26</span><span class="number">.128</span>;</span><br><span class="line">    client_max_body_size <span class="number">5</span>M;</span><br><span class="line">    gzip on;</span><br><span class="line">    gzip_buffers <span class="number">32</span> <span class="number">4</span>K;<span class="comment">#压缩在内存中缓冲32块 每块4K</span></span><br><span class="line">    gzip_comp_level <span class="number">6</span> ;<span class="comment">#压缩级别 推荐6</span></span><br><span class="line">    gzip_min_length <span class="number">4000</span>;<span class="comment">#开始压缩的最小长度4bit</span></span><br><span class="line">        gzip_types text/plain application/json application/javascript application/x-javascript application/css application/xml application/xml+rss text/javascript application/x-httpd-php image/jpeg image/gif image/png image/x-ms-bmp;</span><br><span class="line">        location / &#123;</span><br><span class="line">              include uwsgi_params;</span><br><span class="line">              uwsgi_pass <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">3031</span>;</span><br><span class="line">              uwsgi_ignore_client_abort on;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        error_page <span class="number">404</span> /<span class="number">404.</span>html;</span><br><span class="line">            location = /<span class="number">40</span>x.html &#123;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        error_page <span class="number">500</span> <span class="number">502</span> <span class="number">503</span> <span class="number">504</span> /<span class="number">50</span>x.html;</span><br><span class="line">            location = /<span class="number">50</span>x.html &#123;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="5、启动项目"><a href="#5、启动项目" class="headerlink" title="5、启动项目"></a>5、启动项目</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">[root@node1 demo2]<span class="comment"># systemctl restart nginx   # 开启nginx</span></span><br><span class="line">[root@node1 demo2]<span class="comment"># uwsgi --ini uwsgi.ini     # 启动uwsgi的django项目</span></span><br><span class="line"><span class="comment"># http://192.168.56.11:8888/ 访问项目</span></span><br><span class="line">[root@node1 demo2]<span class="comment"># uwsgi --stop uwsgi.pid    # 关闭uwsgi</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id><a href="#" class="headerlink" title></a></h3>]]></content>
+      <categories>
+        <category>Linux</category>
+      </categories>
+      <tags>
+        <tag>nginx</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>docker命令</title>
+    <url>/2020/03/02/docker%E5%91%BD%E4%BB%A4/</url>
+    <content><![CDATA[<h2 id="一、docker的安装"><a href="#一、docker的安装" class="headerlink" title="一、docker的安装"></a>一、docker的安装</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 1、安装依赖包</span></span><br><span class="line">yum install -y yum-utils device-mapper-persistent-data lvm2</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2、添加Docker软件包源(否则doker安装的不是新版本)</span></span><br><span class="line">yum-config-manager \</span><br><span class="line">--add-repo \</span><br><span class="line">https://download.docker.com/linux/centos/docker-ce.repo</span><br><span class="line"></span><br><span class="line"><span class="comment"># 3、安装Docker CE</span></span><br><span class="line">yum install -y docker-ce</span><br><span class="line"></span><br><span class="line"><span class="comment"># 4、启动Docker服务并设置开机启动</span></span><br><span class="line">systemctl start docker</span><br><span class="line">systemctl enable docker</span><br><span class="line"></span><br><span class="line"><span class="comment"># 5、测试docker是否安装成功（hello-world是官方提供的一个测试镜像）</span></span><br><span class="line">docker run hello-world</span><br><span class="line"></span><br><span class="line"><span class="comment"># 6、查看docker基本信息</span></span><br><span class="line">docker info</span><br><span class="line">docker version</span><br></pre></td></tr></table></figure><a id="more"></a>
+
+<h2 id="二、docker的简单使用"><a href="#二、docker的简单使用" class="headerlink" title="二、docker的简单使用"></a>二、docker的简单使用</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 1、创建一个nginx容器</span></span><br><span class="line">docker run -it nginx</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2、查看docker运行的容器(可以获取到这个容器的id)</span></span><br><span class="line">docker ps</span><br><span class="line"></span><br><span class="line"><span class="comment"># 3、访问这个容器</span></span><br><span class="line"><span class="comment"># 进入这个nginx容器（进入的文件系统和宿主机是完全隔离的，有自己独立的文件系统）</span></span><br><span class="line">docker <span class="keyword">exec</span> -it <span class="number">73877e65</span>c07d bash</span><br><span class="line"></span><br><span class="line"><span class="comment"># 4、查看当前容器的 IP</span></span><br><span class="line">docker inspect <span class="number">73877e65</span>c07d   <span class="comment"># 73877e65c07d是通过docekr ps查看到的容器ID</span></span><br><span class="line">curl <span class="number">172.17</span><span class="number">.0</span><span class="number">.2</span>               <span class="comment"># 测试这个nginx容器是否可以访问</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="三、docker常用命令"><a href="#三、docker常用命令" class="headerlink" title="三、docker常用命令"></a>三、docker常用命令</h2><h3 id="1、docker镜像管理常用命令"><a href="#1、docker镜像管理常用命令" class="headerlink" title="1、docker镜像管理常用命令"></a><strong>1、docker镜像管理常用命令</strong></h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">docker help                      		<span class="comment"># 查看docker帮助</span></span><br><span class="line"></span><br><span class="line">docker image --help              		<span class="comment"># 查看 docker中 镜像相关帮助</span></span><br><span class="line"></span><br><span class="line">docker image ls                  		<span class="comment"># 查看当前所有镜像</span></span><br><span class="line"></span><br><span class="line">docker image inspect nginx       		<span class="comment"># 查看指定镜像（nginx镜像）详细信息</span></span><br><span class="line"></span><br><span class="line">docker pull nginx:<span class="number">1.14</span>           		<span class="comment"># 下载指定版本镜像 nginx</span></span><br><span class="line"></span><br><span class="line">docker image rm nginx:<span class="number">1.14</span>       		<span class="comment"># 删除nginx 1.14版本</span></span><br><span class="line"></span><br><span class="line">docker image save nginx &gt; nginx.tar      	<span class="comment"># 导出niginx镜像</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2、docker创建容器常用命令"><a href="#2、docker创建容器常用命令" class="headerlink" title="2、docker创建容器常用命令"></a>2、docker创建容器常用命令</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#docker run 常用参数</span></span><br><span class="line">-d:   后台运行容器，并返回容器ID；</span><br><span class="line">-i:   以交互模式运行容器，通常与 -t 同时使用；</span><br><span class="line">-t:   为容器重新分配一个伪输入终端，通常与 -i 同时使用；</span><br><span class="line">-P:   随机端口映射，容器内部端口随机映射到主机的高端口</span><br><span class="line">-p:   指定端口映射，格式为：主机(宿主)端口:容器端口</span><br><span class="line">--name=<span class="string">"nginx-lb"</span>:   为容器指定一个名称；</span><br><span class="line">--dns <span class="number">8.8</span><span class="number">.8</span><span class="number">.8</span>:   指定容器使用的DNS服务器，默认和宿主一致；</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#docker run 其他参数</span></span><br><span class="line">--dns-search example.com: 指定容器DNS搜索域名，默认和宿主一致；</span><br><span class="line"></span><br><span class="line">-h <span class="string">"mars"</span>: 指定容器的hostname；</span><br><span class="line"></span><br><span class="line">-e username=<span class="string">"ritchie"</span>: 设置环境变量；</span><br><span class="line"></span><br><span class="line">--env-file=[]: 从指定文件读入环境变量；</span><br><span class="line"></span><br><span class="line">--cpuset=<span class="string">"0-2"</span> <span class="keyword">or</span> --cpuset=<span class="string">"0,1,2"</span>: 绑定容器到指定CPU运行；</span><br><span class="line"></span><br><span class="line">-m :设置容器使用内存最大值；</span><br><span class="line"></span><br><span class="line">--net=<span class="string">"bridge"</span>: 指定容器的网络连接类型，支持 bridge/host/none/container: 四种类型；</span><br><span class="line"></span><br><span class="line">--link=[]: 添加链接到另一个容器；</span><br><span class="line"></span><br><span class="line">--expose=[]: 开放一个端口或一组端口；</span><br><span class="line"></span><br><span class="line">--volume , -v:    绑定一个卷</span><br><span class="line"></span><br><span class="line">-a stdin: 指定标准输入输出内容类型，可选 STDIN/STDOUT/STDERR 三项；</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">docker run --help                               <span class="comment"># 查看创建容器帮助</span></span><br><span class="line"></span><br><span class="line">docker run -it centos                           <span class="comment"># 创建centos镜像并进入终端</span></span><br><span class="line"></span><br><span class="line">docker run -d nginx                             <span class="comment"># 后台启动nginx容器</span></span><br><span class="line"></span><br><span class="line">docker stop <span class="number">6</span>bb09dce461f                	<span class="comment"># 关闭一个容器</span></span><br><span class="line"></span><br><span class="line">docker ps -l                                    <span class="comment"># 查看最近运行的容器</span></span><br><span class="line"></span><br><span class="line">docker run -itd centos                          <span class="comment"># 启用一个伪终端守护centos容器</span></span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">docker container run -d --name web3 -e test=<span class="number">123456</span> -p <span class="number">8800</span>:<span class="number">80</span> -h webhostname --restart always nginx</span><br><span class="line">    </span><br><span class="line">-d                                       <span class="comment"># 后台启动nginx容器</span></span><br><span class="line">--name web3                              <span class="comment"># 自定义容器名字(默认会是一段随机字符串)</span></span><br><span class="line">-e test=<span class="number">123456</span>                           <span class="comment"># 启动容器添加变量 test=123456 (echo $test)</span></span><br><span class="line">-p <span class="number">8800</span>:<span class="number">80</span>                               <span class="comment"># 宿主机的8800端口映射到docker容器的80端口中</span></span><br><span class="line">-h webhostname                           <span class="comment"># docker容器主机名 (a300f394af88)</span></span><br><span class="line">--restart always                         <span class="comment"># 宿主机重启自动拉起这个docker容器</span></span><br><span class="line">nginx                                    <span class="comment"># 使用这个nginx镜像启动容器</span></span><br><span class="line"><span class="comment">#注：http://192.168.56.12:8800/     	访问这个docker  nginx</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="3、docker管理容器常用命令"><a href="#3、docker管理容器常用命令" class="headerlink" title="3、docker管理容器常用命令"></a>3、docker管理容器常用命令</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">docker ps				<span class="comment">#查看当前正在运行的容器</span></span><br><span class="line"></span><br><span class="line">docker ps -a				<span class="comment">#查看已退出的容器</span></span><br><span class="line"></span><br><span class="line">docker rm 容器id			<span class="comment">#删除容器</span></span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>Linux</category>
+      </categories>
+      <tags>
+        <tag>docker</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>docker</title>
+    <url>/2020/03/02/docker/</url>
+    <content><![CDATA[<h2 id="一、Docker简介"><a href="#一、Docker简介" class="headerlink" title="一、Docker简介"></a>一、Docker简介</h2><ol>
+<li><p>Docker 是应用最广泛的开源容器引擎，让开发者可以打包他们的应用以及依赖包到一个可移植的容器中 </p>
+</li>
+<li><p>然后发布到任何流行的 Linux或Windows 机器上，也可以实现虚拟化。 </p>
+</li>
+<li><p>每个容器拥有一套和宿主机完全隔离的文件系统（共用linux内核），程序在这个虚拟容器里运行，就好像在真实的物理机上运行一样。 </p>
+<p>容器：</p>
+<p><strong>1）</strong>容器是一个操作系统级别下的虚拟化技术，运行一个容器就行运行一个进程一样</p>
+<p><strong>2）</strong>容器依赖linux内核特性：Namespace（资源隔离）和Cgroups（资源限制）</p>
+</li>
+</ol><a id="more"></a>
+<p><strong>总结</strong></p>
+<ul>
+<li>一个简单的应用程序打包工具</li>
+<li>使用最广泛的开源容器</li>
+<li>一种操作系统级的虚拟化技术</li>
+<li>依赖于Linux内核特性：Namespace（资源隔离） 和 Cgroups（资源限制）</li>
+</ul>
+<hr>
+<h2 id="二、docker的组成"><a href="#二、docker的组成" class="headerlink" title="二、docker的组成"></a>二、docker的组成</h2><p><strong><img src="/2020/03/02/docker/image1.png" class title="docker构成图"></strong> </p>
+<table>
+<thead>
+<tr>
+<th>DockerClient</th>
+<th>客户端</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Docker Daemon</td>
+<td>守护进程</td>
+</tr>
+<tr>
+<td>Docker Images</td>
+<td>镜像</td>
+</tr>
+<tr>
+<td>Docker Container</td>
+<td>容器</td>
+</tr>
+<tr>
+<td>Docker Registry</td>
+<td>镜像仓库</td>
+</tr>
+</tbody></table>
+<h2 id="三、docker与虚拟机比较"><a href="#三、docker与虚拟机比较" class="headerlink" title="三、docker与虚拟机比较"></a>三、docker与虚拟机比较</h2><p><strong><img src="/2020/03/02/docker/image2.png" class title="虚拟机与docker结构对比"></strong> </p>
+<p><strong><img src="/2020/03/02/docker/image3.png" class title="虚拟机与docker性能对比"></strong> </p>
+<h2 id="四、docker技术应用场景"><a href="#四、docker技术应用场景" class="headerlink" title="四、docker技术应用场景"></a>四、docker技术应用场景</h2><h3 id="1、场景一：节省项目环境部署时间"><a href="#1、场景一：节省项目环境部署时间" class="headerlink" title="1、场景一：节省项目环境部署时间"></a><strong>1、场景一：节省项目环境部署时间</strong></h3><p>　　　<strong>1）单项目打包</strong></p>
+<p>　　　　　　1. 每次部署项目到测试、生产等环境，都要部署一大堆依赖的软件、工具，时间久，出错概率大。</p>
+<p>　　　　　　2. Docker主要理念就是环境打包部署，可在任意Docker Engine运行。</p>
+<p>　　　　　　3. 我们只需要将每个项目环境打包到镜像，push到镜像仓库，当有需要部署这个项目时，直接pull镜像启动容器，这个项目就可以访问了！一次构建多次部署，一劳永逸。</p>
+<p>　　　 <strong>2）整套项目打包</strong></p>
+<p>　　　　　　1. 比如有一个产品可以整套部署到客户那里，以往都是派一名实施工程师到客户那部署。</p>
+<p>　　　　　　2. 如果用了Docker，我们可以前期将这套项目封装打包起来，实现一键部署，分分钟钟搞定，就不需要再派人过去了。比如官方的Docker Compose编排工具。</p>
+<p>　　　 <strong>3）新开源技术试用</strong></p>
+<p>　　　　　　1. 有时，我们想调研一些开源项目，我们可以直接从公共镜像仓库pull项目官方做好镜像启动容器即可。</p>
+<h3 id="2、场景二：环境一致性"><a href="#2、场景二：环境一致性" class="headerlink" title="2、场景二：环境一致性"></a><strong>2、场景二：环境一致性</strong></h3><p>　　　　　　1. 项目在开发电脑本地运行没问题，到了测试或生产环境就运行不起来。</p>
+<p>　　　　　　2. Docker将项目环境打包成镜像，可以在任何Docker Engine部署。</p>
+<h3 id="3、场景三：持续集成"><a href="#3、场景三：持续集成" class="headerlink" title="3、场景三：持续集成"></a><strong>3、场景三：持续集成</strong></h3><p>　　　　　　1. 一个项目版本快速迭代的测试场景，需要一个合理的CI（持续集成）/CD（持续部署）环境支撑。</p>
+<p>　　　　　　2. CI/CD是一个周期性自动化项目测试流程，包括构建、部署、测试、发布等工作，很少需要人工干预。</p>
+<p>　　　　　　3. Docker通过项目镜像构建和快速部署，打通测试环境与生产环境，高度保持多个环境之间一致性。</p>
+<h3 id="4、场景四：微服务"><a href="#4、场景四：微服务" class="headerlink" title="4、场景四：微服务"></a><strong>4、场景四：微服务</strong></h3><p>　　　　　　1. 微服务指尽可能细粒度拆分业务程序架构，由多个独立服务组成业务系统。</p>
+<p>　　　　　　2. Docker容器作为这些独立服务的部署单元，每个服务单独部署到一个docker容器中。</p>
+]]></content>
+      <categories>
+        <category>Linux</category>
+      </categories>
+      <tags>
+        <tag>docker</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>nginx配置负载均衡</title>
+    <url>/2020/03/02/nginx%E9%85%8D%E7%BD%AE%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/</url>
+    <content><![CDATA[<h2 id="1、搭载实验环境（使用docker部署两台nginx容器）"><a href="#1、搭载实验环境（使用docker部署两台nginx容器）" class="headerlink" title="1、搭载实验环境（使用docker部署两台nginx容器）"></a>1、搭载实验环境（使用docker部署两台nginx容器）</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#使用docker搭建第一台nginx服务</span></span><br><span class="line">[root@node1 ~]<span class="comment"># docker container run -d --name web01 -p 81:80 nginx</span></span><br><span class="line">测试访问：http://<span class="number">192.168</span><span class="number">.26</span><span class="number">.128</span><span class="number">.81</span>/</span><br><span class="line">[root@node1 ~]<span class="comment"># docker exec -it web01 bash</span></span><br><span class="line">root@b68021de00b8:/<span class="comment"># echo web01 &gt; /usr/share/nginx/html/index.html</span></span><br></pre></td></tr></table></figure><a id="more"></a>
+
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#使用docker搭建第二台nginx服务</span></span><br><span class="line">[root@node1 ~]<span class="comment"># docker container run -d --name web02 -p 82:80 nginx</span></span><br><span class="line">测试访问：http://<span class="number">192.168</span><span class="number">.26</span><span class="number">.128</span><span class="number">.82</span>/</span><br><span class="line">[root@node1 ~]<span class="comment"># docker exec -it web02 bash</span></span><br><span class="line">root@ba1678e54a53:/<span class="comment"># echo web02 &gt; /usr/share/nginx/html/index.html</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="2、在真实主机中安装nginx并配置负载均衡"><a href="#2、在真实主机中安装nginx并配置负载均衡" class="headerlink" title="2、在真实主机中安装nginx并配置负载均衡"></a>2、<strong>在真实主机中安装nginx并配置负载均衡</strong></h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">[root@node1 ~]<span class="comment"># yum -y install nginx</span></span><br><span class="line">[root@node1 ~]<span class="comment"># vim /etc/nginx/nginx.conf</span></span><br><span class="line"><span class="comment">#### 修改nginx.conf 默认是轮训 ####</span></span><br><span class="line"></span><br><span class="line"><span class="string">'''</span></span><br><span class="line"><span class="string"># 1. upstream是自己写的，一定要放在server外面</span></span><br><span class="line"><span class="string">upstream myservers &#123;</span></span><br><span class="line"><span class="string">    server 192.168.56.14:81;</span></span><br><span class="line"><span class="string">    server 192.168.56.14:82;</span></span><br><span class="line"><span class="string">&#125;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"># 2. server其实默认已经有一个，只需要修改location中配置，指定转发代理即可</span></span><br><span class="line"><span class="string">server &#123;</span></span><br><span class="line"><span class="string">    location / &#123;</span></span><br><span class="line"><span class="string">       proxy_pass http://myservers;</span></span><br><span class="line"><span class="string">    &#125;</span></span><br><span class="line"><span class="string">&#125;</span></span><br><span class="line"><span class="string">'''</span></span><br><span class="line">[root@node1 nginx]<span class="comment"># systemctl reload nginx				#重载nginx</span></span><br><span class="line">[root@node1 nginx]<span class="comment"># systemctl start nginx				#启动nginx</span></span><br><span class="line">[root@node1 nginx]<span class="comment"># systemctl restart nginx 				#重启nginx</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="3、负载均衡常用配置梳理"><a href="#3、负载均衡常用配置梳理" class="headerlink" title="3、负载均衡常用配置梳理"></a>3、负载均衡常用配置梳理</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="number">1</span>、轮询（默认）</span><br><span class="line">每个请求按时间顺序逐一分配到不同的后端服务器，如果后端服务器down掉，能自动剔除。</span><br><span class="line"></span><br><span class="line">upstream backserver &#123;</span><br><span class="line">    server <span class="number">192.168</span><span class="number">.0</span><span class="number">.14</span>;</span><br><span class="line">    server <span class="number">192.168</span><span class="number">.0</span><span class="number">.15</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="number">2</span>、权重 weight</span><br><span class="line">指定轮询几率，weight和访问比率成正比，用于后端服务器性能不均的情况。</span><br><span class="line"></span><br><span class="line">upstream backserver &#123;</span><br><span class="line">    server <span class="number">192.168</span><span class="number">.0</span><span class="number">.14</span> weight=<span class="number">3</span>;</span><br><span class="line">    server <span class="number">192.168</span><span class="number">.0</span><span class="number">.15</span> weight=<span class="number">7</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="number">3</span>、ip_hash（ IP绑定）</span><br><span class="line">上述方式存在一个问题就是说，在负载均衡系统中，假如用户在某台服务器上登录了，那么该用户第二次请求的时候，因为我们是负载均衡系统，</span><br><span class="line">每次请求都会重新定位到服务器集群中的某一个，那么已经登录某一个服务器的用户再重新定位到另一个服务器，其登录信息将会丢失，这样显然是不妥的。</span><br><span class="line">我们可以采用ip_hash指令解决这个问题，如果客户已经访问了某个服务器，当用户再次访问时，会将该请求通过哈希算法，自动定位到该服务器。</span><br><span class="line">每个请求按访问ip的hash结果分配，这样每个访客固定访问一个后端服务器，可以解决session的问题。</span><br><span class="line"></span><br><span class="line">upstream backserver &#123;</span><br><span class="line">    ip_hash;</span><br><span class="line">    server <span class="number">192.168</span><span class="number">.0</span><span class="number">.14</span>:<span class="number">88</span>;</span><br><span class="line">    server <span class="number">192.168</span><span class="number">.0</span><span class="number">.15</span>:<span class="number">80</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="number">4</span>、fair（第三方插件）</span><br><span class="line">按后端服务器的响应时间来分配请求，响应时间短的优先分配。</span><br><span class="line"></span><br><span class="line">upstream backserver &#123;</span><br><span class="line">    server server1;</span><br><span class="line">    server server2;</span><br><span class="line">    fair;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="number">5</span>、url_hash（第三方插件）</span><br><span class="line">按访问url的hash结果来分配请求，使每个url定向到同一个后端服务器，后端服务器为缓存时比较有效。</span><br><span class="line"></span><br><span class="line">upstream backserver &#123;</span><br><span class="line">    server squid1:<span class="number">3128</span>;</span><br><span class="line">    server squid2:<span class="number">3128</span>;</span><br><span class="line">    hash $request_uri;</span><br><span class="line">    hash_method crc32;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>Linux</category>
+      </categories>
+      <tags>
+        <tag>nginx</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>nginx是什么?</title>
+    <url>/2020/03/02/nginx%E6%98%AF%E4%BB%80%E4%B9%88/</url>
+    <content><![CDATA[<h2 id="一、基本介绍"><a href="#一、基本介绍" class="headerlink" title="一、基本介绍"></a>一、基本介绍</h2><p>Nginx是一个高性能的<strong>HTTP和反向代理服务器</strong>，也是一个<strong>IMAP/POP3/SMTP</strong>代理服务器。 </p><p>Nginx是一款轻量级的Web服务器/反向代理服务器以及电子邮件代理服务器，并在一个BSD-like协议下发行。由俄罗斯的程序设计师lgor Sysoev所开发，供俄国大型的入口网站及搜索引擎Rambler使用。其特点是<strong>占有内存少，并发能力强</strong>，事实上nginx的并发能力确实在同类型的网页服务器中表现较好。 </p><a id="more"></a>
+
+<p><strong>1、nginx高并发原理（ 多进程+epoll实现高并发 ）</strong></p>
+<ol>
+<li>Nginx 在启动后，会有一个 master 进程和多个相互独立的 worker 进程。</li>
+<li>每个子进程只有一个线程(协程)，采用的 IO多路复用模型epoll，实现高并发。</li>
+</ol>
+<p><strong>2、epoll能实现高并发原理</strong></p>
+<ol>
+<li>epoll() 中内核则维护一个链表，epoll_wait 方法可以获取到链表长度，不为0就知道文件描述符准备好了。</li>
+<li>在内核实现中 epoll 是根据每个 sockfd 上面的与设备驱动程序建立起来的回调函数实现的。</li>
+<li>某个 sockfd 上的事件发生时，与它对应的回调函数就会被调用，来把这个 sockfd 加入链表，其他处于“空闲的”状态的则不会。</li>
+<li>epoll上面链表中获取文件描述，这里使用内存映射（mmap）技术， 避免了复制大量文件描述符带来的开销</li>
+<li><strong>内存映射（mmap）</strong>：内存映射文件，是由一个文件到一块内存的映射，将不必再对文件执行I/O操作</li>
+</ol>
+<p><strong>3、nginx和apache比较</strong> </p>
+<ol>
+<li><strong>nginx相对于apache的优点</strong> <ol>
+<li>轻量级，同样起web 服务，比apache 占用更少的内存及资源 </li>
+<li>抗并发，nginx 处理请求是异步非阻塞的，而apache 则是阻塞型的，在高并发下nginx 能保持低资源低消耗高性能 </li>
+<li>高度模块化的设计，编写模块相对简单，社区活跃，各种高性能模块出品迅速啊 </li>
+</ol>
+</li>
+<li><strong>apache 相对于nginx 的优点</strong> <ol>
+<li>apache 更为成熟，少 bug ，稳定性好 </li>
+<li>rewrite ，比nginx 的rewrite 强大 </li>
+<li>模块超多，基本想到的都可以找到 </li>
+</ol>
+</li>
+</ol>
+<h2 id="二、名词解释"><a href="#二、名词解释" class="headerlink" title="二、名词解释"></a>二、名词解释</h2><h3 id="代理服务器"><a href="#代理服务器" class="headerlink" title="代理服务器"></a><strong>代理服务器</strong></h3><p>一般是指局域网内部的机器<strong>通过代理服务器</strong>发送请求到互联网上的服务器，代理服务器一般作用在客户端。</p>
+<h3 id="正向代理"><a href="#正向代理" class="headerlink" title="正向代理"></a><strong>正向代理</strong></h3><p><strong><img src="/2020/03/02/nginx%E6%98%AF%E4%BB%80%E4%B9%88/timg1.png" class title="This is an test image"></strong> </p>
+<ol>
+<li>我访问不了某网站，但是我能访问一个代理服务器，这个代理服务器呢,他能访问那个我不能访问的网站</li>
+<li>于是我先连上代理服务器,告诉他我需要那个无法访问网站的内容，代理服务器去取回来,然后返回给我。</li>
+<li>客户端必须设置正向代理服务器，当然前提是要知道正向代理服务器的IP地址，还有代理程序的端口。</li>
+<li>例如之前使用过这类软件例如CCproxy，<a href="http://www.ccproxy.com/" target="_blank" rel="noopener">http://www.ccproxy.com/</a> 需要在浏览器中配置代理的地址。</li>
+</ol>
+<h3 id="正向代理的作用"><a href="#正向代理的作用" class="headerlink" title="正向代理的作用"></a>正向代理的作用</h3><ol>
+<li>访问原来无法访问的资源，如google </li>
+<li>可以做缓存，加速访问资源</li>
+<li>对客户端访问授权，上网进行认证</li>
+<li>代理可以记录用户访问记录（上网行为管理），对外隐藏用户信息</li>
+</ol>
+<h3 id="反向代理"><a href="#反向代理" class="headerlink" title="反向代理"></a>反向代理</h3><p><strong><img src="/2020/03/02/nginx%E6%98%AF%E4%BB%80%E4%B9%88/timg4.png" class title="This is an test image"></strong> </p>
+<ol>
+<li><p>反向代理对用户透明，客户端无需任何配置即可访问服务。</p>
+</li>
+<li><p>实际运行方式是指以代理服务器来接受internet上的连接请求，然后将请求转发给内部网络上的服务器。</p>
+</li>
+<li><p>并将从服务器上得到的结果返回给internet上请求连接的客户端，此时代理服务器对外就表现为一个服务器。</p>
+</li>
+</ol>
+<h3 id="反向代理的使用场景"><a href="#反向代理的使用场景" class="headerlink" title="反向代理的使用场景"></a>反向代理的使用场景</h3><p><strong>1. 保证内网的安全，可以使用反向代理提供WAF功能，阻止web攻击</strong></p>
+<p>​        <strong>例：</strong>大型网站，通常将反向代理作为公网访问地址，Web服务器是内网 </p>
+<p><strong><img src="/2020/03/02/nginx%E6%98%AF%E4%BB%80%E4%B9%88/timg3.png" class title="This is an test image"></strong> </p>
+<p><strong>2. 负载均衡，通过反向代理服务器来优化网站的负载</strong></p>
+<p><strong><img src="/2020/03/02/nginx%E6%98%AF%E4%BB%80%E4%B9%88/timg4.png" class title="This is an test image"></strong> </p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>正向代理代理的对象是客户端，为客户端服务 </p>
+<p>反向代理代理的对象是服务端，为服务端服务 </p>
+]]></content>
+      <categories>
+        <category>Linux</category>
+      </categories>
+      <tags>
+        <tag>nginx</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>基于JWT技术及RSA非对称加密实现真正无状态的单点登录</title>
+    <url>/2020/02/23/%E5%9F%BA%E4%BA%8EJWT%E6%8A%80%E6%9C%AF%E5%8F%8ARSA%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86%E5%AE%9E%E7%8E%B0%E7%9C%9F%E6%AD%A3%E6%97%A0%E7%8A%B6%E6%80%81%E7%9A%84%E5%8D%95%E7%82%B9%E7%99%BB%E5%BD%95/</url>
+    <content><![CDATA[<h2 id="什么是JWT"><a href="#什么是JWT" class="headerlink" title="什么是JWT?"></a>什么是JWT?</h2><p>JWT(JSON Web Token) 是一个开放标准(RFC 7519)，它定义了一种紧凑的、自包含的方式，用于作为JSON对象在各方之间安全地传输信息。该信息可以被验证和信任，因为它是数字签名的。 </p><h2 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h2><ul>
+<li>一次性验证：<br> 比如用户注册后需要发一封邮件让其激活账户，通常邮件中需要有一个链接，这个链接需要具备以下的特性：能够标识用户，该链接具有时效性（通常只允许几小时之内激活），不能被篡改以激活其他可能的账户…这种场景就和 jwt 的特性非常贴近，jwt 的 payload 中固定的参数：iss 签发者和 exp 过期时间正是为其做准备的。</li>
+<li>restful api的无状态认证<br> 使用 jwt 来做 restful api 的身份认证也是值得推崇的一种使用方案。客户端和服务端共享 secret；过期时间由服务端校验，客户端定时刷新；签名信息不可被修改。spring security oauth jwt 提供了一套完整的 jwt 认证体系。</li>
+</ul><a id="more"></a>
+
+<h2 id="JWT结构"><a href="#JWT结构" class="headerlink" title="JWT结构"></a>JWT结构</h2><p> JWT由三部分组成，它们之间用圆点(.)连接。这三部分分别是：</p>
+<ul>
+<li><p>Header</p>
+</li>
+<li><p>Payload</p>
+</li>
+<li><p>Signature</p>
+<p>具体示例如下所示：</p>
+</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.TJVA95OrM7E2cBab30RMHrHDcEfxjoYZgeFONFh7HgQ</span><br></pre></td></tr></table></figure>
+
+<h3 id="1、Header"><a href="#1、Header" class="headerlink" title="1、Header"></a>1、Header</h3><p>jwt的头部由两部分信息组成：</p>
+<ul>
+<li>type：声明类型，这里是jwt</li>
+<li>alg：声明加密的算法 通常直接使用 HMAC SHA256</li>
+</ul>
+<p>完整的头部信息如下：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">"type"</span>:<span class="string">"jwt"</span>,</span><br><span class="line">  <span class="string">"alg"</span>:<span class="string">"HS256"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>对头部信息进行Base64编码的得到第一部分的信息</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="2、Payload"><a href="#2、Payload" class="headerlink" title="2、Payload"></a>2、Payload</h3><p>载荷就是存放有效信息的地方,它包含声明（要求）。声明有三种类型：</p>
+<ul>
+<li>registered claims：标准中注册的声明。这里有一组预定义的声明，它们不是强制的，但是推荐</li>
+<li>public claims：公共的声明</li>
+<li>private claims：私有的声明</li>
+</ul>
+<p><strong>标准中注册的声明 (建议但不强制使用) ：</strong></p>
+<ul>
+<li>iss: jwt签发者</li>
+<li>sub: jwt所面向的用户</li>
+<li>aud: 接收jwt的一方</li>
+<li>exp: jwt的过期时间，这个过期时间必须要大于签发时间</li>
+<li>nbf: 定义在什么时间之前，该jwt都是不可用的</li>
+<li>iat: jwt的签发时间</li>
+<li>jti: jwt的唯一身份标识，主要用来作为一次性token,从而回避重放攻击</li>
+</ul>
+<p><strong>公共的声明 ：</strong></p>
+<p>公共的声明可以添加任何的信息，一般添加用户的相关信息或其他业务需要的必要信息.但不建议添加敏感信息，因为该部分在客户端可解密.</p>
+<p><strong>私有的声明 ：</strong></p>
+<p>私有声明是提供者和消费者所共同定义的声明，一般不建议存放敏感信息，因为base64是对称解密的，意味着该部分信息可以归类为明文信息。</p>
+<p>对Payload进行Base64加密就得到了JWT第二部分的内容。</p>
+<h3 id="3、signature"><a href="#3、signature" class="headerlink" title="3、signature"></a>3、signature</h3><p>JWT的第三部分是一个签证信息，这个签证信息由三部分组成：</p>
+<ul>
+<li>header (base64后的)</li>
+<li>payload (base64后的)</li>
+<li>secret</li>
+</ul>
+<p>第三部分需要base64加密后的header和base64加密后的payload使用 <code>.</code> 连接组成的字符串，然后通过header中声明的加密方式进行加盐secret组合加密，然后就构成了JWT的第三部分。</p>
+<p><strong>注意：</strong><br> secret是保存在服务器端的，JWT的签发生成也是在服务器端的，secret就是用来进行JWT的签发和JWT的验证，所以，它就是你服务端的私钥，在任何场景都不应该流露出去。一旦客户端得知这个secret, 那就意味着客户端是可以自我签发JWT了。</p>
+<h2 id="JWT、OAuth2、Session对比"><a href="#JWT、OAuth2、Session对比" class="headerlink" title="JWT、OAuth2、Session对比"></a>JWT、OAuth2、Session对比</h2><h3 id="1、传统的session认证"><a href="#1、传统的session认证" class="headerlink" title="1、传统的session认证"></a>1、传统的session认证</h3><p>http协议本身是一种无状态的协议，而这就意味着如果用户向我们的应用提供了用户名和密码来进行用户认证，那么下一次请求时，用户还要再一次进行用户认证才行，因为根据http协议，我们并不能知道是哪个用户发出的请求，所以为了让我们的应用能识别是哪个用户发出的请求，我们只能在服务器存储一份用户登录的信息，这份登录信息会在响应时传递给浏览器，告诉其保存为cookie,以便下次请求时发送给我们的应用，这样我们的应用就能识别请求来自哪个用户了,这就是传统的基于session认证。</p>
+<p>但是这种基于session的认证使应用本身很难得到扩展，随着不同客户端用户的增加，独立的服务器已无法承载更多的用户，而这时候基于session认证应用的问题就会暴露出来：</p>
+<ul>
+<li>Session: 每个用户经过我们的应用认证之后，我们的应用都要在服务端做一次记录，以方便用户下次请求的鉴别，通常而言session都是保存在内存中，而随着认证用户的增多，服务端的开销会明显增大</li>
+<li>扩展性: 用户认证之后，服务端做认证记录，如果认证的记录被保存在内存中的话，这意味着用户下次请求还必须要请求在这台服务器上,这样才能拿到授权的资源，这样在分布式的应用上，相应的限制了负载均衡器的能力。这也意味着限制了应用的扩展能力</li>
+<li>CSRF: 因为是基于cookie来进行用户识别的, cookie如果被截获，用户就会很容易受到跨站请求伪造的攻击</li>
+</ul>
+<h3 id="2、基于token的鉴权机制"><a href="#2、基于token的鉴权机制" class="headerlink" title="2、基于token的鉴权机制"></a>2、基于token的鉴权机制</h3><p>JWT和OAuth2都是基于token的鉴权机制。基于token的鉴权机制类似于http协议也是无状态的，它不需要在服务端去保留用户的认证信息或者会话信息。这就意味着基于token认证机制的应用不需要去考虑用户在哪一台服务器登录了，这就为应用的扩展提供了便利。</p>
+<p>其基本的流程如下：</p>
+<ol>
+<li>用户使用用户名密码来请求服务器</li>
+<li>服务器进行验证用户的信息</li>
+<li>服务器通过验证发送给用户一个token</li>
+<li>客户端存储token，并在每次请求时附送上这个token值</li>
+<li>服务端验证token值，并返回数据</li>
+</ol>
+<p>这个token必须要在每次请求时传递给服务端，它应该保存在请求头里， 另外，服务端要支持CORS(跨来源资源共享)策略，一般我们在服务端这么做就可以了<code>Access-Control-Allow-Origin: *</code>。</p>
+<h3 id="3、JWT-认证协议与-OAuth2-0-授权框架不恰当比较"><a href="#3、JWT-认证协议与-OAuth2-0-授权框架不恰当比较" class="headerlink" title="3、JWT 认证协议与 OAuth2.0 授权框架不恰当比较"></a>3、JWT 认证协议与 OAuth2.0 授权框架不恰当比较</h3><p>之所以说是不恰当，是因为JWT和OAuth2是完全不通过的概念。既然 JWT 和 OAuth2 没有可比性，为什么还要把这两个放在一起说呢？很多情况下，在讨论OAuth2的实现时，会把JSON Web Token作为一种认证机制使用。这也是为什么他们会经常一起出现。</p>
+<ol>
+<li>JWT 是一种认证协议<br> JWT提供了一种用于发布接入令牌（Access Token),并对发布的签名接入令牌进行验证的方法。 令牌（Token）本身包含了一系列声明，应用程序可以根据这些声明限制用户对资源的访问。</li>
+<li>OAuth2 是一种授权框架<br> OAuth2是一种授权框架，提供了一套详细的授权机制。用户或应用可以通过公开的或私有的设置，授权第三方应用访问特定资源。</li>
+<li>JWT 使用场景<br> JWT 的主要优势在于使用无状态、可扩展的方式处理应用中的用户会话。服务端可以通过内嵌的声明信息，很容易地获取用户的会话信息，而不需要去访问用户或会话的数据库。在一个分布式的面向服务的框架中，这一点非常有用。但是，如果系统中需要使用黑名单实现长期有效的 Token 刷新机制，这种无状态的优势就不明显了。</li>
+</ol>
+<ul>
+<li>优势<ul>
+<li>快速开发</li>
+<li>不需要 Cookie</li>
+<li>JSON 在移动端的广泛应用</li>
+<li>不依赖于社交登录</li>
+<li>相对简单的概念理解</li>
+</ul>
+</li>
+<li>限制<ul>
+<li>Token有长度限制</li>
+<li>Token不能撤销</li>
+<li>需要 Token 有失效时间限制（exp）</li>
+</ul>
+</li>
+</ul>
+<ol>
+<li>OAuth2 使用场景<br> 如果不介意API的使用依赖于外部的第三方认证提供者，你可以简单地把认证工作留给认证服务商去做。也就是常见的，去认证服务商（比如 Facebook）那里注册你的应用，然后设置需要访问的用户信息，比如电子邮箱、姓名等。当用户访问站点的注册页面时，会看到连接到第三方提供商的入口。用户点击以后被重定向到对应的认证服务商网站，获得用户的授权后就可以访问到需要的信息，然后重定向回来。</li>
+</ol>
+<ul>
+<li>优势<ul>
+<li>快速开发</li>
+<li>实施代码量小</li>
+<li>维护工作减少</li>
+<li>可以和 JWT 同时使用</li>
+<li>可针对不同应用扩展</li>
+</ul>
+</li>
+<li>限制<ul>
+<li>框架沉重</li>
+</ul>
+</li>
+</ul>
+<h2 id="实践"><a href="#实践" class="headerlink" title="实践"></a>实践</h2><p> 在web框架Django中的具体应用:</p>
+<p> 安装pyjwt</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">pip install pyjwt</span><br></pre></td></tr></table></figure>
+
+
+
+<p> 用户登录成功后，生成一个token</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> jwt</span><br><span class="line">encoded_jwt = jwt.encode(&#123;<span class="string">'username'</span>:<span class="string">'admin'</span>,<span class="string">'site'</span>:<span class="string">'https://v3u.cn'</span>&#125;,<span class="string">'secret_key'</span>,algorithm=<span class="string">'HS256'</span>)</span><br></pre></td></tr></table></figure>
+
+
+
+<p> 将这个token交给前端，以后前端访问任意接口都将在header里带着这个令牌(token)，用来做认证，然后我们肯定不能每一个视图方法都做验证，所以可以利用装饰器做一个统一用户认证模块 </p>
+ <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#定义验证装饰器</span></span><br><span class="line"><span class="keyword">from</span> django.http <span class="keyword">import</span> JsonResponse</span><br><span class="line"><span class="keyword">import</span> jwt</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">auth_required</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">decorator</span><span class="params">(view_func)</span>:</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">_wrapped_view</span><span class="params">(self,request, *args, **kwargs)</span>:</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">            <span class="keyword">try</span>:</span><br><span class="line">                auth = request.META.get(<span class="string">'HTTP_AUTHORIZATION'</span>).split()</span><br><span class="line">            <span class="keyword">except</span> AttributeError:</span><br><span class="line">                <span class="keyword">return</span> HttpResponse(<span class="string">'没权限'</span>)</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">try</span>:</span><br><span class="line">                dict = jwt.decode(auth[<span class="number">1</span>], settings.SECRET_KEY, algorithms=[<span class="string">'HS256'</span>])</span><br><span class="line">                username = dict.get(<span class="string">'data'</span>).get(<span class="string">'username'</span>)</span><br><span class="line">            <span class="keyword">except</span> jwt.ExpiredSignatureError:</span><br><span class="line">                <span class="keyword">return</span> JsonResponse(&#123;<span class="string">"status_code"</span>: <span class="number">401</span>, <span class="string">"message"</span>: <span class="string">"Token expired"</span>&#125;)</span><br><span class="line">            <span class="keyword">except</span> jwt.InvalidTokenError:</span><br><span class="line">                <span class="keyword">return</span> JsonResponse(&#123;<span class="string">"status_code"</span>: <span class="number">401</span>, <span class="string">"message"</span>: <span class="string">"Invalid token"</span>&#125;)</span><br><span class="line">            <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">                <span class="keyword">return</span> JsonResponse(&#123;<span class="string">"status_code"</span>: <span class="number">401</span>, <span class="string">"message"</span>: <span class="string">"Can not get user object"</span>&#125;)</span><br><span class="line">            <span class="keyword">return</span> view_func(request, *args, **kwargs)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> _wrapped_view</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> decorator</span><br></pre></td></tr></table></figure>
+
+<p>至此，一个简单的jwt用户认证方法就写好了 </p>
+]]></content>
+      <categories>
+        <category>Python</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>用户登录对接QQ、微信、微博等三方登录</title>
+    <url>/2020/02/22/%E7%94%A8%E6%88%B7%E7%99%BB%E5%BD%95%E5%AF%B9%E6%8E%A5QQ%E3%80%81%E5%BE%AE%E4%BF%A1%E3%80%81%E5%BE%AE%E5%8D%9A%E7%AD%89%E4%B8%89%E6%96%B9%E7%99%BB%E5%BD%95/</url>
+    <content><![CDATA[<h2 id="获取第三方账号登录授权"><a href="#获取第三方账号登录授权" class="headerlink" title="获取第三方账号登录授权"></a>获取第三方账号登录授权</h2><p><strong><img src="/2020/02/22/%E7%94%A8%E6%88%B7%E7%99%BB%E5%BD%95%E5%AF%B9%E6%8E%A5QQ%E3%80%81%E5%BE%AE%E4%BF%A1%E3%80%81%E5%BE%AE%E5%8D%9A%E7%AD%89%E4%B8%89%E6%96%B9%E7%99%BB%E5%BD%95/nan.png" class title="登录授权"></strong> </p><p>申请第三方开发平台的账号</p><p>三家开放平台的申请地址：</p><table>
+<thead>
+<tr>
+<th>微博开放平台</th>
+<th><a href="http://open.weibo.com" target="_blank" rel="noopener">http://open.weibo.com</a></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>微信开放平台</td>
+<td><a href="https://open.weixin.qq.com" target="_blank" rel="noopener">https://open.weixin.qq.com</a></td>
+</tr>
+<tr>
+<td>QQ互联平台</td>
+<td><a href="https://connect.qq.com/" target="_blank" rel="noopener">https://connect.qq.com</a></td>
+</tr>
+</tbody></table><h2 id="三方登录流程（以微博登录为例）"><a href="#三方登录流程（以微博登录为例）" class="headerlink" title="三方登录流程（以微博登录为例）"></a>三方登录流程（以微博登录为例）</h2><a id="more"></a>
+
+
+
+<p>开发文档：<a href="https://open.weibo.com/wiki/%E6%8E%88%E6%9D%83%E6%9C%BA%E5%88%B6" target="_blank" rel="noopener">https://open.weibo.com/wiki/%E6%8E%88%E6%9D%83%E6%9C%BA%E5%88%B6</a> </p>
+<h3 id="1）前端获取认证code"><a href="#1）前端获取认证code" class="headerlink" title="1）前端获取认证code"></a>1）前端获取认证code</h3><figure class="highlight html"><table><tr><td class="code"><pre><span class="line">1. 在Vue页面加载时动态发送请求获取微博授权url</span><br><span class="line">2. django收到请求的url后，通过微博应用ID(client_id)和回调地址(redirect_uri)动态生成授权url返回给Vue</span><br><span class="line">3. 当用户点击上面的url进行扫码，授权成功会跳转我们的回调界面并附加code参数</span><br><span class="line">4. Vue获取到微博返回的code后，会将code发送给django后端(上面的redirect_uri)</span><br></pre></td></tr></table></figure>
+
+<p>微博登录标识的地址如下： </p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">https://api.weibo.com/oauth2/authorize?client_id=YOUR_CLIENT_ID&amp;response_type=code&amp;redirect_uri=YOUR_REGISTERED_REDIRECT_URI</span><br></pre></td></tr></table></figure>
+
+<p>参数</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>必选</th>
+<th>类型及范围</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>client_id</td>
+<td>true</td>
+<td>string</td>
+<td>申请应用时分配的AppKey。</td>
+</tr>
+<tr>
+<td>redirect_uri</td>
+<td>true</td>
+<td>string</td>
+<td>授权回调地址，站外应用需与设置的回调地址一致，站内应用需填写canvas page的地址。</td>
+</tr>
+<tr>
+<td>response_type</td>
+<td>false</td>
+<td>string</td>
+<td>code</td>
+</tr>
+</tbody></table>
+<p> 返回值</p>
+<table>
+<thead>
+<tr>
+<th>返回值字段</th>
+<th>字段类型</th>
+<th>字段说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>code</td>
+<td>string</td>
+<td>用于第二步调用oauth2/access_token接口，获取授权后的access token。</td>
+</tr>
+<tr>
+<td>state</td>
+<td>string</td>
+<td>如果传递参数，会回传该参数。</td>
+</tr>
+</tbody></table>
+<h3 id="2）获取微博access-token"><a href="#2）获取微博access-token" class="headerlink" title="2）获取微博access_token"></a>2）获取微博access_token</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">后端获取code后，结合client_id、client_secret、redirect_uri参数进行传递,获取微博access_token</span><br></pre></td></tr></table></figure>
+
+<p>请求地址：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">https://api.weibo.com/oauth2/access_token?client_id=YOUR_CLIENT_ID&amp;client_secret=YOUR_CLIENT_SECRET&amp;grant_type=authorization_code&amp;redirect_uri=YOUR_REGISTERED_REDIRECT_URI&amp;code=CODE</span><br></pre></td></tr></table></figure>
+
+<p>请求方式：</p>
+<p>POST</p>
+<p>请求参数：</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>必选</th>
+<th>类型及范围</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>client_id</td>
+<td>true</td>
+<td>string</td>
+<td>申请应用时分配的AppKey。</td>
+</tr>
+<tr>
+<td>client_secret</td>
+<td>true</td>
+<td>string</td>
+<td>申请应用时分配的AppSecret。</td>
+</tr>
+<tr>
+<td>grant_type</td>
+<td>true</td>
+<td>string</td>
+<td>请求的类型，填写authorization_code</td>
+</tr>
+<tr>
+<td>code</td>
+<td>ture</td>
+<td>string</td>
+<td>调用authorize获得的code值。</td>
+</tr>
+<tr>
+<td>rediect_url</td>
+<td>ture</td>
+<td>string</td>
+<td>回调地址，需需与注册应用里的回调地址一致。</td>
+</tr>
+</tbody></table>
+<p>返回值</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;access_token&quot;: &quot;SlAV32hkKG&quot;,</span><br><span class="line">    &quot;remind_in&quot;: 3600,</span><br><span class="line">    &quot;expires_in&quot;: 3600,</span><br><span class="line">    &quot;uid&quot;:1887188234</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="3-获取微博用户基本信息并保存到数据库"><a href="#3-获取微博用户基本信息并保存到数据库" class="headerlink" title="3)获取微博用户基本信息并保存到数据库"></a>3)获取微博用户基本信息并保存到数据库</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">使用获得的access_token调用获取用户基本信息的接口，获取用户第三方平台的基本信息</span><br><span class="line">用户基本信息保存到数据库，然后关联本地用户，然后将用户信息返回给前端</span><br></pre></td></tr></table></figure>
+
+<h3 id="4）生成token给vue"><a href="#4）生成token给vue" class="headerlink" title="4）生成token给vue"></a>4）生成token给vue</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">django后端借助微博认证成功后，可以使用JWT生成token，返回给Vue</span><br><span class="line">Vue将token存储到localStorage中，以便用户访问其他页面进行身份验证</span><br></pre></td></tr></table></figure>
+
+<h3 id="5）也可以获取用户的全部信息"><a href="#5）也可以获取用户的全部信息" class="headerlink" title="5）也可以获取用户的全部信息"></a>5）也可以获取用户的全部信息</h3><p>获取用户信息API：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">https://api.weibo.com/2/users/show.json</span><br></pre></td></tr></table></figure>
+
+
+
+<p>请求参数:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>必选</th>
+<th>类型及范围</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>access_token</td>
+<td>true</td>
+<td>string</td>
+<td>采用OAuth授权方式为必填参数，OAuth授权后获得。</td>
+</tr>
+<tr>
+<td>uid</td>
+<td>false</td>
+<td>int64</td>
+<td>需要查询的用户ID。</td>
+</tr>
+<tr>
+<td>screen_name</td>
+<td>false</td>
+<td>string</td>
+<td>需要查询的用户昵称。</td>
+</tr>
+</tbody></table>
+<p> 参数uid与screen_name二者必选其一，且只能选其一；</p>
+<p>返回示例：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;id&quot;: 1404376560,</span><br><span class="line">    &quot;screen_name&quot;: &quot;zaku&quot;,</span><br><span class="line">    &quot;name&quot;: &quot;zaku&quot;,</span><br><span class="line">    &quot;province&quot;: &quot;11&quot;,</span><br><span class="line">    &quot;city&quot;: &quot;5&quot;,</span><br><span class="line">    &quot;location&quot;: &quot;北京 朝阳区&quot;,</span><br><span class="line">    &quot;description&quot;: &quot;人生五十年，乃如梦如幻；有生斯有死，壮士复何憾。&quot;,</span><br><span class="line">    &quot;url&quot;: &quot;http://blog.sina.com.cn/zaku&quot;,</span><br><span class="line">    &quot;profile_image_url&quot;: &quot;http://tp1.sinaimg.cn/1404376560/50/0/1&quot;,</span><br><span class="line">    &quot;domain&quot;: &quot;zaku&quot;,</span><br><span class="line">    &quot;gender&quot;: &quot;m&quot;,</span><br><span class="line">    &quot;followers_count&quot;: 1204,</span><br><span class="line">    &quot;friends_count&quot;: 447,</span><br><span class="line">    &quot;statuses_count&quot;: 2908,</span><br><span class="line">    &quot;favourites_count&quot;: 0,</span><br><span class="line">    &quot;created_at&quot;: &quot;Fri Aug 28 00:00:00 +0800 2009&quot;,</span><br><span class="line">    &quot;following&quot;: false,</span><br><span class="line">    &quot;allow_all_act_msg&quot;: false,</span><br><span class="line">    &quot;geo_enabled&quot;: true,</span><br><span class="line">    &quot;verified&quot;: false,</span><br><span class="line">    &quot;status&quot;: &#123;</span><br><span class="line">        &quot;created_at&quot;: &quot;Tue May 24 18:04:53 +0800 2011&quot;,</span><br><span class="line">        &quot;id&quot;: 11142488790,</span><br><span class="line">        &quot;text&quot;: &quot;我的相机到了。&quot;,</span><br><span class="line">        &quot;source&quot;: &quot;&lt;a href=&quot;http://weibo.com&quot; rel=&quot;nofollow&quot;&gt;新浪微博&lt;/a&gt;&quot;,</span><br><span class="line">        &quot;favorited&quot;: false,</span><br><span class="line">        &quot;truncated&quot;: false,</span><br><span class="line">        &quot;in_reply_to_status_id&quot;: &quot;&quot;,</span><br><span class="line">        &quot;in_reply_to_user_id&quot;: &quot;&quot;,</span><br><span class="line">        &quot;in_reply_to_screen_name&quot;: &quot;&quot;,</span><br><span class="line">        &quot;geo&quot;: null,</span><br><span class="line">        &quot;mid&quot;: &quot;5610221544300749636&quot;,</span><br><span class="line">        &quot;annotations&quot;: [],</span><br><span class="line">        &quot;reposts_count&quot;: 5,</span><br><span class="line">        &quot;comments_count&quot;: 8</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;allow_all_comment&quot;: true,</span><br><span class="line">    &quot;avatar_large&quot;: &quot;http://tp1.sinaimg.cn/1404376560/180/0/1&quot;,</span><br><span class="line">    &quot;verified_reason&quot;: &quot;&quot;,</span><br><span class="line">    &quot;follow_me&quot;: false,</span><br><span class="line">    &quot;online_status&quot;: 0,</span><br><span class="line">    &quot;bi_followers_count&quot;: 215</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">返回值：</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>返回值字段</th>
+<th>字段类型</th>
+<th>字段说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>int64</td>
+<td>用户UID</td>
+</tr>
+<tr>
+<td>idstr</td>
+<td>string</td>
+<td>字符串型的用户UID</td>
+</tr>
+<tr>
+<td>screen_name</td>
+<td>string</td>
+<td>用户昵称</td>
+</tr>
+<tr>
+<td>name</td>
+<td>string</td>
+<td>友好显示名称</td>
+</tr>
+<tr>
+<td>province</td>
+<td>int</td>
+<td>用户所在省级ID</td>
+</tr>
+<tr>
+<td>city</td>
+<td>int</td>
+<td>用户所在城市ID</td>
+</tr>
+<tr>
+<td>location</td>
+<td>string</td>
+<td>用户所在地</td>
+</tr>
+<tr>
+<td>description</td>
+<td>string</td>
+<td>用户个人描述</td>
+</tr>
+<tr>
+<td>url</td>
+<td>string</td>
+<td>用户博客地址</td>
+</tr>
+<tr>
+<td>profile_image_url</td>
+<td>string</td>
+<td>用户头像地址（中图），50×50像素</td>
+</tr>
+<tr>
+<td>profile_url</td>
+<td>string</td>
+<td>用户的微博统一URL地址</td>
+</tr>
+<tr>
+<td>domain</td>
+<td>string</td>
+<td>用户的个性化域名</td>
+</tr>
+<tr>
+<td>weihao</td>
+<td>string</td>
+<td>用户的微号</td>
+</tr>
+<tr>
+<td>gender</td>
+<td>string</td>
+<td>性别，m：男、f：女、n：未知</td>
+</tr>
+<tr>
+<td>followers_count</td>
+<td>int</td>
+<td>粉丝数</td>
+</tr>
+<tr>
+<td>friends_count</td>
+<td>int</td>
+<td>关注数</td>
+</tr>
+<tr>
+<td>statuses_count</td>
+<td>int</td>
+<td>微博数</td>
+</tr>
+<tr>
+<td>favourites_count</td>
+<td>int</td>
+<td>收藏数</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>string</td>
+<td>用户创建（注册）时间</td>
+</tr>
+<tr>
+<td>following</td>
+<td>boolean</td>
+<td>暂未支持</td>
+</tr>
+<tr>
+<td>allow_all_act_msg</td>
+<td>boolean</td>
+<td>是否允许所有人给我发私信，true：是，false：否</td>
+</tr>
+<tr>
+<td>geo_enabled</td>
+<td>boolean</td>
+<td>是否允许标识用户的地理位置，true：是，false：否</td>
+</tr>
+<tr>
+<td>verified</td>
+<td>boolean</td>
+<td>是否是微博认证用户，即加V用户，true：是，false：否</td>
+</tr>
+<tr>
+<td>verified_type</td>
+<td>int</td>
+<td>暂未支持</td>
+</tr>
+<tr>
+<td>remark</td>
+<td>string</td>
+<td>用户备注信息，只有在查询用户关系时才返回此字段</td>
+</tr>
+<tr>
+<td>status</td>
+<td>object</td>
+<td>用户的最近一条微博信息字段 <a href="http://open.weibo.com/wiki/%E5%B8%B8%E8%A7%81%E8%BF%94%E5%9B%9E%E5%AF%B9%E8%B1%A1%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84#.E5.BE.AE.E5.8D.9A.EF.BC.88status.EF.BC.89" target="_blank" rel="noopener">详细</a></td>
+</tr>
+<tr>
+<td>allow_all_comment</td>
+<td>boolean</td>
+<td>是否允许所有人对我的微博进行评论，true：是，false：否</td>
+</tr>
+<tr>
+<td>avatar_large</td>
+<td>string</td>
+<td>用户头像地址（大图），180×180像素</td>
+</tr>
+<tr>
+<td>avatar_hd</td>
+<td>string</td>
+<td>用户头像地址（高清），高清头像原图</td>
+</tr>
+<tr>
+<td>verified_reason</td>
+<td>string</td>
+<td>认证原因</td>
+</tr>
+<tr>
+<td>follow_me</td>
+<td>boolean</td>
+<td>该用户是否关注当前登录用户，true：是，false：否</td>
+</tr>
+<tr>
+<td>online_status</td>
+<td>int</td>
+<td>用户的在线状态，0：不在线、1：在线</td>
+</tr>
+<tr>
+<td>bi_followers_count</td>
+<td>int</td>
+<td>用户的互粉数</td>
+</tr>
+<tr>
+<td>lang</td>
+<td>string</td>
+<td>用户当前的语言版本，zh-cn：简体中文，zh-tw：繁体中文，en：英语</td>
+</tr>
+</tbody></table>
+<h2 id="其实像微信登陆、QQ登陆的原理都一样，都是："><a href="#其实像微信登陆、QQ登陆的原理都一样，都是：" class="headerlink" title="其实像微信登陆、QQ登陆的原理都一样，都是："></a>其实像微信登陆、QQ登陆的原理都一样，都是：</h2><p>1、获取用户授权，取得code</p>
+<p>2、将code发送到授权服务器获取Access Token</p>
+<p>3、通过Access Token调取API接口获取用户信息</p>
+<h2 id="第三方账号绑定流程"><a href="#第三方账号绑定流程" class="headerlink" title="第三方账号绑定流程"></a>第三方账号绑定流程</h2><h3 id="a-未登录"><a href="#a-未登录" class="headerlink" title="a)    未登录"></a>a)    未登录</h3><p><strong><img src="/2020/02/22/%E7%94%A8%E6%88%B7%E7%99%BB%E5%BD%95%E5%AF%B9%E6%8E%A5QQ%E3%80%81%E5%BE%AE%E4%BF%A1%E3%80%81%E5%BE%AE%E5%8D%9A%E7%AD%89%E4%B8%89%E6%96%B9%E7%99%BB%E5%BD%95/150061410519672646.png" class title="三方登录流程"></strong> </p>
+<p>用户在登录界面点击第三方账号，授权通过后，我们获得用户第三方账号的OpenID，由此判断用户的第三方账号之前是否绑定过，如果绑定过则直接登录成功。</p>
+<p>如果没有绑定过，则跳到账号绑定页面。账号绑定页面需要分成已有账号直接绑定，和没有账号，新注册账号进行绑定两种情况。</p>
+<p>当用户已有账号时，通过输入账号密码校验身份，校验通过后即可绑定成功/登录成功。</p>
+<p>当用户没有账号时，用户可通过注册新账号，注册成功后即可绑定成功/登录成功。</p>
+<h3 id="b-登录状态"><a href="#b-登录状态" class="headerlink" title="b)    登录状态"></a>b)    登录状态</h3><p>在个人账号中心里提供绑定管理的功能和界面，在用户已经登录的情况下，可以直接绑定第三方账号，只要获得授权通过，即可绑定成功。 </p>
+<h3 id="c-解绑流程"><a href="#c-解绑流程" class="headerlink" title="c)    解绑流程"></a>c)    解绑流程</h3><p><strong><img src="/2020/02/22/%E7%94%A8%E6%88%B7%E7%99%BB%E5%BD%95%E5%AF%B9%E6%8E%A5QQ%E3%80%81%E5%BE%AE%E4%BF%A1%E3%80%81%E5%BE%AE%E5%8D%9A%E7%AD%89%E4%B8%89%E6%96%B9%E7%99%BB%E5%BD%95/150061415069006935.png" class title="解绑流程"></strong> </p>
+<p>在个人账号中心&gt;绑定管理中，可以对已经绑定的第三方账号进行解绑操作。在这里需要注意，由于用户长期使用第三方账号登录，实际上是由第三方账号承担了提交账号和保护账号安全的工作，因此在解绑第三方账号时，我们需要提醒用户，解绑以后只能通过本平台账号密码方式来登录。最好是提示用户记住当前账号 </p>
+]]></content>
+      <categories>
+        <category>Web</category>
+      </categories>
+      <tags>
+        <tag>Web</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>websocket</title>
+    <url>/2020/02/22/websocket/</url>
+    <content><![CDATA[<h3 id="websocket是什么？"><a href="#websocket是什么？" class="headerlink" title="websocket是什么？"></a>websocket是什么？</h3><p>webSocket是一种在单个TCP连接上进行全双工通信的协议 </p><p>webSocket使得客户端和服务器之间的数据交换变得更加简单，允许服务端主动向客户端推送数据。在WebSocket API中，浏览器和服务器只需要完成一次握手，两者之间就直接可以创建持久性的连接，并进行双向数据传输 </p><a id="more"></a>
+
+<h3 id="websocket与http的区别"><a href="#websocket与http的区别" class="headerlink" title="websocket与http的区别"></a>websocket与http的区别</h3><ul>
+<li>http请求建立连接只能发送一次请求,不能有服务器端主动向客户端发送请求</li>
+<li>websocket建立的长连接，一次连接，后续一直通信，这样节省资源，可以有客户端发送请求给服务器端</li>
+</ul>
+<h3 id="远古时期的解决方案"><a href="#远古时期的解决方案" class="headerlink" title="远古时期的解决方案"></a>远古时期的解决方案</h3><p>现在，很多网站为了实现推送技术，所用的技术都是轮询。轮询是在特定的的时间间隔（如每1秒），由浏览器对服务器发出HTTP请求，然后由服务器返回最新的数据给客户端的浏览器。这种传统的模式带来很明显的缺点，即浏览器需要不断的向服务器发出请求，然而HTTP请求可能包含较长的头部，其中真正有效的数据可能只是很小的一部分，显然这样会浪费很多的带宽等资源。<br>而比较新的技术去做轮询的效果是Comet。这种技术虽然可以双向通信，但依然需要反复发出请求。而且在Comet中，普遍采用的长链接，也会消耗服务器资源。</p>
+<p>在这种情况下，HTML5定义了WebSocket协议，能更好的节省服务器资源和带宽，并且能够更实时地进行通讯</p>
+<p>轮询是几个意思？</p>
+<p>轮询是最原始的实现实时Web应用的解决方案。轮询技术要求客户端以设定的时间间隔周期性地向服务端发送请求，频繁地查询是否有新的数据改动。明显地，这种方法会导致过多不必要的请求，浪费流量和服务器资源。总之就是一种low到爆炸的原始作坊水平的技术。</p>
+<h3 id="websocket的应用场景"><a href="#websocket的应用场景" class="headerlink" title="websocket的应用场景"></a>websocket的应用场景</h3><ul>
+<li><strong>聊天软件：</strong>最著名的就是微信，QQ，这一类社交聊天的app</li>
+<li><strong>弹幕：</strong>各种直播的弹幕窗口</li>
+<li><strong>在线教育：</strong>可以视频聊天、即时聊天以及其与别人合作一起在网上讨论问题…</li>
+</ul>
+<h3 id="websocket的原理"><a href="#websocket的原理" class="headerlink" title="websocket的原理"></a>websocket的原理</h3><ul>
+<li>websocket首先借助http协议（通过在http头部设置属性，请求和服务器进行协议升级，升级协议为websocket的应用层协议）</li>
+<li>建立好和服务器之间的数据流，数据流之间底层还是依靠TCP协议；</li>
+<li>websocket会接着使用这条建立好的数据流和服务器之间保持通信；</li>
+<li>由于复杂的网络环境，数据流可能会断开，在实际使用过程中，我们在onFailure或者onClosing回调方法中，实现重连</li>
+</ul>
+<h3 id="websocket的心跳包"><a href="#websocket的心跳包" class="headerlink" title="websocket的心跳包"></a>websocket的心跳包</h3><h3 id="websocket的实现"><a href="#websocket的实现" class="headerlink" title="websocket的实现"></a>websocket的实现</h3><p>本文通过基于dwebsocket库来将socket嵌入到django服务中，使其服务兼具http协议和socket协议，能够达到实时前后端通信，后端主动推送等功能</p>
+<p>安装dwebsocket库</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pip install -i https://pypi.tuna.tsinghua.edu.cn/simple dwebsocket</span><br></pre></td></tr></table></figure>
+
+<p>定义视图文件的逻辑views.py</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#导入websocket装饰器</span></span><br><span class="line"><span class="keyword">from</span> dwebsocket.decorators <span class="keyword">import</span> accept_websocket</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">#接收前端信息</span></span><br><span class="line"><span class="meta">@accept_websocket</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test_socket</span><span class="params">(request)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> request.is_websocket():</span><br><span class="line">        <span class="keyword">for</span> message <span class="keyword">in</span> request.websocket:</span><br><span class="line">            c=str(message,encoding=<span class="string">'utf-8'</span>)</span><br><span class="line">            print(c)</span><br><span class="line">            request.websocket.send(message)</span><br><span class="line"></span><br><span class="line"><span class="comment">#主动推送消息</span></span><br><span class="line"><span class="meta">@accept_websocket</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test_websocket</span><span class="params">(request)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> request.is_websocket():</span><br><span class="line">        <span class="keyword">while</span> <span class="number">1</span>:</span><br><span class="line">            time.sleep(<span class="number">1</span>) <span class="comment">## 向前端发送时间</span></span><br><span class="line">            dit = &#123;</span><br><span class="line">                <span class="string">'time'</span>:time.strftime(<span class="string">'%Y.%m.%d %H:%M:%S'</span>,time.localtime(time.time()))</span><br><span class="line">            &#125;</span><br><span class="line">            request.websocket.send(json.dumps(dit))</span><br></pre></td></tr></table></figure>
+
+<p>路由配置urls.py</p>
+<figure class="highlight django"><table><tr><td class="code"><pre><span class="line"><span class="xml">#websocket</span></span><br><span class="line"><span class="xml">path('socket_test',TemplateView.as_view(template_name='md_admin/socket.html')),</span></span><br><span class="line"><span class="xml">path('websocket_test',TemplateView.as_view(template_name='md_admin/socket_push.html')),</span></span><br><span class="line"><span class="xml">path('test_socket',test_socket),</span></span><br><span class="line"><span class="xml">path('test_websocket',test_websocket),</span></span><br></pre></td></tr></table></figure>
+
+<p>定义前端发送消息的页面 socket.html</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"utf-8"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Chat Room<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">id</span>=<span class="string">"chat-message-input"</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">size</span>=<span class="string">"100"</span>/&gt;</span><span class="tag">&lt;<span class="name">br</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">id</span>=<span class="string">"chat-message-submit"</span> <span class="attr">type</span>=<span class="string">"button"</span> <span class="attr">value</span>=<span class="string">"Send"</span> <span class="attr">onclick</span>=<span class="string">'sendmessage()'</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line">   </span><br><span class="line"><span class="actionscript">   <span class="comment">//生成socket对象</span></span></span><br><span class="line"><span class="javascript">   <span class="keyword">var</span> socket = <span class="keyword">new</span> WebSocket(<span class="string">"ws:"</span> + <span class="built_in">window</span>.location.host + <span class="string">"/md_admin/test_socket"</span>);</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="actionscript">            socket.onopen = <span class="function"><span class="keyword">function</span> <span class="params">()</span> </span>&#123;</span></span><br><span class="line"><span class="javascript">                <span class="built_in">console</span>.log(<span class="string">'WebSocket open'</span>);<span class="comment">//成功连接上Websocket</span></span></span><br><span class="line">            &#125;;</span><br><span class="line"><span class="actionscript">            socket.onmessage = <span class="function"><span class="keyword">function</span> <span class="params">(e)</span> </span>&#123;</span></span><br><span class="line"><span class="javascript">                <span class="built_in">console</span>.log(<span class="string">'message: '</span> + e.data);<span class="comment">//打印服务端返回的数据</span></span></span><br><span class="line">            &#125;;</span><br><span class="line"><span class="actionscript">            socket.onclose=<span class="function"><span class="keyword">function</span><span class="params">(e)</span></span>&#123;</span></span><br><span class="line"><span class="javascript">              <span class="built_in">console</span>.log(e);</span></span><br><span class="line"><span class="actionscript">              socket.close(); <span class="comment">//关闭TCP连接</span></span></span><br><span class="line">            &#125;;</span><br><span class="line">            if (socket.readyState == WebSocket.OPEN)&#123;</span><br><span class="line">            socket.onopen();</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line"><span class="javascript">            <span class="built_in">window</span>.s = socket;</span></span><br><span class="line"></span><br><span class="line"><span class="actionscript"><span class="function"><span class="keyword">function</span> <span class="title">sendmessage</span><span class="params">()</span></span>&#123;</span></span><br><span class="line"></span><br><span class="line"><span class="javascript">    <span class="built_in">window</span>.s.send(<span class="built_in">document</span>.getElementById(<span class="string">"chat-message-input"</span>).value);</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">    </span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>然后再定义一个页面，测试后台的主动推送socket_push.html</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"utf-8"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Chat Room<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line">   </span><br><span class="line"><span class="actionscript">   <span class="comment">//生成socket对象</span></span></span><br><span class="line"><span class="javascript">   <span class="keyword">var</span> socket = <span class="keyword">new</span> WebSocket(<span class="string">"ws:"</span> + <span class="built_in">window</span>.location.host + <span class="string">"/md_admin/test_websocket"</span>);</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="actionscript">            socket.onopen = <span class="function"><span class="keyword">function</span> <span class="params">()</span> </span>&#123;</span></span><br><span class="line"><span class="javascript">                <span class="built_in">console</span>.log(<span class="string">'WebSocket open'</span>);<span class="comment">//成功连接上Websocket</span></span></span><br><span class="line">            &#125;;</span><br><span class="line"><span class="actionscript">            socket.onmessage = <span class="function"><span class="keyword">function</span> <span class="params">(e)</span> </span>&#123;</span></span><br><span class="line"><span class="javascript">                <span class="built_in">console</span>.log(<span class="string">'message: '</span> + e.data);<span class="comment">//打印服务端返回的数据</span></span></span><br><span class="line">            &#125;;</span><br><span class="line"><span class="actionscript">            socket.onclose=<span class="function"><span class="keyword">function</span><span class="params">(e)</span></span>&#123;</span></span><br><span class="line"><span class="javascript">              <span class="built_in">console</span>.log(e);</span></span><br><span class="line"><span class="actionscript">              socket.close(); <span class="comment">//关闭TCP连接</span></span></span><br><span class="line">            &#125;;</span><br><span class="line">            if (socket.readyState == WebSocket.OPEN)&#123;</span><br><span class="line">            socket.onopen();</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">   </span><br><span class="line"></span><br><span class="line">    </span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>可以看到，前后端无论是前端发送消息，还是后端主动推送消息，全部基于websocket，实现了真正意义上的实时通信</p>
+]]></content>
+      <categories>
+        <category>Python</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>DRF框架提供标准RESTful API接口</title>
+    <url>/2020/02/22/DRF%E6%A1%86%E6%9E%B6%E6%8F%90%E4%BE%9B%E6%A0%87%E5%87%86RESTfulAPI%E6%8E%A5%E5%8F%A3/</url>
+    <content><![CDATA[<h2 id="一、什么是RESTful"><a href="#一、什么是RESTful" class="headerlink" title="一、什么是RESTful"></a>一、什么是RESTful</h2><p>RESTful不是一种技术，而是一种接口规范，主要规范包括：1.请求方式、2.状态码、3、url规范、4、传参规范</p><ul>
+<li>请求方式method<ul>
+<li>GET      ：从服务器取出资源（一项或多项）</li>
+<li>POST    ：在服务器新建一个资源</li>
+<li>PUT      ：在服务器更新资源（客户端提供改变后的完整资源）</li>
+<li>PATCH  ：在服务器更新资源（客户端提供改变的属性）</li>
+<li>DELETE ：从服务器删除资源</li>
+</ul>
+</li>
+<li><strong>状态码</strong></li>
+</ul><a id="more"></a>
+
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="string">'''1. 2XX请求成功'''</span></span><br><span class="line"><span class="comment"># 200 请求成功，一般用于GET与POST请求</span></span><br><span class="line"><span class="comment"># 201 Created - [POST/PUT/PATCH]：用户新建或修改数据成功。</span></span><br><span class="line"><span class="comment"># 202 Accepted - [*]：表示一个请求已经进入后台排队（异步任务）</span></span><br><span class="line"><span class="comment"># 204 NO CONTENT - [DELETE]：用户删除数据成功。</span></span><br><span class="line"><span class="string">'''2. 3XX重定向'''</span></span><br><span class="line"><span class="comment"># 301 NO CONTENT - 永久重定向</span></span><br><span class="line"><span class="comment"># 302 NO CONTENT - 临时重定向</span></span><br><span class="line"><span class="string">'''3. 4XX客户端错误'''</span></span><br><span class="line"><span class="comment"># 400 INVALID REQUEST - [POST/PUT/PATCH]：用户发出的请求有错误。</span></span><br><span class="line"><span class="comment"># 401 Unauthorized - [*]：表示用户没有权限（令牌、用户名、密码错误）。</span></span><br><span class="line"><span class="comment"># 403 Forbidden - [*] 表示用户得到授权（与401错误相对），但是访问是被禁止的。</span></span><br><span class="line"><span class="comment"># 404 NOT FOUND - [*]：用户发出的请求针对的是不存在的记录。</span></span><br><span class="line"><span class="comment"># 406 Not Acceptable - [GET]：用户请求的格式不可得（比如用户请求JSON格式，但是只有XML格式）。</span></span><br><span class="line"><span class="comment"># 410 Gone -[GET]：用户请求的资源被永久删除，且不会再得到的。</span></span><br><span class="line"><span class="comment"># 422 Unprocesable entity - [POST/PUT/PATCH] 当创建一个对象时，发生一个验证错误。</span></span><br><span class="line"><span class="string">'''4. 5XX服务端错误'''</span></span><br><span class="line"><span class="comment"># 500 INTERNAL SERVER ERROR - [*]：服务器内部错误，无法完成请求</span></span><br><span class="line"><span class="comment"># 501 Not Implemented     服务器不支持请求的功能，无法完成请求</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>面向资源编程： 路径，视网络上任何东西都是资源，均使用名词表示（可复数）<ul>
+<li>所有请求实际操作的都是数据库中的表，每一个表当做一个资源</li>
+<li>资源是一个名称，所以RESTful规范中URL只能有名称或名词的复数形式</li>
+</ul>
+</li>
+</ul>
+<h2 id="二、django的DRF"><a href="#二、django的DRF" class="headerlink" title="二、django的DRF"></a>二、django的DRF</h2><h3 id="1、认证和权限"><a href="#1、认证和权限" class="headerlink" title="1、认证和权限"></a>1、认证和权限</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserInfoViewSet</span><span class="params">(APIView)</span>:</span></span><br><span class="line">    authentication_classes = [authentication.IsAuthenticated,]  <span class="comment"># 用户认证模块</span></span><br><span class="line">    permission_classes = (authentication.IsOwnerOrReadOnly,)    <span class="comment"># 用户授权模块</span></span><br></pre></td></tr></table></figure>
+
+<p>urls.py：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> django.contrib <span class="keyword">import</span> admin</span><br><span class="line"><span class="keyword">from</span> django.urls <span class="keyword">import</span> path,re_path,include</span><br><span class="line"></span><br><span class="line">urlpatterns = [</span><br><span class="line">    path(<span class="string">'admin/'</span>, admin.site.urls),</span><br><span class="line">    re_path(<span class="string">r'users/'</span>,include((<span class="string">'users.urls'</span>, <span class="string">'users'</span>), namespace=<span class="string">'users'</span>))</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<p>users/urls.py：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> django.urls <span class="keyword">import</span> path,re_path,include</span><br><span class="line"><span class="keyword">from</span> users <span class="keyword">import</span> views</span><br><span class="line"></span><br><span class="line">urlpatterns = [</span><br><span class="line">    re_path(<span class="string">r'info'</span>, views.UserInfoViewSet.as_view(), name=<span class="string">'user'</span>),</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<p>users/views.py：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> rest_framework.views <span class="keyword">import</span> APIView</span><br><span class="line"><span class="keyword">from</span> django.http <span class="keyword">import</span> JsonResponse</span><br><span class="line"><span class="keyword">from</span> common.auth <span class="keyword">import</span> authentication</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserInfoViewSet</span><span class="params">(APIView)</span>:</span></span><br><span class="line">    authentication_classes = [authentication.IsAuthenticated,]</span><br><span class="line">    permission_classes = (authentication.IsOwnerOrReadOnly,)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        super(UserInfoViewSet, self).__init__()</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get</span><span class="params">(self, request, *args, **kwargs)</span>:</span></span><br><span class="line">        result = &#123;</span><br><span class="line">            <span class="string">'status'</span>: <span class="literal">True</span>,</span><br><span class="line">            <span class="string">'data'</span>: <span class="string">'response data'</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> JsonResponse(result, status=<span class="number">200</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">post</span><span class="params">(self, request, *args, **kwargs)</span>:</span></span><br><span class="line">        result = &#123;</span><br><span class="line">            <span class="string">'status'</span>: <span class="literal">True</span>,</span><br><span class="line">            <span class="string">'data'</span>: <span class="string">'response data'</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> JsonResponse(result, status=<span class="number">200</span>)</span><br></pre></td></tr></table></figure>
+
+<p>comm\auth\authentiication.py：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> rest_framework <span class="keyword">import</span> authentication</span><br><span class="line"><span class="keyword">from</span> rest_framework <span class="keyword">import</span> exceptions</span><br><span class="line"><span class="keyword">from</span> rest_framework <span class="keyword">import</span> permissions</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">IsOwnerOrReadOnly</span><span class="params">(permissions.BasePermission)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">has_permission</span><span class="params">(self, request, view)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> <span class="literal">False</span>:  <span class="comment"># 这里暂且不进行权限验证</span></span><br><span class="line">            <span class="keyword">raise</span> exceptions.ParseError(<span class="string">'您没有操作的权限'</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">IsAuthenticated</span><span class="params">(authentication.BaseAuthentication)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">authenticate</span><span class="params">(self, request)</span>:</span></span><br><span class="line">        auth = request.META.get(<span class="string">'HTTP_AUTHORIZATION'</span>, <span class="literal">None</span>)  <span class="comment"># 获取 header中的 Authorization</span></span><br><span class="line">        <span class="keyword">if</span> auth <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">            <span class="keyword">raise</span> exceptions.NotAuthenticated()</span><br><span class="line"></span><br><span class="line">        <span class="string">'''这里应该是验证token是否合法逻辑'''</span></span><br><span class="line">        <span class="comment"># token = Token.objects.filter(key=auth)</span></span><br><span class="line">        <span class="comment"># try:</span></span><br><span class="line">        <span class="comment">#     request.user = token[0].user</span></span><br><span class="line">        <span class="comment"># except IndexError:</span></span><br><span class="line">        <span class="comment">#     raise exceptions.NotAuthenticated('Invalid input Authenticated')</span></span><br><span class="line">        <span class="keyword">return</span> (request, <span class="literal">None</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">authenticate_header</span><span class="params">(self, request)</span>:</span></span><br><span class="line">        msg = <span class="string">'Invalid token.Please get token first'</span></span><br><span class="line">        <span class="keyword">return</span> exceptions.NotAuthenticated(msg)</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="2、序列化"><a href="#2、序列化" class="headerlink" title="2、序列化"></a>2、序列化</h3><p>users/model.py：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> django.db <span class="keyword">import</span> models</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserInfo</span><span class="params">(models.Model)</span>:</span></span><br><span class="line">    name = models.CharField(max_length=<span class="number">64</span>,unique=<span class="literal">True</span>)</span><br><span class="line">    ut = models.ForeignKey(to=<span class="string">'UserType'</span>, on_delete=models.CASCADE)</span><br><span class="line">    gp = models.ManyToManyField(to=<span class="string">'UserGroup'</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__str__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self.name</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserType</span><span class="params">(models.Model)</span>:</span></span><br><span class="line">    type_name = models.CharField(max_length=<span class="number">64</span>,unique=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__str__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self.type_name</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserGroup</span><span class="params">(models.Model)</span>:</span></span><br><span class="line">    group = models.CharField(max_length=<span class="number">64</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__str__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self.group</span><br></pre></td></tr></table></figure>
+
+<p>users/serializers.py：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> rest_framework <span class="keyword">import</span> serializers</span><br><span class="line"><span class="keyword">from</span> users.models <span class="keyword">import</span> UserInfo</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserInfoSerializer</span><span class="params">(serializers.Serializer)</span>:</span></span><br><span class="line">    name = serializers.CharField(min_length=<span class="number">3</span>,max_length=<span class="number">20</span>)                <span class="comment"># 显示普通字段</span></span><br><span class="line">    ut_id = serializers.IntegerField(write_only=<span class="literal">True</span>)                      <span class="comment"># 外键约束，关联字段要定义</span></span><br><span class="line">    ut = serializers.CharField(source=<span class="string">'ut.type_name'</span>,required=<span class="literal">False</span>)      <span class="comment"># 显示一对多字段名称</span></span><br><span class="line">    gp = serializers.SerializerMethodField(read_only=<span class="literal">True</span>)                 <span class="comment"># 自定义显示（显示多对多）</span></span><br><span class="line">    xxx = serializers.CharField(source=<span class="string">'name'</span>,required=<span class="literal">False</span>)              <span class="comment"># 也可以自定义显示字段名称</span></span><br><span class="line"></span><br><span class="line">    <span class="string">'''PrimaryKeyRelatedField和StringRelatedField：可以用对 一对多 和 多对多 关联对象序列化'''</span></span><br><span class="line">    <span class="comment"># gp = serializers.PrimaryKeyRelatedField(read_only=True, many=True)</span></span><br><span class="line">    <span class="comment"># gp = serializers.StringRelatedField(read_only=True,many=True)</span></span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Meta</span>:</span></span><br><span class="line">        model = UserInfo</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 自定义显示 多对多 字段</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_gp</span><span class="params">(self,row)</span>:</span></span><br><span class="line">        <span class="string">'''row: 传过来的正是 UserInfo表的对象'''</span></span><br><span class="line">        gp_obj_list = row.gp.all().values(<span class="string">'id'</span>,<span class="string">'group'</span>)  <span class="comment"># 获取用户所有组</span></span><br><span class="line">        <span class="keyword">return</span> gp_obj_list</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 定义创建语法</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">create</span><span class="params">(self, validated_data)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> UserInfo.objects.create(**validated_data)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 定义更新方法</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">update</span><span class="params">(self, instance, validated_data)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> validated_data.get(<span class="string">'name'</span>):</span><br><span class="line">            instance.name = validated_data[<span class="string">'name'</span>]</span><br><span class="line">        <span class="keyword">if</span> validated_data.get(<span class="string">'ut_id'</span>):</span><br><span class="line">            instance.ut_id = validated_data[<span class="string">'ut_id'</span>]</span><br><span class="line">        instance.save()</span><br><span class="line">        <span class="keyword">return</span> instance</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 定义单一字段验证的方法</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">validate_name</span><span class="params">(self, value)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> value == <span class="string">'root'</span>:</span><br><span class="line">            <span class="keyword">raise</span> serializers.ValidationError(<span class="string">'不能创建root管理员账号'</span>)</span><br><span class="line">        <span class="keyword">return</span> value</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 定义多字段验证方法</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">validate</span><span class="params">(self, attrs)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> attrs[<span class="string">'name'</span>] == <span class="string">'admin'</span>:</span><br><span class="line">            <span class="keyword">raise</span> serializers.ValidationError(<span class="string">'不能创建admin用户'</span>)</span><br><span class="line">        <span class="keyword">return</span> attrs</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 一对多序列化（反向查找）</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserTypeSerializer</span><span class="params">(serializers.Serializer)</span>:</span></span><br><span class="line">    type_name = serializers.CharField()</span><br><span class="line">    <span class="comment"># 法1一对多关联对象序列化：此字段将被序列化为关联对象的主键</span></span><br><span class="line">    userinfo_set = serializers.PrimaryKeyRelatedField(read_only=<span class="literal">True</span>, many=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 法2一对多关联对象序列化：此字段将被序列化为关联对象的字符串表示方式（即__str__方法的返回值）</span></span><br><span class="line">    <span class="comment"># userinfo_set = serializers.StringRelatedField(read_only=True,many=True)</span></span><br><span class="line">    <span class="comment"># 法3一对多关联对象序列化：使用关联对象的序列化器</span></span><br><span class="line">    <span class="comment"># userinfo_set = UserInfoSerializer(many=True)</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 多对多序列化（反向）</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserGroupSerializer</span><span class="params">(serializers.Serializer)</span>:</span></span><br><span class="line">    group = serializers.CharField()</span><br><span class="line">    <span class="comment"># 法1一对多关联对象序列化：此字段将被序列化为关联对象的主键</span></span><br><span class="line">    <span class="comment"># userinfo_set = serializers.PrimaryKeyRelatedField(read_only=True, many=True)</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 法2一对多关联对象序列化：此字段将被序列化为关联对象的字符串表示方式（即__str__方法的返回值）</span></span><br><span class="line">    <span class="comment"># userinfo_set = serializers.StringRelatedField(read_only=True,many=True)</span></span><br><span class="line">    <span class="comment"># 法3一对多关联对象序列化：使用关联对象的序列化器</span></span><br><span class="line">    <span class="comment"># userinfo_set = UserInfoSerializer(many=True)</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>序列化（正向查找）</strong> </p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> rest_framework <span class="keyword">import</span> serializers</span><br><span class="line"><span class="keyword">from</span> users.models <span class="keyword">import</span> UserInfo</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserInfoSerializer</span><span class="params">(serializers.Serializer)</span>:</span></span><br><span class="line">    name = serializers.CharField(min_length=<span class="number">3</span>,max_length=<span class="number">20</span>)               <span class="comment"># 显示普通字段</span></span><br><span class="line">    ut = serializers.CharField(source=<span class="string">'ut.type_name'</span>,required=<span class="literal">False</span>)       <span class="comment"># 显示一对多字段名称</span></span><br><span class="line">    gp = serializers.SerializerMethodField(read_only=<span class="literal">True</span>)                 <span class="comment"># 自定义显示（显示多对多）</span></span><br><span class="line">    xxx = serializers.CharField(source=<span class="string">'name'</span>,required=<span class="literal">False</span>)              <span class="comment"># 也可以自定义显示字段名称</span></span><br><span class="line">    ut_id = serializers.IntegerField(write_only=<span class="literal">True</span>)                      <span class="comment"># 一对多关联字段定义(外键约束)</span></span><br><span class="line"></span><br><span class="line">    <span class="string">'''PrimaryKeyRelatedField和StringRelatedField：可以用对 一对多 和 多对多 关联对象序列化'''</span></span><br><span class="line">    <span class="comment"># gp = serializers.PrimaryKeyRelatedField(read_only=True, many=True)</span></span><br><span class="line">    <span class="comment"># gp = serializers.StringRelatedField(read_only=True,many=True)</span></span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Meta</span>:</span></span><br><span class="line">        model = UserInfo</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 自定义显示 多对多 字段</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_gp</span><span class="params">(self,row)</span>:</span></span><br><span class="line">        <span class="string">'''row: 传过来的正是 UserInfo表的对象'''</span></span><br><span class="line">        gp_obj_list = row.gp.all().values(<span class="string">'id'</span>,<span class="string">'group'</span>)  <span class="comment"># 获取用户所有组</span></span><br><span class="line">        <span class="keyword">return</span> gp_obj_list</span><br></pre></td></tr></table></figure>
+
+<p><strong>序列化（反向查找）</strong> </p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserTypeSerializer</span><span class="params">(serializers.Serializer)</span>:</span></span><br><span class="line">    type_name = serializers.CharField()</span><br><span class="line">    <span class="comment"># 法1一对多关联对象序列化：此字段将被序列化为关联对象的主键</span></span><br><span class="line">    userinfo_set = serializers.PrimaryKeyRelatedField(read_only=<span class="literal">True</span>, many=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 法2一对多关联对象序列化：此字段将被序列化为关联对象的字符串表示方式（即__str__方法的返回值）</span></span><br><span class="line">    <span class="comment"># userinfo_set = serializers.StringRelatedField(read_only=True,many=True)</span></span><br><span class="line">    <span class="comment"># 法3一对多关联对象序列化：使用关联对象的序列化器</span></span><br><span class="line">    <span class="comment"># userinfo_set = UserInfoSerializer(many=True)</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>视图函数中使用序列化</strong> </p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserInfoViewSet</span><span class="params">(APIView)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get</span><span class="params">(self, request, *args, **kwargs)</span>:</span></span><br><span class="line">        <span class="comment"># 一对多、多对多查询都是一样的语法</span></span><br><span class="line">        obj = users_model.UserInfo.objects.all()</span><br><span class="line">        ser = serializers.UserInfoSerializer(instance=obj,many=<span class="literal">True</span>)  <span class="comment"># 关联数据多条</span></span><br><span class="line">        <span class="comment"># ser = serializers.UserInfoSerializer(instance=obj[0])       # 关联数据一条</span></span><br><span class="line">        <span class="keyword">return</span> Response(ser.data, status=<span class="number">200</span>)</span><br></pre></td></tr></table></figure>
+
+<p><strong>使用反序列化保存数据</strong> </p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="string">'''创建用户'''</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">post</span><span class="params">(self,request)</span>:</span></span><br><span class="line">    ser = serializers.UserInfoSerializer(data=request.data)</span><br><span class="line">    <span class="keyword">if</span> ser.is_valid():</span><br><span class="line">        ser.save()</span><br><span class="line">        <span class="keyword">return</span> Response(data=ser.data, status=<span class="number">201</span>)</span><br><span class="line">    <span class="keyword">return</span> Response(data=ser.errors,status=<span class="number">400</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="3、版本号"><a href="#3、版本号" class="headerlink" title="3、版本号"></a>3、版本号</h3><h3 id="4、限流"><a href="#4、限流" class="headerlink" title="4、限流"></a>4、限流</h3>]]></content>
+      <categories>
+        <category>Django</category>
+      </categories>
+      <tags>
+        <tag>Django</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>基于 Django 的后台管理平台，采用 RBAC 权限管理机制</title>
+    <url>/2020/02/22/%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86%E6%9C%BA%E5%88%B6/</url>
+    <content><![CDATA[<h2 id="一、RBAC概述"><a href="#一、RBAC概述" class="headerlink" title="一、RBAC概述"></a>一、RBAC概述</h2><p>RBAC(Role-Based Access Control,基于角色的访问控制)，通过角色绑定权限，然后给用户划分角色。</p><p>从企业的角度来说，基本上是按照角色来划分职能。比如，CEO，具有公司全局的权限；部门经理，具有部门全局的权限；部门主管，具有部门部分的权限；普通员工，具有部门一小部分权限。</p><a id="more"></a>
+
+<p>不同的角色，能够获取的资源是不一样的，所以RBAC就是按照这个思维为公司建设权限系统。</p>
+<p>角色的引入，让权限管理非常灵活。</p>
+<p>例如：某个员工要离职了，替换他的是一个新员工，这时你需要一一的告诉该新员工他应该做什么，他不能做什么，当工作项非常多的时候，这将是非常繁琐的过程，且非常容易出错。如果你把这个职位定义为某个角色，且为这个角色分配固定的权限，不管来多少新人，不管什么职位，只要他对号入座，权限自然就根据角色分配好。当新员工升职后，比如升职成主管或经理，你这时只是角色变换，权限自动分配给他。</p>
+<h2 id="二、流程图"><a href="#二、流程图" class="headerlink" title="二、流程图"></a>二、流程图</h2><p><strong><img src="/2020/02/22/%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86%E6%9C%BA%E5%88%B6/462684-20190129231355786-1268233138.png" class title="This is an test image"></strong> </p>
+<p>1、人员属于某个角色，首先给他分配角色，例如：总监、经理、主管、助理等；</p>
+<p>2、人员赋予角色后，则给他分配权限，不同的角色，规定有不同的权限。比如：总监级别，能够增删改查，无所不能；而经理级别，只能增改查，如果需要删除，则需要总监审批；主管只有增加和查看，修改需要向经理申请，让经理审批。</p>
+<p>3、不同的权限，实际上是对应数据库中的某张表，也就是Django中的某个model。</p>
+<h2 id="三、实现过程"><a href="#三、实现过程" class="headerlink" title="三、实现过程"></a>三、实现过程</h2><p><strong><img src="/2020/02/22/%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86%E6%9C%BA%E5%88%B6/462684-20190129231837693-35611593.png" class title="This is an test image"></strong> </p>
+<p>1、人员登录后，先验证用户是否OK；</p>
+<p>2、验证用户OK后，则根据人员属于什么角色，进行权限获取，并写入session中；</p>
+<p>3、用户登录成功，进入index页面，则根据用户session中的权限，展示不同的页面，正所谓：千人千面；</p>
+<p>4、用户根据不同的页面，进行不同的操作。</p>
+]]></content>
+      <categories>
+        <category>Django</category>
+      </categories>
+      <tags>
+        <tag>Django</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>基于Redis实现的单点登录</title>
+    <url>/2020/02/22/%E5%9F%BA%E4%BA%8ERedis%E5%AE%9E%E7%8E%B0%E7%9A%84%E5%8D%95%E7%82%B9%E7%99%BB%E5%BD%95/</url>
+    <content><![CDATA[<h3 id="传统的登录方式"><a href="#传统的登录方式" class="headerlink" title="传统的登录方式"></a>传统的登录方式</h3><p><strong><img src="/2020/02/22/%E5%9F%BA%E4%BA%8ERedis%E5%AE%9E%E7%8E%B0%E7%9A%84%E5%8D%95%E7%82%B9%E7%99%BB%E5%BD%95/20200219132402516.png" class title="传统登录"></strong> </p><p>大家可以看到最后的用户信息 是存储到 session 中的。</p><p>现在有一个致命的问题 服务器中的session不是共享的，如果我们的项目的量级很大需要分布式服务器，那么就需要用户高频率的操作登录功能。这对于用户体验来说是残忍的，也是致命的。</p><p>传统登录问题：</p><p>session默认是存储在当前服务器的内存中，如果是集群，那么只有登录那台机器的内存中才有这个session<br>比如说我在A机器登录，B机器是没有这个session存在的，所以需要重新验证<br>如何解决：</p><a id="more"></a>
+
+
+
+
+<p>不管在那一台web服务器登录，都会把token值存放到我们的一个集中管理的redis服务器中<br>但客户端携带token验证的时候，会先从redis中获取，就实现单点登录</p>
+<p><strong><img src="/2020/02/22/%E5%9F%BA%E4%BA%8ERedis%E5%AE%9E%E7%8E%B0%E7%9A%84%E5%8D%95%E7%82%B9%E7%99%BB%E5%BD%95/20200219133905743.png" class title="redis实现单点登录"></strong> </p>
+<p>基于redis实现的单点登录这套方案比SSO CAS来说比较简单，容易上手，主要是依赖每个应用的拦截器和redis实现单点登录</p>
+<p>单点登录：<br>有一个独立的认证中心，只有认证中心才能接受用户的用户名和密码等信息进行认证，其他系统不提供登录入口，只接受认证中心的间接授权。间接授权通过令牌实现，当用户提供的用户名和密码通过认证中心认证后，认证中心会创建授权令牌，在接下来的跳转过程中，授权令牌作为参数发送给各个子系统，子系统拿到令牌即得到了授权，然后创建局部会话。</p>
+]]></content>
+      <categories>
+        <category>Redis</category>
+      </categories>
+      <tags>
+        <tag>Redis</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>python对接支付宝</title>
+    <url>/2020/02/22/python%E5%AF%B9%E6%8E%A5%E6%94%AF%E4%BB%98%E5%AE%9D/</url>
+    <content><![CDATA[<p>支付宝开发网址</p><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">支付宝开放平台： https://open.alipay.com/platform/home.htm</span><br><span class="line">支付宝沙箱环境： https://openhome.alipay.com/platform/appDaily.htm?tab=info</span><br><span class="line">支付宝开发者文档：https://openhome.alipay.com/developmentDocument.htm</span><br><span class="line">电脑网站支付流程：https://docs.open.alipay.com/270</span><br><span class="line">生成签名：https://docs.open.alipay.com/291/106103/</span><br></pre></td></tr></table></figure><a id="more"></a>
+
+
+<h3 id="创建应用（这里使用沙箱环境测试）"><a href="#创建应用（这里使用沙箱环境测试）" class="headerlink" title="创建应用（这里使用沙箱环境测试）"></a><strong>创建应用（这里使用沙箱环境测试）</strong></h3><p><strong>1）沙箱环境说明</strong></p>
+<p>　　　　　　　　1. 线上环境需要创建应用，因为我们不是企业，没有资质，所以只能申请沙箱环境</p>
+<p>　　　　　　　　2. 简单来讲沙箱环境就是给开发者使用的测试环境</p>
+<p>　　　　　　　　3. 沙箱环境地址：<a href="https://openhome.alipay.com/platform/appDaily.htm?tab=info" target="_blank" rel="noopener">https://openhome.alipay.com/platform/appDaily.htm?tab=info</a></p>
+<p> 　　　　　　</p>
+<p><strong><img src="/2020/02/22/python%E5%AF%B9%E6%8E%A5%E6%94%AF%E4%BB%98%E5%AE%9D/1080958-20200220223507691-831979751.png" class title="This is an test image"></strong> </p>
+<p><strong>2）按照官方要求生成秘钥</strong> </p>
+<p><strong>生成秘钥参考官网：</strong><a href="https://docs.open.alipay.com/291/105971" target="_blank" rel="noopener">https://docs.open.alipay.com/291/105971</a>　 </p>
+<p><strong><img src="/2020/02/22/python%E5%AF%B9%E6%8E%A5%E6%94%AF%E4%BB%98%E5%AE%9D/1080958-20200220224215550-1818649484.png" class title="This is an test image"></strong> </p>
+<p><strong>3）把生成的app公钥粘贴到沙箱环境的app中</strong> </p>
+<p><strong><img src="/2020/02/22/python%E5%AF%B9%E6%8E%A5%E6%94%AF%E4%BB%98%E5%AE%9D/1080958-20200220224854732-1698182211.png" class title="This is an test image"></strong> </p>
+<p><strong><img src="/2020/02/22/python%E5%AF%B9%E6%8E%A5%E6%94%AF%E4%BB%98%E5%AE%9D/1080958-20200220225205004-1139301747.png" class title="This is an test image"></strong> </p>
+<h3 id="支付宝加密原理"><a href="#支付宝加密原理" class="headerlink" title="支付宝加密原理"></a>支付宝加密原理</h3><p><strong><img src="/2020/02/22/python%E5%AF%B9%E6%8E%A5%E6%94%AF%E4%BB%98%E5%AE%9D/1582267585674.png" class title="This is an test image"></strong> </p>
+<h3 id="支付宝保证接口数据安全"><a href="#支付宝保证接口数据安全" class="headerlink" title="支付宝保证接口数据安全"></a>支付宝保证接口数据安全</h3><h4 id="1-1-敏感信息使用场景"><a href="#1-1-敏感信息使用场景" class="headerlink" title="1.1 敏感信息使用场景"></a>1.1 敏感信息使用场景</h4><p>敏感信息指用户的 身份证号、银行卡号、手机号 等身份信息。重要敏感信 息的脱敏规范如下。</p>
+<h5 id="1-1-1-敏感信息用于展示的场景"><a href="#1-1-1-敏感信息用于展示的场景" class="headerlink" title="1.1.1. 敏感信息用于展示的场景"></a>1.1.1. 敏感信息用于展示的场景</h5><p>原则：敏感信息的展示请严格按照脱敏规范进行脱敏 说明：脱敏的逻辑必 须在服务端完成，不能使用 Javascript 在客户端进行脱敏，包括代码注 释、隐藏域、url 参数、cookies 等处的数据也必须脱敏。 说明：不能使用 可逆的编码/加密方式，如 base64 编码等代替脱敏规范。 说明：若敏感信 息明文展示在应用中，没有按照脱敏规范完成脱敏。支付宝开放平台将有 权暂停敏感数据相关接口的开放。</p>
+<h5 id="1-1-2-敏感信息用于身份校验的场景"><a href="#1-1-2-敏感信息用于身份校验的场景" class="headerlink" title="1.1.2. 敏感信息用于身份校验的场景"></a>1.1.2. 敏感信息用于身份校验的场景</h5><p>原则：不要直接将敏感信息的明文信息在客户端与服务端之间传递 说明： 可以将敏感信息在服务端关联到用户标识 ID，在客户端保存用户标识 ID 并提交到服务端，服务端根据 ID 取出对应信息后进行校验。 说明：如果 服务端没有用户标识 ID 的机制，同时也必须在客户端与服务端之间传递敏 感信息，请使用 AES128 对称加密算法进行加密后传输，并且不能将解密 密钥传输给用户端。 1.2. HTML 页面渲染<br>原则：所有在页面渲染的敏感数据 (身份证、银行卡号、手机号) 必须进行 脱敏<br>原则：禁止在 Cookie 中 明文写入 敏感数据<br>原则：禁止向 HTML 页面输出未经安全过滤或未正确转义的用户数据<br>原则：HTML 页面动态输出 JSON、JavaScript 必须对其中的字符串值做 XSS 防御处理<br>原则：默认设置 HTTP Header 中的 HttpOnly 属性为 true<br>原则：如果网站使用 HTTPS 协议，默认设置 HTTP Header 中的 secure 属性为 true</p>
+<h4 id="1-3-接口调用操作"><a href="#1-3-接口调用操作" class="headerlink" title="1.3. 接口调用操作"></a>1.3. 接口调用操作</h4><p>原则：AJAX 接口必须执行 CSRF 过滤<br>原则：AJAX 接口输出 JSON 字符串禁止通过字符串拼接构造，且输出的 JSON 需要经过安全过滤<br>原则：AJAX 接口返回头必须设置 Content-Type 为 application/json;charset=utf-8 </p>
+<h4 id="1-4-表单提交操作"><a href="#1-4-表单提交操作" class="headerlink" title="1.4. 表单提交操作"></a>1.4. 表单提交操作</h4><p>原则：统一使用 POST 方式提交表单 说明：Get 请求可以通过构造 img 等 标签发起，造成 CSRF<br>原则：Form 表单提交必须执行 CSRF 过滤<br>原则：用户输入的富文本浏览器展示之前必须由服务器端做安全过滤 </p>
+<h4 id="1-5-数据库操作"><a href="#1-5-数据库操作" class="headerlink" title="1.5. 数据库操作"></a>1.5. 数据库操作</h4><p>原则：用户密码存储须加盐存储，各用户盐值不同 原则：若涉及证件号等 敏感信息的存储，须使用 AES-128 算法加密存储 原则：编写的 SQL 必须 预编译，不允许通过字符串拼接的方式合成 说明：部分特殊场景，必须通 过拼接合成，则拼接的变量必须经过处理，只允许 [a-zA-Z0-9_-.]＋ 字符。 </p>
+<h4 id="1-6-URL-重定向"><a href="#1-6-URL-重定向" class="headerlink" title="1.6. URL 重定向"></a>1.6. URL 重定向</h4><p>原则：URL 重定向的目标地址必须执行白名单过滤 1.7. 跨域操作 </p>
+<h4 id="1-7-1-JSONP-跨域"><a href="#1-7-1-JSONP-跨域" class="headerlink" title="1.7.1. JSONP 跨域"></a>1.7.1. JSONP 跨域</h4><p>原则：JSONP 接口 Callback 必须验证有效性 原则：JSONP 接口输出 JSON 字符串禁止通过字符串拼接构造，且输出的 JSON 需要经过安全过滤 说 明：参考章节 2.1 跨站脚本（XSS）漏洞 原则：JSONP 接口必须对 REFERER 进行白名单校验，或执行 CSRF 检查 原则：JSONP 接口返回头必 须正确设置 Content-Type 为 application/javascript;charset=utf-8</p>
+<h4 id="1-7-2-CORS-跨域"><a href="#1-7-2-CORS-跨域" class="headerlink" title="1.7.2. CORS 跨域"></a>1.7.2. CORS 跨域</h4><p>原则：支持 CORS 跨域的接口，返回头 Access-Control-Allow-Origin 必须 使用白名单验证，禁止直接返回*</p>
+<h4 id="1-8-文件上传与下载"><a href="#1-8-文件上传与下载" class="headerlink" title="1.8. 文件上传与下载"></a>1.8. 文件上传与下载</h4><p>原则：限制可下载文件所在的目录为预期范围，并通过指定文件编号的方 式来定位待下载文件</p>
+<p>原则：保存上传文件的目录不提供直接访问 原则：对上传文件的大小和类 型进行校验，定义上传文件类型白名单 </p>
+<h4 id="1-9-加密与签名"><a href="#1-9-加密与签名" class="headerlink" title="1.9. 加密与签名"></a>1.9. 加密与签名</h4><p><strong><img src="/2020/02/22/python%E5%AF%B9%E6%8E%A5%E6%94%AF%E4%BB%98%E5%AE%9D/1582513156(1).png" class title="This is an test image"></strong> </p>
+]]></content>
+  </entry>
+  <entry>
+    <title>saltstack安装</title>
+    <url>/2020/01/02/saltstack%E5%AE%89%E8%A3%85/</url>
+    <content><![CDATA[<h2 id="1-准备虚拟环境"><a href="#1-准备虚拟环境" class="headerlink" title="1.  准备虚拟环境"></a>1.  准备虚拟环境</h2><ol>
+<li>在VMware中创建一个中创建一个CentOS 64位的操作系统</li>
+<li>在配置时使用系统自动分配的IP</li>
+</ol><h2 id="2-配置"><a href="#2-配置" class="headerlink" title="2.  配置"></a>2.  配置</h2><ol>
+<li><h3 id="配置网卡"><a href="#配置网卡" class="headerlink" title="配置网卡"></a><strong>配置网卡</strong></h3><p>​    vi /etc/sysconfig/network-scripts/ifcfg-eth0 </p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">BOOTPROTO=static <span class="comment">#dhcp改为static（修改）</span></span><br><span class="line">ONBOOT=yes <span class="comment">#开机启用本配置，一般在最后一行（修改）</span></span><br><span class="line"> </span><br><span class="line">IPADDR=<span class="number">192.168</span><span class="number">.179</span><span class="number">.111</span> <span class="comment">#静态IP（增加）</span></span><br><span class="line">GATEWAY=<span class="number">192.168</span><span class="number">.179</span><span class="number">.2</span> <span class="comment">#默认网关，虚拟机安装的话，通常是2，也就是VMnet8的网关设置（增加）</span></span><br><span class="line">NETMASK=<span class="number">255.255</span><span class="number">.255</span><span class="number">.0</span> <span class="comment">#子网掩码（增加）</span></span><br><span class="line">DNS1=<span class="number">192.168</span><span class="number">.179</span><span class="number">.2</span> <span class="comment">#DNS 配置，虚拟机安装的话，DNS就网关就行，多个DNS网址的话再增加（增加）</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><h3 id="重启网卡"><a href="#重启网卡" class="headerlink" title="重启网卡"></a>重启网卡</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">service network restart</span><br></pre></td></tr></table></figure>
+</li>
+<li><h3 id="随便找个域名ping一下测试DNS是否OK"><a href="#随便找个域名ping一下测试DNS是否OK" class="headerlink" title="随便找个域名ping一下测试DNS是否OK"></a>随便找个域名ping一下测试DNS是否OK</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">ping baidu.com</span><br></pre></td></tr></table></figure>
+</li>
+<li><h3 id="设置主机名"><a href="#设置主机名" class="headerlink" title="设置主机名"></a><strong>设置主机名</strong></h3><p>vi /etc/hostname</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">linux-node1.example.com				<span class="comment">#为主机名</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><h3 id="设置主机名解析"><a href="#设置主机名解析" class="headerlink" title="设置主机名解析"></a>设置主机名解析</h3><p>vi /etc/hosts </p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="number">192.168</span><span class="number">.56</span><span class="number">.11</span> linux-node1 linux-node1.example.com</span><br><span class="line"></span><br><span class="line"><span class="number">192.168</span><span class="number">.56</span><span class="number">.12</span> linux-node2 linux-node2.example.com</span><br></pre></td></tr></table></figure>
+</li>
+<li><h3 id="安装最新epel-yum源"><a href="#安装最新epel-yum源" class="headerlink" title="安装最新epel yum源"></a><strong>安装最新epel yum源</strong></h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 此地址中有各种源（https://opsx.alibaba.com/mirror）</span></span><br><span class="line">rpm -ivh https://mirrors.aliyun.com/epel/epel-release-latest<span class="number">-7.</span>noarch.rpm</span><br></pre></td></tr></table></figure>
+</li>
+<li><h3 id="yum安装-一些基础包"><a href="#yum安装-一些基础包" class="headerlink" title="yum安装 一些基础包"></a><strong>yum安装 一些基础包</strong></h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">yum -y install net-tools vim lrzsz tree screen lsof tcpdump nc mtr nmap</span><br></pre></td></tr></table></figure>
+</li>
+<li><h3 id="关闭selinux"><a href="#关闭selinux" class="headerlink" title="关闭selinux"></a><strong>关闭selinux</strong></h3><p>vim /etc/selinux/config </p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">SELINUX=disabled</span><br></pre></td></tr></table></figure>
+</li>
+<li><h3 id="重启系统"><a href="#重启系统" class="headerlink" title="重启系统"></a><strong>重启系统</strong></h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">yum update -y &amp;&amp; reboot          <span class="comment"># 升级所有包同时也升级软件和系统内核, 并重启</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><h3 id="确认是否一些服务是否已按计划关闭"><a href="#确认是否一些服务是否已按计划关闭" class="headerlink" title="确认是否一些服务是否已按计划关闭"></a><strong>确认是否一些服务是否已按计划关闭</strong></h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">getenforce          <span class="comment"># selinux是否关闭</span></span><br><span class="line"></span><br><span class="line">firewall-cmd --state         <span class="comment"># 防火墙是否关闭</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><h3 id="附带关于CentOS7防火墙的命令"><a href="#附带关于CentOS7防火墙的命令" class="headerlink" title="附带关于CentOS7防火墙的命令"></a>附带关于CentOS7防火墙的命令</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">1. 使用命令：firewall-cmd --state     			查看防火墙状态</span><br><span class="line">		running			#代表开启</span><br><span class="line">2. 使用命令：systemctl stop firewalld.service	 	关闭运行的防火墙</span><br><span class="line">		not running		#代表关闭</span><br><span class="line">3. 注意  前面的方法，一旦重启操作系统，防火墙就自动开启了</span><br><span class="line"></span><br><span class="line">4. 输入命令：systemctl disable firewalld.service		禁止防火墙服务器自动启动</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol><a id="more"></a>
+
+<h2 id="3-克隆一台虚拟机"><a href="#3-克隆一台虚拟机" class="headerlink" title="3.  克隆一台虚拟机"></a>3.  克隆一台虚拟机</h2><p>   <strong>注：</strong>克隆虚拟机必须要先关闭（shutdown） </p>
+<ol>
+<li><h3 id="右键-‘管理’-—–-gt-‘克隆’"><a href="#右键-‘管理’-—–-gt-‘克隆’" class="headerlink" title="右键    ‘管理’    —–&gt;    ‘克隆’"></a>右键    ‘管理’    —–&gt;    ‘克隆’</h3></li>
+<li><h3 id="选择从那个状态克隆"><a href="#选择从那个状态克隆" class="headerlink" title="选择从那个状态克隆"></a>选择从那个状态克隆</h3></li>
+<li><h3 id="克隆状态-创建完整克隆"><a href="#克隆状态-创建完整克隆" class="headerlink" title="克隆状态(创建完整克隆)"></a>克隆状态(创建完整克隆)</h3></li>
+<li><h3 id="搜索"><a href="#搜索" class="headerlink" title="搜索"></a>搜索</h3></li>
+<li><h3 id="新建虚拟机名称"><a href="#新建虚拟机名称" class="headerlink" title="新建虚拟机名称"></a>新建虚拟机名称</h3></li>
+<li><h3 id="点击’完成’即完成对虚拟机的克隆"><a href="#点击’完成’即完成对虚拟机的克隆" class="headerlink" title="点击’完成’即完成对虚拟机的克隆"></a>点击’完成’即完成对虚拟机的克隆</h3></li>
+<li><h3 id="对虚拟机node2进行一些简单的配置"><a href="#对虚拟机node2进行一些简单的配置" class="headerlink" title="对虚拟机node2进行一些简单的配置"></a>对虚拟机node2进行一些简单的配置</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">vim /etc/hostname       # 1、修改主机名</span><br><span class="line"></span><br><span class="line">	linux-node2.example.com</span><br><span class="line"></span><br><span class="line">vi /etc/sysconfig/network-scripts/ifcfg-eth0 </span><br><span class="line"></span><br><span class="line">	IPADDR=192.168.179.111 #静态IP（修改）</span><br><span class="line"></span><br><span class="line">vi /etc/sysconfig/network-scripts/ifcfg-eth0　</span><br><span class="line"></span><br><span class="line">	IPADDR=192.168.56.12</span><br><span class="line"></span><br><span class="line">reboot			#重启虚拟机</span><br></pre></td></tr></table></figure>
+
+<h2 id="4-安装"><a href="#4-安装" class="headerlink" title="4.  安装"></a>4.  安装</h2><ol>
+<li><h3 id="在node1-中安装saltstack-master-和-minion"><a href="#在node1-中安装saltstack-master-和-minion" class="headerlink" title="在node1 中安装saltstack master 和 minion"></a><strong>在node1 中安装saltstack master 和 minion</strong></h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">yum -y install https://repo.saltstack.com/yum/redhat/salt-repo-latest-2.el7.noarch.rpm </span><br><span class="line"></span><br><span class="line">yum -y install salt-master salt-minion</span><br><span class="line"></span><br><span class="line">    /etc/salt/master（master配置文件）</span><br><span class="line"></span><br><span class="line">    /etc/salt/minion（minion配置文件）</span><br></pre></td></tr></table></figure>
+</li>
+<li><h3 id="node2-中安装saltstack-minion"><a href="#node2-中安装saltstack-minion" class="headerlink" title="node2 中安装saltstack minion"></a>node2 中安装<strong>saltstack minion</strong></h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">yum -y install https://repo.saltstack.com/yum/redhat/salt-repo-latest-2.el7.noarch.rpm </span><br><span class="line"></span><br><span class="line">yum -y install salt-minion</span><br><span class="line"></span><br><span class="line">	/etc/salt/minion（minion配置文件）</span><br></pre></td></tr></table></figure>
+</li>
+<li><h3 id="在linux-node1中配置-salt-minion"><a href="#在linux-node1中配置-salt-minion" class="headerlink" title="在linux-node1中配置 salt-minion"></a><strong>在linux-node1中配置 salt-minion</strong></h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">vim /etc/salt/minion</span><br><span class="line"></span><br><span class="line">    <span class="comment">#master: salt   修改为（master: 192.168.56.11） ----》配置master IP</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">#id:           修改为（id: linux-node1.example.com）   ---》告诉master自己是谁，默认会读取当前主机名</span></span><br><span class="line">    </span><br><span class="line">注：saltstack是以主机名区分不同 agent 需保证主机名唯一</span><br></pre></td></tr></table></figure>
+</li>
+<li><h3 id="在node2中配置-salt-minion"><a href="#在node2中配置-salt-minion" class="headerlink" title="在node2中配置 salt-minion"></a>在node2中配置 salt-minion</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">vim /etc/salt/minion</span><br><span class="line"></span><br><span class="line">    <span class="comment">#master: salt   修改为（master: 192.168.56.11） ----》配置master IP</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">#id:           修改为（id: linux-node2.example.com）   ---》告诉master自己是谁，默认会读取当前主机名</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><h3 id="启动node1中salt-maser-和-salt-minion"><a href="#启动node1中salt-maser-和-salt-minion" class="headerlink" title="启动node1中salt-maser 和 salt-minion"></a><strong>启动node1中salt-maser 和 salt-minion</strong></h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">systemctl start salt-master       <span class="comment"># 启动salt-master</span></span><br><span class="line"></span><br><span class="line">systemctl enable salt-master       <span class="comment"># 设置salt-master开机自启动</span></span><br><span class="line"></span><br><span class="line">systemctl start salt-minion        <span class="comment"># 启动</span></span><br><span class="line"></span><br><span class="line">systemctl enable salt-minion     <span class="comment"># 开机自启动</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><h3 id="启动node2中salt-minion"><a href="#启动node2中salt-minion" class="headerlink" title="启动node2中salt-minion"></a><strong>启动node2中salt-minion</strong></h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">systemctl start salt-minion        <span class="comment"># 启动</span></span><br><span class="line"></span><br><span class="line">systemctl enable salt-minion      <span class="comment"># 开机自启动</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><h3 id="认证"><a href="#认证" class="headerlink" title="认证"></a>认证</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">salt-key             <span class="comment"># 在master中查看所有key的状态</span></span><br><span class="line"></span><br><span class="line">salt-key -a linux-node1.example.com      <span class="comment"># 认证 linux-node1.example.com的key</span></span><br><span class="line"></span><br><span class="line">salt-key -A          <span class="comment"># 一次性认证所有key</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><h3 id="远程执行"><a href="#远程执行" class="headerlink" title="远程执行"></a>远程执行</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">salt  \*  test.ping         <span class="comment"># 测试saltstack minion与master的连通性</span></span><br><span class="line"></span><br><span class="line">salt \* cmd.run <span class="string">'df -h'</span>     <span class="comment"># 在所有minion中批量执行 df -h 命令</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+</li>
+</ol>
+]]></content>
+      <categories>
+        <category>Linux</category>
+      </categories>
+      <tags>
+        <tag>saltstack</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Git</title>
+    <url>/2019/12/19/git/</url>
+    <content><![CDATA[<h2 id="Git"><a href="#Git" class="headerlink" title="Git"></a>Git</h2><p>Git是一个<strong>免费的开源</strong>分布式版本控制系统，旨在快速高效地处理从小型到大型项目的所有事务。</p><p>Git易于学习， 占地面积小，具有闪电般快速的性能。它超越了Subversion，CVS，Perforce和ClearCase等SCM工具，具有廉价本地分支，便捷的<strong>临时区域</strong>和<strong>多个工作流程</strong>等功能</p><h2 id="git流程"><a href="#git流程" class="headerlink" title="git流程"></a>git流程</h2><p><strong><img src="/2019/12/19/git/git%E6%B5%81%E7%A8%8B%E5%9B%BE.png" class title="git流程图"></strong> </p><ul>
+<li><code>workspace</code>：工作区 </li>
+<li><code>Index/Stage</code>：暂存区 </li>
+<li><code>Repository</code>：仓库区/本地仓库</li>
+<li><code>Remote</code>：远程仓库</li>
+</ul><a id="more"></a>
+
+
+
+<h2 id="SVN和Git的区别"><a href="#SVN和Git的区别" class="headerlink" title="SVN和Git的区别"></a>SVN和Git的区别</h2><ul>
+<li><code>SVN</code></li>
+</ul>
+<blockquote>
+<p>SVN是集中式版本控制系统，版本库是集中放在中央服务器的、而干活的时候，用的都是自己的电脑</p>
+<p>首先要从中央服务器哪里得到最新的版本，然后干活，干完后，需要把自己做完的活推送到中央服务器</p>
+<p>集中式版本控制系统是必须联网才能工作，如果在局域网还可以，带宽够大，速度够快，如果在互联网下，如果网速慢的话，就纳闷了</p>
+</blockquote>
+<ul>
+<li><code>Git</code></li>
+</ul>
+<blockquote>
+<p>Git是分布式版本控制系统，那么它就没有中央服务器的，每个人的电脑就是一个完整的版本库</p>
+<p>这工作的时候就不需要联网了，因为版本都是在自己的电脑上。既然每个人的电脑都有一个完整的版本库，那多个人如何协作呢？比如说自己在电脑上改了文件A，其他人也在电脑上改了文件A，这时，你们两之间只需把各自的修改推送给对方，就可以互相看到对方的修改了</p>
+<p>Git在本地磁盘上就保存着所有有关当前项目的历史更新，并且Git中的绝大多数操作都只需要访问本地文件和资源，不用连网，所以处理起来速度飞快</p>
+<p>用SVN的话，没有网络或者断开VPN你就无法做任何事情</p>
+<p>但用Git的话，就算你在飞机或者火车上，都可以非常愉快地频繁提交更新，等到了有网络的时候再上传到<strong>远程的镜像仓库</strong>。换作其他版本控制系统，这么做几乎不可能，抑或是非常麻烦</p>
+</blockquote>
+<h2 id="Git操作"><a href="#Git操作" class="headerlink" title="Git操作"></a>Git操作</h2><p><strong>1. 创建git版本库</strong><br>　　　　1、版本库又名仓库，英文名repository，你可以简单理解成一个目录，<br>　　　　2、这个目录里面的所有文件都可以被Git管理起来，每个文件的修改、删除，Git都能跟踪，以便任何时刻都可以追踪历史，或者在将来某个时刻可以“还原”。<br>　　　　3、所以，创建一个版本库非常简单，首先，选择一个合适的地方，创建一个空目<br>　　　　4、瞬间Git就把仓库建好了，而且告诉你是一个空的仓库（empty Git repository）<br>　　　　5、细心的读者可以发现当前目录下多了一个.git的目录，这个目录是Git来跟踪管理版本库的，没事千万不要手动修改这个目录里面的文件，不然改乱了，就把Git仓库给破坏了。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">　　mkdir s15_gitpro                 #先创建一个项目</span><br><span class="line">　　cd s15_gitpro/                   #切换到这个项目目录</span><br><span class="line">　　git init                         #初始化这个</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p><strong>2. 工作区、暂存区、代码仓库</strong></p>
+<p>　　　　1、<strong>工作区：</strong> 就是你在电脑上看到的目录，比如目录下testgit里的文件(.git隐藏目录版本库除外)。<br>　　　　2、<strong>暂存区 :</strong>  暂存区就是文件夹 .git中的一个小部分（.git文件夹就是版本库）<br>　　　　3、<strong>版本库：</strong>工作区有一个隐藏目录.git,这个不属于工作区，这是版本库，  版本库中还有Git为我们自动创建了第一个分支master,以及指向master的一个指针HEAD</p>
+<p>　　　　<strong>4、 把文件添加到版本库分为以下三步：</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">1.	vim Readme	#工作区（Working Zone） 比如在mkdir s15_gitpro下执行创建文件命令</span><br><span class="line"></span><br><span class="line">2. 	git add		#暂存区（Stage zone）</span><br><span class="line"></span><br><span class="line">3.	git commit   	#代码仓库（Repository master） 只有提交到代码库才能被git管理</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p><strong>3. 本地git基本命令</strong></p>
+<p>　　　　<strong>1、将文件添加到仓库</strong>　　　　　</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git add Readme		#指定将Readme文件添加到暂存区</span><br><span class="line"></span><br><span class="line">git add . 		#将当前目录中的所有文件全部添加到暂存区</span><br><span class="line"></span><br><span class="line">git status		#查看更改了哪些，创建了哪些，哪些没有添加到仓库，哪些添加到了仓库</span><br><span class="line"></span><br><span class="line">git status diff readme		#查看readme文件具体修改了哪些</span><br><span class="line"></span><br><span class="line">git commit -m &quot;commit tag&quot;		# git commit告诉Git，把文件提交到仓库-m后面输入的是本次提交的说明(版本名字)</span><br></pre></td></tr></table></figure>
+
+<p>　　　    <strong>说明：</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">　# 执行git commit 命令时必须配置用户信息</span><br><span class="line"></span><br><span class="line">git config --global user.name &quot;Tom Git&quot;</span><br><span class="line"></span><br><span class="line">git config --global user.email tom@example.com</span><br></pre></td></tr></table></figure>
+
+
+
+<p>　　　　<strong>2、回滚</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git log		#查看所有提交到仓库的版本记录:   git log -2</span><br><span class="line"></span><br><span class="line">git reflog		#查看所有操作记录（状态的md5值和改变的值）</span><br><span class="line"></span><br><span class="line">git reset --hard d9e0ed0		#回到指定版本（d9e0ed0是创建版本的MD5值得前6位或者7位）</span><br><span class="line"></span><br><span class="line">git reset --hard HEAD^		#回到上一个版本</span><br><span class="line"></span><br><span class="line">注：这样可以回到第一次提交到仓库的状态，但再使用git log看不到其他几次的md5值了</span><br></pre></td></tr></table></figure>
+
+<p>　　　　<strong>3、撤销修改</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">vim Readme	#我们在Readme文件中写了一些错误的代码</span><br><span class="line"></span><br><span class="line">git add . 	#然后又一不小心将文件从工作区提交到了stage区</span><br><span class="line"></span><br><span class="line">git reset HEAD Readme		#将Readme中刚提交到 stage区 的代码撤回到工作区</span><br><span class="line"></span><br><span class="line">git status		#查看目前工作区状态</span><br><span class="line"></span><br><span class="line">git checkout -- Readme		#将Readme在工作区错误的代码丢弃</span><br></pre></td></tr></table></figure>
+
+<p>　　　　<strong>4、删除操作（两种方法）</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">方法1：这种方法需要执行git add .  </span><br><span class="line"></span><br><span class="line">        rm Readme</span><br><span class="line"></span><br><span class="line">        git add .</span><br><span class="line"></span><br><span class="line">        git commit -m &quot;delete file by git rm&quot;</span><br><span class="line"></span><br><span class="line">        git reset --hard HEAD^</span><br><span class="line"></span><br><span class="line">方法2：这种方法可以省去执行git add .</span><br><span class="line"></span><br><span class="line">        git rm Readme</span><br><span class="line"></span><br><span class="line">        git commit -m &quot;delete file by git rm&quot;</span><br><span class="line"></span><br><span class="line">        git reset --hard HEAD^</span><br><span class="line"></span><br><span class="line">        注： 在没有git commit前，使用 git checkout -- Readme 可以恢复删除的文件（Readme）</span><br></pre></td></tr></table></figure>
+
+<p>　　　　<strong>5、强制使用master覆盖本地代码</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ git fetch --all</span><br><span class="line"></span><br><span class="line">$ git reset --hard origin/master</span><br><span class="line"></span><br><span class="line">$ git pull</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>Git</category>
+      </categories>
+      <tags>
+        <tag>Git</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>在vue项目中使用md5加密的方法</title>
+    <url>/2019/12/06/%E5%9C%A8vue%E9%A1%B9%E7%9B%AE%E4%B8%AD%E4%BD%BF%E7%94%A8md5%E5%8A%A0%E5%AF%86%E7%9A%84%E6%96%B9%E6%B3%95/</url>
+    <content><![CDATA[<h4 id="npm安装："><a href="#npm安装：" class="headerlink" title="npm安装："></a>npm安装：</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">npm install --save js-md5</span><br></pre></td></tr></table></figure><h4 id="1-在需要使用的项目文件中引入："><a href="#1-在需要使用的项目文件中引入：" class="headerlink" title="1.在需要使用的项目文件中引入："></a>1.在需要使用的项目文件中引入：</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import md5 from &apos;js-md5&apos;;</span><br></pre></td></tr></table></figure><h5 id="使用："><a href="#使用：" class="headerlink" title="使用："></a>使用：</h5><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">md5(&apos;hello world&apos;)  // 5eb63bbbe01eeed093cb22bb8f5acdc3</span><br></pre></td></tr></table></figure><a id="more"></a>
+
+
+
+
+
+
+
+<h4 id="2-或者在main-js文件中将md5转换成vue原型："><a href="#2-或者在main-js文件中将md5转换成vue原型：" class="headerlink" title="2.或者在main.js文件中将md5转换成vue原型："></a>2.或者在main.js文件中将md5转换成vue原型：</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import md5 from &apos;js-md5&apos;;</span><br><span class="line">Vue.prototype.$md5 = md5;</span><br></pre></td></tr></table></figure>
+
+<h5 id="使用：-1"><a href="#使用：-1" class="headerlink" title="使用："></a>使用：</h5><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">this.$md5(&apos;hello world&apos;) // 5eb63bbbe01eeed093cb22bb8f5acdc3</span><br></pre></td></tr></table></figure>
+
+<p><strong>vue使用md5加密的实例代码</strong> </p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import crypto from &apos;crypto&apos;</span><br><span class="line">export default &#123;</span><br><span class="line"> name: &apos;HelloWorld&apos;,</span><br><span class="line"> data () &#123;</span><br><span class="line">  return &#123;</span><br><span class="line">   msg: &apos;Welcome to Your Vue.js App&apos;</span><br><span class="line">  &#125;</span><br><span class="line"> &#125;,</span><br><span class="line"> mounted()&#123;</span><br><span class="line">  this.getmd5(&quot;aaa&quot;);</span><br><span class="line"> &#125;,</span><br><span class="line"> methods:&#123;</span><br><span class="line">  getmd5(str)&#123;</span><br><span class="line">      var a;</span><br><span class="line">      var md5 = crypto.createHash(&quot;md5&quot;);</span><br><span class="line">      //update(&quot;中文&quot;, &quot;utf8&quot;)</span><br><span class="line">      md5.update(str);</span><br><span class="line">      var a = md5.digest(&apos;hex&apos;);</span><br><span class="line">      console.log(a);</span><br><span class="line">      //47bce5c74f589f4867dbd57e9ca9f808</span><br><span class="line">      return a;</span><br><span class="line">    &#125;</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>Vue</category>
+      </categories>
+      <tags>
+        <tag>Vue</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>使用Django原生代码实现分页</title>
+    <url>/2019/11/27/%E4%BD%BF%E7%94%A8Django%E5%8E%9F%E7%94%9F%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0%E5%88%86%E9%A1%B5/</url>
+    <content><![CDATA[<h4 id="我们可以利用MySQL中的分页limit来实现Django原生代码"><a href="#我们可以利用MySQL中的分页limit来实现Django原生代码" class="headerlink" title="我们可以利用MySQL中的分页limit来实现Django原生代码"></a>我们可以利用MySQL中的分页limit来实现Django原生代码</h4><h4 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">select * from 表名 limit start,count</span><br></pre></td></tr></table></figure>
+
+<h4 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h4><ul>
+<li>从start开始，获取count条数据</li>
+</ul>
+<p>例1：查询前3行男生信息</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">select * from students where gender=1 limit 0,3;</span><br></pre></td></tr></table></figure>
+
+
+
+<a id="more"></a>
+
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#课程列表</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CourseList</span><span class="params">(APIView)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get</span><span class="params">(self,request)</span>:</span></span><br><span class="line">        <span class="comment">#当前页</span></span><br><span class="line">        page = request.GET.get(<span class="string">'page'</span>,<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment">#每页条数</span></span><br><span class="line">        size = request.GET.get(<span class="string">'size'</span>,<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment">#开始位置</span></span><br><span class="line">        data_start = (int(page)<span class="number">-1</span>) * int(size)</span><br><span class="line"></span><br><span class="line">        <span class="comment">#结束位置</span></span><br><span class="line">        data_end = int(page) * int(size)</span><br><span class="line">        </span><br><span class="line">        <span class="comment">#获取课程列表</span></span><br><span class="line">        clist = Course.objects.all()[data_start:data_end]</span><br><span class="line">        <span class="comment">#获取总条数</span></span><br><span class="line">        count = Course.objects.count()</span><br><span class="line">        <span class="comment">#序列化</span></span><br><span class="line">        clist_ser = CourseSer(clist,many=<span class="literal">True</span>)</span><br><span class="line">        res = &#123;&#125;</span><br><span class="line">        res[<span class="string">'total'</span>] = count</span><br><span class="line">        res[<span class="string">'data'</span>] = clist_ser.data</span><br><span class="line">        <span class="comment">#返回结果</span></span><br><span class="line">        <span class="keyword">return</span> Response(res)</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>Django</category>
+      </categories>
+      <tags>
+        <tag>Django</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Paginator分页器</title>
+    <url>/2019/11/27/Paginator%E5%88%86%E9%A1%B5%E5%99%A8/</url>
+    <content><![CDATA[<h3 id="Paginator分页组件"><a href="#Paginator分页组件" class="headerlink" title="Paginator分页组件"></a>Paginator分页组件</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> django.core.paginator <span class="keyword">import</span> Paginator</span><br></pre></td></tr></table></figure>
+ <a id="more"></a>
+<ul>
+<li><h3 id="分页对象内置属性"><a href="#分页对象内置属性" class="headerlink" title="分页对象内置属性"></a>分页对象内置属性</h3></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">all_ = models.objects.all()</span><br><span class="line">p = Paginator(all_, 10)</span><br><span class="line"># 分页all_数据，每页显示10条数据</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">p.count # 总数据量</span><br><span class="line">p.num_pages() # 分页数</span><br><span class="line">p.page_range() # 列表形式返回当前可有的页数 [1,2,3]</span><br><span class="line">page_1 = p.page(1) # 选择第一页，返回第一页数据对象</span><br><span class="line">page_1.object_list # 返回第一页所有数据</span><br><span class="line">for var in page_1:</span><br><span class="line">    print(var)</span><br><span class="line">A</span><br><span class="line">B</span><br><span class="line">C</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#导入django的Paginator</span></span><br><span class="line"><span class="keyword">from</span> django.core.paginator <span class="keyword">import</span> Paginator</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Pagi</span><span class="params">(APIView)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get</span><span class="params">(self,requests)</span>:</span></span><br><span class="line">        index = requests.GET.get(<span class="string">'page'</span>)</span><br><span class="line">        course = Course.objects.all()</span><br><span class="line">        pages = Paginator(course,<span class="number">2</span>)         <span class="comment">#实例化分页器</span></span><br><span class="line">        pages_index = pages.page(index)</span><br><span class="line">        res = &#123;&#125;</span><br><span class="line">        res[<span class="string">'total'</span>] = pages.count</span><br><span class="line">        res[<span class="string">'size'</span>] = <span class="number">2</span></span><br><span class="line">        <span class="comment">#序列化返回Json数据</span></span><br><span class="line">        res[<span class="string">'data'</span>] = CourseSer(pages_index,many=<span class="literal">True</span>).data</span><br><span class="line">        <span class="keyword">return</span> Response(res)</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+
+
+
+]]></content>
+      <categories>
+        <category>Django</category>
+      </categories>
+      <tags>
+        <tag>Django</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>正则表达式</title>
+    <url>/2019/11/26/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/</url>
+    <content><![CDATA[<h2 id="正则表达式"><a href="#正则表达式" class="headerlink" title="正则表达式"></a>正则表达式</h2><h3 id="正则表达式中的贪婪匹配和惰性匹配"><a href="#正则表达式中的贪婪匹配和惰性匹配" class="headerlink" title="正则表达式中的贪婪匹配和惰性匹配"></a>正则表达式中的贪婪匹配和惰性匹配</h3><ol>
+<li><p>贪婪模式就是匹配最长的字符串，非贪婪模式就是匹配最短字符串。 </p>
+<a id="more"></a>
+<h3 id="如何区分两种模式"><a href="#如何区分两种模式" class="headerlink" title="如何区分两种模式"></a>如何区分两种模式</h3></li>
+</ol>
+<p>默认情况下匹配都是贪婪模式，如果要改成非贪婪模式，只需要量词后面加上一个问号? </p>
+<table>
+<thead>
+<tr>
+<th>字符</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>.</td>
+<td>匹配任意1个字符（除了\n）</td>
+</tr>
+<tr>
+<td>[ ]</td>
+<td>匹配[ ]中列举的字符</td>
+</tr>
+<tr>
+<td>\d</td>
+<td>匹配数字，即0-9</td>
+</tr>
+<tr>
+<td>\D</td>
+<td>匹配非数字，即不是数字</td>
+</tr>
+<tr>
+<td>\s</td>
+<td>匹配空白，即 空格</td>
+</tr>
+<tr>
+<td>\S</td>
+<td>匹配非空白</td>
+</tr>
+<tr>
+<td>\w</td>
+<td>匹配单词字符，即a-z、A-Z、0-9、_</td>
+</tr>
+<tr>
+<td>\W</td>
+<td>匹配非单词字符</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>*</th>
+<th>匹配前一个字符出现0次或者无限次，即可有可无</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>+</td>
+<td>匹配前一个字符出现1次或者无限次，即至少有1次</td>
+</tr>
+<tr>
+<td>?</td>
+<td>匹配前一个字符出现1次或者0次，即要么有1次，要么没有</td>
+</tr>
+<tr>
+<td>{m}</td>
+<td>匹配前一个字符出现m次</td>
+</tr>
+<tr>
+<td>{m,n}</td>
+<td>匹配前一个字符出现从m到n次</td>
+</tr>
+<tr>
+<td>^</td>
+<td>匹配字符串开头是否以^后面的字符开头</td>
+</tr>
+<tr>
+<td>$</td>
+<td>匹配字符串结尾是否以$前面的字符结束</td>
+</tr>
+</tbody></table>
+]]></content>
+  </entry>
+  <entry>
+    <title>router-link传递和获取参数</title>
+    <url>/2019/07/20/router-link%E4%BC%A0%E9%80%92%E5%92%8C%E8%8E%B7%E5%8F%96%E5%8F%82%E6%95%B0/</url>
+    <content><![CDATA[<h2 id="router-link-to传递和获取参数"><a href="#router-link-to传递和获取参数" class="headerlink" title="router-link to传递和获取参数"></a>router-link to传递和获取参数</h2><p>跳转链接：</p><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;router-link :to=&quot;&#123;path:&apos;libraryDetail/&apos;, query:&#123;library_id:data.library_id&#125;&#125;&quot;&gt;</span><br></pre></td></tr></table></figure><a id="more"></a>
+
+
+<p>获取参数：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">library_id = this.$route.query.library_id;</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>Vue</category>
+      </categories>
+      <tags>
+        <tag>Vue</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>MySQL数据库死锁</title>
+    <url>/2019/06/26/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E6%AD%BB%E9%94%81/</url>
+    <content><![CDATA[<h2 id="MySQL数据库死锁的产生原因及解决办法"><a href="#MySQL数据库死锁的产生原因及解决办法" class="headerlink" title="MySQL数据库死锁的产生原因及解决办法"></a>MySQL数据库死锁的产生原因及解决办法</h2><p>在数据库中有两种基本的锁类型：排它锁（Exclusive Locks，即X锁）和共享锁（Share Locks，即S锁）。当数据对象被加上排它锁时，其他的事务不能对它读取和修改。加了共享锁的数据对象可以被其他事务读取，但不能修改。数据库利用这两 种基本的锁类型来对数据库的事务进行并发控制。 </p><a id="more"></a>
+<h4 id="死锁的第一种情况"><a href="#死锁的第一种情况" class="headerlink" title="死锁的第一种情况"></a><strong>死锁的第一种情况</strong></h4><p>一个用户A 访问表A(锁住了表A),然后又访问表B；另一个用户B 访问表B(锁住了表B)，然后企图访问表A；这时用户A由于用户B已经锁住表B，它必须等待用户B释放表B才能继续，同样用户B要等用户A释放表A才能继续，这就死锁就产生了。</p>
+<h4 id="死锁的第二种情况"><a href="#死锁的第二种情况" class="headerlink" title="死锁的第二种情况"></a><strong>死锁的第二种情况</strong></h4><p>用户A查询一条纪录，然后修改该条纪录；这时用户B修改该条纪录，这时用户A的事务里锁的性质由查询的共享锁企图上升到独占锁，而用户B里的独占锁由于A 有共享锁存在所以必须等A释放掉共享锁，而A由于B的独占锁而无法上升的独占锁也就不可能释放共享锁，于是出现了死锁。这种死锁比较隐蔽，但在稍大点的项 目中经常发生。如在某项目中，页面上的按钮点击后，没有使按钮立刻失效，使得用户会多次快速点击同一按钮，这样同一段代码对数据库同一条记录进行多次操 作，很容易就出现这种死锁的情况。</p>
+<h4 id="解决方法："><a href="#解决方法：" class="headerlink" title="解决方法："></a>解决方法：</h4><p>1、对于按钮等控件，点击后使其立刻失效，不让用户重复点击，避免同时对同一条记录操作。 </p>
+<p>2.使用乐观锁进行控制。 乐观锁认为数据一般不会发生变化，因此不会加锁，但是在更新数据时会对数据进行比较，若数据没有变化，则进行更新，否则不进行更新 </p>
+<p>3、使用悲观锁进行控制 。如果采用悲观锁机制，也就意味着整个操作过程中，数据库记录始终处于加锁状态，如果面对成百上千个并发，这样的情况将导致灾难性的后果。所以，采用悲观锁进行控制时一定要考虑清楚 </p>
+<h3 id="如何实现乐观锁"><a href="#如何实现乐观锁" class="headerlink" title="如何实现乐观锁"></a>如何实现乐观锁</h3><h4 id="方式1：版本号机制"><a href="#方式1：版本号机制" class="headerlink" title="方式1：版本号机制"></a>方式1：版本号机制</h4><p>给表增加一个 <code>version</code> 版本号字段，具体流程如下：</p>
+<ul>
+<li>读取数据时，将数据的版本号数据一同读出；</li>
+<li>数据每次发生更新时，将版本号加 1；</li>
+<li>提交数据时，将当前版本号与之前读出的版本号进行对比。若相同，则更新；否则，更新失败。</li>
+</ul>
+<h4 id="方式2：记录时间戳"><a href="#方式2：记录时间戳" class="headerlink" title="方式2：记录时间戳"></a>方式2：记录时间戳</h4><p>原理与方式一相同，给表增加一个记录操作的时间戳字段，当发生数据更新时，将当前时间戳与更新前获取的时间戳进行对比，若相同，则允许更新，且同时更新操作时间戳字段，否则更新失败。</p>
+<h4 id="优缺点"><a href="#优缺点" class="headerlink" title="优缺点"></a>优缺点</h4><h5 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h5><ul>
+<li>不会发生任何锁和死锁</li>
+<li>可增加吞吐量</li>
+<li>避免了长事务中的数据库加锁开销</li>
+</ul>
+<h5 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h5><p>对于写多的场景并不适用，因为当写操作非常频繁时，更新失败的几率就越大，上层逻辑进行retry的次数也会增多，从而降低了系统的性能。</p>
+]]></content>
+      <categories>
+        <category>MySQL</category>
+      </categories>
+      <tags>
+        <tag>MySQL</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>关于MySQL</title>
+    <url>/2019/05/22/%E5%85%B3%E4%BA%8EMySQL/</url>
+    <content><![CDATA[<h2 id="什么是-MySQL？"><a href="#什么是-MySQL？" class="headerlink" title="什么是 MySQL？"></a>什么是 MySQL？</h2><ol>
+<li><strong>MySQL</strong> 是一个快速、多线程、多用户和强壮的SQL数据库服务器 </li>
+</ol>
+<h2 id="我们为什么使用MySQL"><a href="#我们为什么使用MySQL" class="headerlink" title="我们为什么使用MySQL"></a>我们为什么使用MySQL</h2><pre><code>1. 我们因为它开源免费，使用范围广泛，具有强大的索引和事务，能支持海量的数据</code></pre> <a id="more"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h2 id="MySQL中的幻读，什么是幻读"><a href="#MySQL中的幻读，什么是幻读" class="headerlink" title="MySQL中的幻读，什么是幻读"></a>MySQL中的幻读，什么是幻读</h2><ol>
+<li>幻读一词摘自MySQL的官方手册</li>
+<li>幻读出现于在开启事务</li>
+</ol>
+]]></content>
+      <categories>
+        <category>MySQL</category>
+      </categories>
+      <tags>
+        <tag>MySQL</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Django</title>
+    <url>/2019/05/22/Django/</url>
+    <content><![CDATA[<h2 id="如何使用ImageField上传图片"><a href="#如何使用ImageField上传图片" class="headerlink" title="如何使用ImageField上传图片"></a>如何使用ImageField上传图片</h2><figure class="highlight"><table><tr><td class="code"><pre><span class="line"><span class="comment">#models</span></span><br><span class="line">img = models.ImageField(verbose_name=<span class="string">'描述图片'</span>,upload_to=<span class="string">'media'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#settings</span></span><br><span class="line">MEDIA_URL = <span class="string">'/media/'</span></span><br><span class="line">MEDIA_ROOT = os.path.join(BASE_DIR,<span class="string">'media'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#记得form表单写enctype</span></span><br><span class="line">&lt;form action=<span class="string">""</span> method=<span class="string">"post"</span> enctype=<span class="string">"multipart/form-data"</span>&gt; </span><br><span class="line">&lt;/form&gt;</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+
+
+<h2 id="配置跨域"><a href="#配置跨域" class="headerlink" title="配置跨域"></a>配置跨域</h2><h3 id="第一步"><a href="#第一步" class="headerlink" title="第一步"></a>第一步</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">MIDDLEWARE = [</span><br><span class="line">    <span class="string">'django.middleware.security.SecurityMiddleware'</span>,</span><br><span class="line">    <span class="string">'django.contrib.sessions.middleware.SessionMiddleware'</span>,</span><br><span class="line">    <span class="string">'corsheaders.middleware.CorsMiddleware'</span>,</span><br><span class="line">    </span><br><span class="line">    <span class="string">'django.middleware.common.CommonMiddleware'</span>,</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 'django.middleware.csrf.CsrfViewMiddleware',</span></span><br><span class="line">    <span class="string">'django.contrib.auth.middleware.AuthenticationMiddleware'</span>,</span><br><span class="line">    <span class="string">'django.contrib.messages.middleware.MessageMiddleware'</span>,</span><br><span class="line">    <span class="string">'django.middleware.clickjacking.XFrameOptionsMiddleware'</span>,</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<h3 id="第二步"><a href="#第二步" class="headerlink" title="第二步"></a>第二步</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">CORS_ORIGIN_ALLOW_ALL = <span class="literal">True</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<h2 id="Django-配置MySQL数据库"><a href="#Django-配置MySQL数据库" class="headerlink" title="Django 配置MySQL数据库"></a>Django 配置MySQL数据库</h2><h3 id="在settings-py中配置"><a href="#在settings-py中配置" class="headerlink" title="在settings.py中配置"></a>在settings.py中配置</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import pymysql　　　　　　　　　　　# 配置MySQL</span><br><span class="line">pymysql.install_as_MySQLdb()</span><br><span class="line">DATABASES = &#123;</span><br><span class="line">    &apos;default&apos;: &#123;</span><br><span class="line">        &apos;ENGINE&apos;: &apos;django.db.backends.mysql&apos;,   # 数据库引擎</span><br><span class="line">        &apos;NAME&apos;: &apos;django&apos;,         # 你要存储数据的库名，事先要创建之</span><br><span class="line">        &apos;USER&apos;: &apos;root&apos;,         # 数据库用户名</span><br><span class="line">        &apos;PASSWORD&apos;: &apos;&apos;,     # 密码</span><br><span class="line">        &apos;HOST&apos;: &apos;localhost&apos;,    # 主机</span><br><span class="line">        &apos;PORT&apos;: &apos;3306&apos;,         # 数据库使用的端口</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="数据库结构迁移"><a href="#数据库结构迁移" class="headerlink" title="数据库结构迁移"></a>数据库结构迁移</h3><p>Python3不支持MySQLdb，可用pymysql代替。</p>
+<p>1.首先，在Python虚拟环境下安装pymysql：pip install pymysql。</p>
+<p>2.然后，在项目文件夹下的<em>init</em>.py（实际上也可以添加到settings.py中，如上。）添加如下代码即可。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> pymysql</span><br><span class="line">pymysql.install_as_MySQLdb()</span><br></pre></td></tr></table></figure>
+
+<p>3.再者，在Terminal中执行数据库迁移命令：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">python manage.py makemigrations</span><br><span class="line">python manage.py migrate</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+<h2 id="密码加密"><a href="#密码加密" class="headerlink" title="密码加密"></a>密码加密</h2><h4 id="md5加密"><a href="#md5加密" class="headerlink" title="md5加密"></a>md5加密</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">form hashlib <span class="keyword">import</span> md5</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_md5</span><span class="params">(str_)</span>:</span></span><br><span class="line">    m = md5()</span><br><span class="line">    m.update(str_)</span><br><span class="line">    <span class="keyword">return</span> m.hexdigest()</span><br></pre></td></tr></table></figure>
+
+<h4 id="使用实例"><a href="#使用实例" class="headerlink" title="使用实例"></a>使用实例</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">password = get_md5(str(password).encode())</span><br></pre></td></tr></table></figure>
+
+<h4 id="hexdigest和digest的区别"><a href="#hexdigest和digest的区别" class="headerlink" title="hexdigest和digest的区别"></a>hexdigest和digest的区别</h4><p>hexdigest生成十六进制的md5值,digest生成二进制的md5值</p>
+<h3 id="django自带的hashers"><a href="#django自带的hashers" class="headerlink" title="django自带的hashers"></a>django自带的hashers</h3><h4 id="引入模块"><a href="#引入模块" class="headerlink" title="引入模块"></a>引入模块</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> django.contrib.auth.hashers <span class="keyword">import</span> make_password,check_password</span><br></pre></td></tr></table></figure>
+
+<p>每次加密生成的密码都不一样，所有需要使用check_password来进行解密</p>
+<h4 id="加密and解密"><a href="#加密and解密" class="headerlink" title="加密and解密"></a>加密and解密</h4><p>加密              make_password(password)</p>
+<p>解密           check_password(密文,明文)</p>
+<h2 id="django连接MySQL数据库"><a href="#django连接MySQL数据库" class="headerlink" title="django连接MySQL数据库"></a>django连接MySQL数据库</h2><h4 id="在settings-py中配置-1"><a href="#在settings-py中配置-1" class="headerlink" title="在settings.py中配置"></a>在settings.py中配置</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">DATABASES = &#123;</span><br><span class="line">    <span class="string">'default'</span>: &#123;</span><br><span class="line">        <span class="string">'ENGINE'</span>: <span class="string">'django.db.backends.mysql'</span>,</span><br><span class="line">        <span class="string">'NAME'</span>:<span class="string">'库名'</span>,</span><br><span class="line">        <span class="string">'USER'</span>:<span class="string">'root'</span>,			<span class="comment">#数据库用户名</span></span><br><span class="line">    	<span class="string">'PASSWORD'</span>:<span class="string">''</span>,		    <span class="comment">#密码</span></span><br><span class="line">        <span class="string">'HOST'</span>:<span class="string">'localhost'</span>,      <span class="comment">#主机</span></span><br><span class="line">        <span class="string">'PORT'</span>:<span class="string">'3306'</span>			<span class="comment">#数据库使用的端口号</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="在项目文件夹下的init-py添加如下代码"><a href="#在项目文件夹下的init-py添加如下代码" class="headerlink" title="在项目文件夹下的init.py添加如下代码"></a>在项目文件夹下的init.py添加如下代码</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> pymysql</span><br><span class="line">pymysql.install_as_MySQLdb()</span><br></pre></td></tr></table></figure>
+
+<h4 id="把从SQLite中把数据导入到MySQL中"><a href="#把从SQLite中把数据导入到MySQL中" class="headerlink" title="把从SQLite中把数据导入到MySQL中"></a>把从SQLite中把数据导入到MySQL中</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#当Django数据库配置为SQLite3时</span></span><br><span class="line"><span class="comment">#在cmd输入：</span></span><br><span class="line">python manage.py dumpdata &gt; data.json</span><br><span class="line"></span><br><span class="line"><span class="comment">#MySQL导入数据</span></span><br><span class="line"><span class="comment">#当Django数据库配置为MySQL时，迁移出表格</span></span><br><span class="line"><span class="comment">#在cmd输入：</span></span><br><span class="line">python manage.py loaddate data.json</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="反解析"><a href="#反解析" class="headerlink" title="反解析"></a>反解析</h2><h3 id="1-定义："><a href="#1-定义：" class="headerlink" title="1.定义："></a>1.定义：</h3><p>随着功能的增加会出现更多的视图，可能之前配置的正则表达式不够准确，于是就要修改正则表达式，但是正则表达式一旦修改了，之前所有对应的超链接都要修改，真是一件麻烦的事情，而且可能还会漏掉一些超链接忘记修改，有办法让链接根据正则表达式动态生成吗？ 就是用反向解析的办法。</p>
+<h3 id="2-应用范围："><a href="#2-应用范围：" class="headerlink" title="2.应用范围："></a>2.应用范围：</h3><p>• 模板中的超链接</p>
+<p>• 视图中的重定向</p>
+<h3 id="3-使用"><a href="#3-使用" class="headerlink" title="3.使用"></a>3.使用</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">url.py中配制</span><br><span class="line">app_name = &apos;shop&apos;</span><br><span class="line"></span><br><span class="line">re_path(&apos;detail/(\d)$&apos;,views.details,name=&apos;detail&apos;)</span><br><span class="line">template中使用</span><br><span class="line">&lt;a href=&quot;&#123;% url &apos;shop:detail&apos; 3 %&#125;&quot;&gt;list&lt;/a&gt;</span><br><span class="line"></span><br><span class="line">Views中使用</span><br><span class="line">from django.urls import reverse</span><br><span class="line">return HttpResponseRedirect(reverse(&quot;shop:detail&quot;,args=[pk],kwargs=&#123;&apos;body&apos;:&quot;email body&quot;&#125;))</span><br></pre></td></tr></table></figure>
+
+
+
+
+<h2 id="如何将从数据库中查询出来的数据转换为json数据发送到前台"><a href="#如何将从数据库中查询出来的数据转换为json数据发送到前台" class="headerlink" title="如何将从数据库中查询出来的数据转换为json数据发送到前台"></a>如何将从数据库中查询出来的数据转换为json数据发送到前台</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#通过对表values查询对结果集进行list转换也是json类型</span></span><br><span class="line">json_ = &#123;&#125;</span><br><span class="line">data = models.Goods.objects.values()</span><br><span class="line">json_data = list(data)</span><br><span class="line"><span class="keyword">return</span> Response(&#123;   </span><br><span class="line">            <span class="string">'data'</span>:json_data</span><br><span class="line">        &#125;)</span><br></pre></td></tr></table></figure>
+
+
+]]></content>
+      <categories>
+        <category>Django</category>
+      </categories>
+      <tags>
+        <tag>Django</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>解决Hexo图片问题</title>
+    <url>/2019/05/03/%E8%A7%A3%E5%86%B3Hexo%E5%9B%BE%E7%89%87%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[<p>最近搭建hexo博客时遇到了图片部署后不显示的问题，经过上网查阅后可以正常显示</p><p>解决方案如下： </p><ol>
+<li><p>在根目录下配置文件<code>_config.yml</code> 中有 <code>post_asset_folder:false改为true</code>。这样在建立文件时，<code>Hexo</code>会自动建立一个与文章同名的文件夹，这样就可以把与该文章相关的所有资源（图片）都放到那个文件夹里方便后面引用。如这里我放了一张test.png的图片。 </p>
+</li>
+<li><p>git bash安装插件：npm install  <a href="https://github.com/7ym0n/hexo-asset-image" target="_blank" rel="noopener">https://github.com/7ym0n/hexo-asset-image</a> –save（这是个修改过的插件，经测试无问题），使用这个插件来引入图片，而不是网上那些方法里说的用传统md语法相对路径的方法。 </p>
+</li>
+<li><p>插入图片时用这种方式：</p>
+<p><strong><img src="/2019/05/03/%E8%A7%A3%E5%86%B3Hexo%E5%9B%BE%E7%89%87%E9%97%AE%E9%A2%98/test.png" class title="This is an test image"></strong></p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line">&#123;% asset_img test.png This is an test image %&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ol><a id="more"></a>
+
+
+<p>   ​        <strong>其中test.png就是你要引用的图片，我这里就是test.png，后面的This is an test image是图片描述，可以自己修改。</strong> </p>
+]]></content>
+      <categories>
+        <category>Hexo</category>
+      </categories>
+      <tags>
+        <tag>Hexo</tag>
+      </tags>
+  </entry>
+</search>

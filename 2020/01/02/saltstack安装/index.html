@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <link rel="alternate" href="/atom.xml" title="Ares" type="application/atom+xml">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://obsessed.top').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.5.0',
+    exturl: false,
+    sidebar: {"position":"left","Manual define the sidebar width. If commented, will be default for":null,"Muse | Mist":320,"Pisces | Gemini":240,"width":200,"display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="1.  准备虚拟环境 在VMware中创建一个中创建一个CentOS 64位的操作系统 在配置时使用系统自动分配的IP 2.  配置 配置网卡​    vi &#x2F;etc&#x2F;sysconfig&#x2F;network-scripts&#x2F;ifcfg-eth0  1234567BOOTPROTO=static #dhcp改为static（修改）ONBOOT=yes #开机启用本配置，一般在最后一行（修改） IPADD">
+<meta name="keywords" content="saltstack">
+<meta property="og:type" content="article">
+<meta property="og:title" content="saltstack安装">
+<meta property="og:url" content="http:&#x2F;&#x2F;obsessed.top&#x2F;2020&#x2F;01&#x2F;02&#x2F;saltstack%E5%AE%89%E8%A3%85&#x2F;index.html">
+<meta property="og:site_name" content="Ares">
+<meta property="og:description" content="1.  准备虚拟环境 在VMware中创建一个中创建一个CentOS 64位的操作系统 在配置时使用系统自动分配的IP 2.  配置 配置网卡​    vi &#x2F;etc&#x2F;sysconfig&#x2F;network-scripts&#x2F;ifcfg-eth0  1234567BOOTPROTO=static #dhcp改为static（修改）ONBOOT=yes #开机启用本配置，一般在最后一行（修改） IPADD">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-03-02T03:33:06.337Z">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://obsessed.top/2020/01/02/saltstack%E5%AE%89%E8%A3%85/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>saltstack安装 | Ares</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ares</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Above all, don't lose hope.</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://obsessed.top/2020/01/02/saltstack%E5%AE%89%E8%A3%85/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/20160228201627_f5vax.jpg">
+      <meta itemprop="name" content="Ares">
+      <meta itemprop="description" content="最重要的是，别放弃希望">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ares">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          saltstack安装
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-01-02 23:00:27" itemprop="dateCreated datePublished" datetime="2020-01-02T23:00:27+08:00">2020-01-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-02 11:33:06" itemprop="dateModified" datetime="2020-03-02T11:33:06+08:00">2020-03-02</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="1-准备虚拟环境"><a href="#1-准备虚拟环境" class="headerlink" title="1.  准备虚拟环境"></a>1.  准备虚拟环境</h2><ol>
+<li>在VMware中创建一个中创建一个CentOS 64位的操作系统</li>
+<li>在配置时使用系统自动分配的IP</li>
+</ol><h2 id="2-配置"><a href="#2-配置" class="headerlink" title="2.  配置"></a>2.  配置</h2><ol>
+<li><h3 id="配置网卡"><a href="#配置网卡" class="headerlink" title="配置网卡"></a><strong>配置网卡</strong></h3><p>​    vi /etc/sysconfig/network-scripts/ifcfg-eth0 </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">BOOTPROTO=static <span class="comment">#dhcp改为static（修改）</span></span><br><span class="line">ONBOOT=yes <span class="comment">#开机启用本配置，一般在最后一行（修改）</span></span><br><span class="line"> </span><br><span class="line">IPADDR=<span class="number">192.168</span><span class="number">.179</span><span class="number">.111</span> <span class="comment">#静态IP（增加）</span></span><br><span class="line">GATEWAY=<span class="number">192.168</span><span class="number">.179</span><span class="number">.2</span> <span class="comment">#默认网关，虚拟机安装的话，通常是2，也就是VMnet8的网关设置（增加）</span></span><br><span class="line">NETMASK=<span class="number">255.255</span><span class="number">.255</span><span class="number">.0</span> <span class="comment">#子网掩码（增加）</span></span><br><span class="line">DNS1=<span class="number">192.168</span><span class="number">.179</span><span class="number">.2</span> <span class="comment">#DNS 配置，虚拟机安装的话，DNS就网关就行，多个DNS网址的话再增加（增加）</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><h3 id="重启网卡"><a href="#重启网卡" class="headerlink" title="重启网卡"></a>重启网卡</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">service network restart</span><br></pre></td></tr></table></figure>
+</li>
+<li><h3 id="随便找个域名ping一下测试DNS是否OK"><a href="#随便找个域名ping一下测试DNS是否OK" class="headerlink" title="随便找个域名ping一下测试DNS是否OK"></a>随便找个域名ping一下测试DNS是否OK</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ping baidu.com</span><br></pre></td></tr></table></figure>
+</li>
+<li><h3 id="设置主机名"><a href="#设置主机名" class="headerlink" title="设置主机名"></a><strong>设置主机名</strong></h3><p>vi /etc/hostname</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">linux-node1.example.com				<span class="comment">#为主机名</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><h3 id="设置主机名解析"><a href="#设置主机名解析" class="headerlink" title="设置主机名解析"></a>设置主机名解析</h3><p>vi /etc/hosts </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">192.168</span><span class="number">.56</span><span class="number">.11</span> linux-node1 linux-node1.example.com</span><br><span class="line"></span><br><span class="line"><span class="number">192.168</span><span class="number">.56</span><span class="number">.12</span> linux-node2 linux-node2.example.com</span><br></pre></td></tr></table></figure>
+</li>
+<li><h3 id="安装最新epel-yum源"><a href="#安装最新epel-yum源" class="headerlink" title="安装最新epel yum源"></a><strong>安装最新epel yum源</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 此地址中有各种源（https://opsx.alibaba.com/mirror）</span></span><br><span class="line">rpm -ivh https://mirrors.aliyun.com/epel/epel-release-latest<span class="number">-7.</span>noarch.rpm</span><br></pre></td></tr></table></figure>
+</li>
+<li><h3 id="yum安装-一些基础包"><a href="#yum安装-一些基础包" class="headerlink" title="yum安装 一些基础包"></a><strong>yum安装 一些基础包</strong></h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum -y install net-tools vim lrzsz tree screen lsof tcpdump nc mtr nmap</span><br></pre></td></tr></table></figure>
+</li>
+<li><h3 id="关闭selinux"><a href="#关闭selinux" class="headerlink" title="关闭selinux"></a><strong>关闭selinux</strong></h3><p>vim /etc/selinux/config </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELINUX=disabled</span><br></pre></td></tr></table></figure>
+</li>
+<li><h3 id="重启系统"><a href="#重启系统" class="headerlink" title="重启系统"></a><strong>重启系统</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum update -y &amp;&amp; reboot          <span class="comment"># 升级所有包同时也升级软件和系统内核, 并重启</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><h3 id="确认是否一些服务是否已按计划关闭"><a href="#确认是否一些服务是否已按计划关闭" class="headerlink" title="确认是否一些服务是否已按计划关闭"></a><strong>确认是否一些服务是否已按计划关闭</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">getenforce          <span class="comment"># selinux是否关闭</span></span><br><span class="line"></span><br><span class="line">firewall-cmd --state         <span class="comment"># 防火墙是否关闭</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><h3 id="附带关于CentOS7防火墙的命令"><a href="#附带关于CentOS7防火墙的命令" class="headerlink" title="附带关于CentOS7防火墙的命令"></a>附带关于CentOS7防火墙的命令</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">1. 使用命令：firewall-cmd --state     			查看防火墙状态</span><br><span class="line">		running			#代表开启</span><br><span class="line">2. 使用命令：systemctl stop firewalld.service	 	关闭运行的防火墙</span><br><span class="line">		not running		#代表关闭</span><br><span class="line">3. 注意  前面的方法，一旦重启操作系统，防火墙就自动开启了</span><br><span class="line"></span><br><span class="line">4. 输入命令：systemctl disable firewalld.service		禁止防火墙服务器自动启动</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol><a id="more"></a>
+
+<h2 id="3-克隆一台虚拟机"><a href="#3-克隆一台虚拟机" class="headerlink" title="3.  克隆一台虚拟机"></a>3.  克隆一台虚拟机</h2><p>   <strong>注：</strong>克隆虚拟机必须要先关闭（shutdown） </p>
+<ol>
+<li><h3 id="右键-‘管理’-—–-gt-‘克隆’"><a href="#右键-‘管理’-—–-gt-‘克隆’" class="headerlink" title="右键    ‘管理’    —–&gt;    ‘克隆’"></a>右键    ‘管理’    —–&gt;    ‘克隆’</h3></li>
+<li><h3 id="选择从那个状态克隆"><a href="#选择从那个状态克隆" class="headerlink" title="选择从那个状态克隆"></a>选择从那个状态克隆</h3></li>
+<li><h3 id="克隆状态-创建完整克隆"><a href="#克隆状态-创建完整克隆" class="headerlink" title="克隆状态(创建完整克隆)"></a>克隆状态(创建完整克隆)</h3></li>
+<li><h3 id="搜索"><a href="#搜索" class="headerlink" title="搜索"></a>搜索</h3></li>
+<li><h3 id="新建虚拟机名称"><a href="#新建虚拟机名称" class="headerlink" title="新建虚拟机名称"></a>新建虚拟机名称</h3></li>
+<li><h3 id="点击’完成’即完成对虚拟机的克隆"><a href="#点击’完成’即完成对虚拟机的克隆" class="headerlink" title="点击’完成’即完成对虚拟机的克隆"></a>点击’完成’即完成对虚拟机的克隆</h3></li>
+<li><h3 id="对虚拟机node2进行一些简单的配置"><a href="#对虚拟机node2进行一些简单的配置" class="headerlink" title="对虚拟机node2进行一些简单的配置"></a>对虚拟机node2进行一些简单的配置</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/hostname       # 1、修改主机名</span><br><span class="line"></span><br><span class="line">	linux-node2.example.com</span><br><span class="line"></span><br><span class="line">vi /etc/sysconfig/network-scripts/ifcfg-eth0 </span><br><span class="line"></span><br><span class="line">	IPADDR=192.168.179.111 #静态IP（修改）</span><br><span class="line"></span><br><span class="line">vi /etc/sysconfig/network-scripts/ifcfg-eth0　</span><br><span class="line"></span><br><span class="line">	IPADDR=192.168.56.12</span><br><span class="line"></span><br><span class="line">reboot			#重启虚拟机</span><br></pre></td></tr></table></figure>
+
+<h2 id="4-安装"><a href="#4-安装" class="headerlink" title="4.  安装"></a>4.  安装</h2><ol>
+<li><h3 id="在node1-中安装saltstack-master-和-minion"><a href="#在node1-中安装saltstack-master-和-minion" class="headerlink" title="在node1 中安装saltstack master 和 minion"></a><strong>在node1 中安装saltstack master 和 minion</strong></h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">yum -y install https://repo.saltstack.com/yum/redhat/salt-repo-latest-2.el7.noarch.rpm </span><br><span class="line"></span><br><span class="line">yum -y install salt-master salt-minion</span><br><span class="line"></span><br><span class="line">    /etc/salt/master（master配置文件）</span><br><span class="line"></span><br><span class="line">    /etc/salt/minion（minion配置文件）</span><br></pre></td></tr></table></figure>
+</li>
+<li><h3 id="node2-中安装saltstack-minion"><a href="#node2-中安装saltstack-minion" class="headerlink" title="node2 中安装saltstack minion"></a>node2 中安装<strong>saltstack minion</strong></h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">yum -y install https://repo.saltstack.com/yum/redhat/salt-repo-latest-2.el7.noarch.rpm </span><br><span class="line"></span><br><span class="line">yum -y install salt-minion</span><br><span class="line"></span><br><span class="line">	/etc/salt/minion（minion配置文件）</span><br></pre></td></tr></table></figure>
+</li>
+<li><h3 id="在linux-node1中配置-salt-minion"><a href="#在linux-node1中配置-salt-minion" class="headerlink" title="在linux-node1中配置 salt-minion"></a><strong>在linux-node1中配置 salt-minion</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/salt/minion</span><br><span class="line"></span><br><span class="line">    <span class="comment">#master: salt   修改为（master: 192.168.56.11） ----》配置master IP</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">#id:           修改为（id: linux-node1.example.com）   ---》告诉master自己是谁，默认会读取当前主机名</span></span><br><span class="line">    </span><br><span class="line">注：saltstack是以主机名区分不同 agent 需保证主机名唯一</span><br></pre></td></tr></table></figure>
+</li>
+<li><h3 id="在node2中配置-salt-minion"><a href="#在node2中配置-salt-minion" class="headerlink" title="在node2中配置 salt-minion"></a>在node2中配置 salt-minion</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/salt/minion</span><br><span class="line"></span><br><span class="line">    <span class="comment">#master: salt   修改为（master: 192.168.56.11） ----》配置master IP</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">#id:           修改为（id: linux-node2.example.com）   ---》告诉master自己是谁，默认会读取当前主机名</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><h3 id="启动node1中salt-maser-和-salt-minion"><a href="#启动node1中salt-maser-和-salt-minion" class="headerlink" title="启动node1中salt-maser 和 salt-minion"></a><strong>启动node1中salt-maser 和 salt-minion</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">systemctl start salt-master       <span class="comment"># 启动salt-master</span></span><br><span class="line"></span><br><span class="line">systemctl enable salt-master       <span class="comment"># 设置salt-master开机自启动</span></span><br><span class="line"></span><br><span class="line">systemctl start salt-minion        <span class="comment"># 启动</span></span><br><span class="line"></span><br><span class="line">systemctl enable salt-minion     <span class="comment"># 开机自启动</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><h3 id="启动node2中salt-minion"><a href="#启动node2中salt-minion" class="headerlink" title="启动node2中salt-minion"></a><strong>启动node2中salt-minion</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">systemctl start salt-minion        <span class="comment"># 启动</span></span><br><span class="line"></span><br><span class="line">systemctl enable salt-minion      <span class="comment"># 开机自启动</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><h3 id="认证"><a href="#认证" class="headerlink" title="认证"></a>认证</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">salt-key             <span class="comment"># 在master中查看所有key的状态</span></span><br><span class="line"></span><br><span class="line">salt-key -a linux-node1.example.com      <span class="comment"># 认证 linux-node1.example.com的key</span></span><br><span class="line"></span><br><span class="line">salt-key -A          <span class="comment"># 一次性认证所有key</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><h3 id="远程执行"><a href="#远程执行" class="headerlink" title="远程执行"></a>远程执行</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">salt  \*  test.ping         <span class="comment"># 测试saltstack minion与master的连通性</span></span><br><span class="line"></span><br><span class="line">salt \* cmd.run <span class="string">'df -h'</span>     <span class="comment"># 在所有minion中批量执行 df -h 命令</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Ares
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://obsessed.top/2020/01/02/saltstack%E5%AE%89%E8%A3%85/" title="saltstack安装">http://obsessed.top/2020/01/02/saltstack%E5%AE%89%E8%A3%85/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/null" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/saltstack/" rel="tag"># saltstack</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/12/19/git/" rel="prev" title="Git">
+      <i class="fa fa-chevron-left"></i> Git
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/02/22/python%E5%AF%B9%E6%8E%A5%E6%94%AF%E4%BB%98%E5%AE%9D/" rel="next" title="python对接支付宝">
+      python对接支付宝 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-准备虚拟环境"><span class="nav-text">1.  准备虚拟环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-配置"><span class="nav-text">2.  配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#配置网卡"><span class="nav-text">配置网卡</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#重启网卡"><span class="nav-text">重启网卡</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#随便找个域名ping一下测试DNS是否OK"><span class="nav-text">随便找个域名ping一下测试DNS是否OK</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设置主机名"><span class="nav-text">设置主机名</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设置主机名解析"><span class="nav-text">设置主机名解析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装最新epel-yum源"><span class="nav-text">安装最新epel yum源</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#yum安装-一些基础包"><span class="nav-text">yum安装 一些基础包</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关闭selinux"><span class="nav-text">关闭selinux</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#重启系统"><span class="nav-text">重启系统</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#确认是否一些服务是否已按计划关闭"><span class="nav-text">确认是否一些服务是否已按计划关闭</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#附带关于CentOS7防火墙的命令"><span class="nav-text">附带关于CentOS7防火墙的命令</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-克隆一台虚拟机"><span class="nav-text">3.  克隆一台虚拟机</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#右键-‘管理’-—–-gt-‘克隆’"><span class="nav-text">右键    ‘管理’    —–&gt;    ‘克隆’</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#选择从那个状态克隆"><span class="nav-text">选择从那个状态克隆</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#克隆状态-创建完整克隆"><span class="nav-text">克隆状态(创建完整克隆)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#搜索"><span class="nav-text">搜索</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#新建虚拟机名称"><span class="nav-text">新建虚拟机名称</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#点击’完成’即完成对虚拟机的克隆"><span class="nav-text">点击’完成’即完成对虚拟机的克隆</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#对虚拟机node2进行一些简单的配置"><span class="nav-text">对虚拟机node2进行一些简单的配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-安装"><span class="nav-text">4.  安装</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#在node1-中安装saltstack-master-和-minion"><span class="nav-text">在node1 中安装saltstack master 和 minion</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#node2-中安装saltstack-minion"><span class="nav-text">node2 中安装saltstack minion</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在linux-node1中配置-salt-minion"><span class="nav-text">在linux-node1中配置 salt-minion</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在node2中配置-salt-minion"><span class="nav-text">在node2中配置 salt-minion</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#启动node1中salt-maser-和-salt-minion"><span class="nav-text">启动node1中salt-maser 和 salt-minion</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#启动node2中salt-minion"><span class="nav-text">启动node2中salt-minion</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#认证"><span class="nav-text">认证</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#远程执行"><span class="nav-text">远程执行</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Ares"
+      src="/images/20160228201627_f5vax.jpg">
+  <p class="site-author-name" itemprop="name">Ares</p>
+  <div class="site-description" itemprop="description">最重要的是，别放弃希望</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">23</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/Aresea" title="GitHub → https:&#x2F;&#x2F;gitee.com&#x2F;Aresea" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/2441236144@qq.com" title="E-Mail → 2441236144@qq.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/null" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ares</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

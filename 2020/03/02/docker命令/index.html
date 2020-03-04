@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <link rel="alternate" href="/atom.xml" title="Ares" type="application/atom+xml">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://obsessed.top').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.5.0',
+    exturl: false,
+    sidebar: {"position":"left","Manual define the sidebar width. If commented, will be default for":null,"Muse | Mist":320,"Pisces | Gemini":240,"width":200,"display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="一、docker的安装123456789101112131415161718192021# 1、安装依赖包yum install -y yum-utils device-mapper-persistent-data lvm2# 2、添加Docker软件包源(否则doker安装的不是新版本)yum-config-manager \--add-repo \https:&#x2F;&#x2F;download.docker">
+<meta name="keywords" content="docker">
+<meta property="og:type" content="article">
+<meta property="og:title" content="docker命令">
+<meta property="og:url" content="http:&#x2F;&#x2F;obsessed.top&#x2F;2020&#x2F;03&#x2F;02&#x2F;docker%E5%91%BD%E4%BB%A4&#x2F;index.html">
+<meta property="og:site_name" content="Ares">
+<meta property="og:description" content="一、docker的安装123456789101112131415161718192021# 1、安装依赖包yum install -y yum-utils device-mapper-persistent-data lvm2# 2、添加Docker软件包源(否则doker安装的不是新版本)yum-config-manager \--add-repo \https:&#x2F;&#x2F;download.docker">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-03-03T11:02:58.112Z">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://obsessed.top/2020/03/02/docker%E5%91%BD%E4%BB%A4/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>docker命令 | Ares</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ares</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Above all, don't lose hope.</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://obsessed.top/2020/03/02/docker%E5%91%BD%E4%BB%A4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/20160228201627_f5vax.jpg">
+      <meta itemprop="name" content="Ares">
+      <meta itemprop="description" content="最重要的是，别放弃希望">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ares">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          docker命令
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-02 16:49:26" itemprop="dateCreated datePublished" datetime="2020-03-02T16:49:26+08:00">2020-03-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-03 19:02:58" itemprop="dateModified" datetime="2020-03-03T19:02:58+08:00">2020-03-03</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="一、docker的安装"><a href="#一、docker的安装" class="headerlink" title="一、docker的安装"></a>一、docker的安装</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1、安装依赖包</span></span><br><span class="line">yum install -y yum-utils device-mapper-persistent-data lvm2</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2、添加Docker软件包源(否则doker安装的不是新版本)</span></span><br><span class="line">yum-config-manager \</span><br><span class="line">--add-repo \</span><br><span class="line">https://download.docker.com/linux/centos/docker-ce.repo</span><br><span class="line"></span><br><span class="line"><span class="comment"># 3、安装Docker CE</span></span><br><span class="line">yum install -y docker-ce</span><br><span class="line"></span><br><span class="line"><span class="comment"># 4、启动Docker服务并设置开机启动</span></span><br><span class="line">systemctl start docker</span><br><span class="line">systemctl enable docker</span><br><span class="line"></span><br><span class="line"><span class="comment"># 5、测试docker是否安装成功（hello-world是官方提供的一个测试镜像）</span></span><br><span class="line">docker run hello-world</span><br><span class="line"></span><br><span class="line"><span class="comment"># 6、查看docker基本信息</span></span><br><span class="line">docker info</span><br><span class="line">docker version</span><br></pre></td></tr></table></figure><a id="more"></a>
+
+<h2 id="二、docker的简单使用"><a href="#二、docker的简单使用" class="headerlink" title="二、docker的简单使用"></a>二、docker的简单使用</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1、创建一个nginx容器</span></span><br><span class="line">docker run -it nginx</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2、查看docker运行的容器(可以获取到这个容器的id)</span></span><br><span class="line">docker ps</span><br><span class="line"></span><br><span class="line"><span class="comment"># 3、访问这个容器</span></span><br><span class="line"><span class="comment"># 进入这个nginx容器（进入的文件系统和宿主机是完全隔离的，有自己独立的文件系统）</span></span><br><span class="line">docker <span class="keyword">exec</span> -it <span class="number">73877e65</span>c07d bash</span><br><span class="line"></span><br><span class="line"><span class="comment"># 4、查看当前容器的 IP</span></span><br><span class="line">docker inspect <span class="number">73877e65</span>c07d   <span class="comment"># 73877e65c07d是通过docekr ps查看到的容器ID</span></span><br><span class="line">curl <span class="number">172.17</span><span class="number">.0</span><span class="number">.2</span>               <span class="comment"># 测试这个nginx容器是否可以访问</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="三、docker常用命令"><a href="#三、docker常用命令" class="headerlink" title="三、docker常用命令"></a>三、docker常用命令</h2><h3 id="1、docker镜像管理常用命令"><a href="#1、docker镜像管理常用命令" class="headerlink" title="1、docker镜像管理常用命令"></a><strong>1、docker镜像管理常用命令</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">docker help                      		<span class="comment"># 查看docker帮助</span></span><br><span class="line"></span><br><span class="line">docker image --help              		<span class="comment"># 查看 docker中 镜像相关帮助</span></span><br><span class="line"></span><br><span class="line">docker image ls                  		<span class="comment"># 查看当前所有镜像</span></span><br><span class="line"></span><br><span class="line">docker image inspect nginx       		<span class="comment"># 查看指定镜像（nginx镜像）详细信息</span></span><br><span class="line"></span><br><span class="line">docker pull nginx:<span class="number">1.14</span>           		<span class="comment"># 下载指定版本镜像 nginx</span></span><br><span class="line"></span><br><span class="line">docker image rm nginx:<span class="number">1.14</span>       		<span class="comment"># 删除nginx 1.14版本</span></span><br><span class="line"></span><br><span class="line">docker image save nginx &gt; nginx.tar      	<span class="comment"># 导出niginx镜像</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2、docker创建容器常用命令"><a href="#2、docker创建容器常用命令" class="headerlink" title="2、docker创建容器常用命令"></a>2、docker创建容器常用命令</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#docker run 常用参数</span></span><br><span class="line">-d:   后台运行容器，并返回容器ID；</span><br><span class="line">-i:   以交互模式运行容器，通常与 -t 同时使用；</span><br><span class="line">-t:   为容器重新分配一个伪输入终端，通常与 -i 同时使用；</span><br><span class="line">-P:   随机端口映射，容器内部端口随机映射到主机的高端口</span><br><span class="line">-p:   指定端口映射，格式为：主机(宿主)端口:容器端口</span><br><span class="line">--name=<span class="string">"nginx-lb"</span>:   为容器指定一个名称；</span><br><span class="line">--dns <span class="number">8.8</span><span class="number">.8</span><span class="number">.8</span>:   指定容器使用的DNS服务器，默认和宿主一致；</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#docker run 其他参数</span></span><br><span class="line">--dns-search example.com: 指定容器DNS搜索域名，默认和宿主一致；</span><br><span class="line"></span><br><span class="line">-h <span class="string">"mars"</span>: 指定容器的hostname；</span><br><span class="line"></span><br><span class="line">-e username=<span class="string">"ritchie"</span>: 设置环境变量；</span><br><span class="line"></span><br><span class="line">--env-file=[]: 从指定文件读入环境变量；</span><br><span class="line"></span><br><span class="line">--cpuset=<span class="string">"0-2"</span> <span class="keyword">or</span> --cpuset=<span class="string">"0,1,2"</span>: 绑定容器到指定CPU运行；</span><br><span class="line"></span><br><span class="line">-m :设置容器使用内存最大值；</span><br><span class="line"></span><br><span class="line">--net=<span class="string">"bridge"</span>: 指定容器的网络连接类型，支持 bridge/host/none/container: 四种类型；</span><br><span class="line"></span><br><span class="line">--link=[]: 添加链接到另一个容器；</span><br><span class="line"></span><br><span class="line">--expose=[]: 开放一个端口或一组端口；</span><br><span class="line"></span><br><span class="line">--volume , -v:    绑定一个卷</span><br><span class="line"></span><br><span class="line">-a stdin: 指定标准输入输出内容类型，可选 STDIN/STDOUT/STDERR 三项；</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">docker run --help                               <span class="comment"># 查看创建容器帮助</span></span><br><span class="line"></span><br><span class="line">docker run -it centos                           <span class="comment"># 创建centos镜像并进入终端</span></span><br><span class="line"></span><br><span class="line">docker run -d nginx                             <span class="comment"># 后台启动nginx容器</span></span><br><span class="line"></span><br><span class="line">docker stop <span class="number">6</span>bb09dce461f                	<span class="comment"># 关闭一个容器</span></span><br><span class="line"></span><br><span class="line">docker ps -l                                    <span class="comment"># 查看最近运行的容器</span></span><br><span class="line"></span><br><span class="line">docker run -itd centos                          <span class="comment"># 启用一个伪终端守护centos容器</span></span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">docker container run -d --name web3 -e test=<span class="number">123456</span> -p <span class="number">8800</span>:<span class="number">80</span> -h webhostname --restart always nginx</span><br><span class="line">    </span><br><span class="line">-d                                       <span class="comment"># 后台启动nginx容器</span></span><br><span class="line">--name web3                              <span class="comment"># 自定义容器名字(默认会是一段随机字符串)</span></span><br><span class="line">-e test=<span class="number">123456</span>                           <span class="comment"># 启动容器添加变量 test=123456 (echo $test)</span></span><br><span class="line">-p <span class="number">8800</span>:<span class="number">80</span>                               <span class="comment"># 宿主机的8800端口映射到docker容器的80端口中</span></span><br><span class="line">-h webhostname                           <span class="comment"># docker容器主机名 (a300f394af88)</span></span><br><span class="line">--restart always                         <span class="comment"># 宿主机重启自动拉起这个docker容器</span></span><br><span class="line">nginx                                    <span class="comment"># 使用这个nginx镜像启动容器</span></span><br><span class="line"><span class="comment">#注：http://192.168.56.12:8800/     	访问这个docker  nginx</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="3、docker管理容器常用命令"><a href="#3、docker管理容器常用命令" class="headerlink" title="3、docker管理容器常用命令"></a>3、docker管理容器常用命令</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">docker ps				<span class="comment">#查看当前正在运行的容器</span></span><br><span class="line"></span><br><span class="line">docker ps -a				<span class="comment">#查看已退出的容器</span></span><br><span class="line"></span><br><span class="line">docker rm 容器id			<span class="comment">#删除容器</span></span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Ares
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://obsessed.top/2020/03/02/docker%E5%91%BD%E4%BB%A4/" title="docker命令">http://obsessed.top/2020/03/02/docker%E5%91%BD%E4%BB%A4/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/null" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/docker/" rel="tag"># docker</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/02/docker/" rel="prev" title="docker">
+      <i class="fa fa-chevron-left"></i> docker
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/03/03/Django-uWSGI-Nginx%E7%9A%84%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2/" rel="next" title="Django+uWSGI+Nginx的生产环境部署">
+      Django+uWSGI+Nginx的生产环境部署 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、docker的安装"><span class="nav-text">一、docker的安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、docker的简单使用"><span class="nav-text">二、docker的简单使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、docker常用命令"><span class="nav-text">三、docker常用命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、docker镜像管理常用命令"><span class="nav-text">1、docker镜像管理常用命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、docker创建容器常用命令"><span class="nav-text">2、docker创建容器常用命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、docker管理容器常用命令"><span class="nav-text">3、docker管理容器常用命令</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Ares"
+      src="/images/20160228201627_f5vax.jpg">
+  <p class="site-author-name" itemprop="name">Ares</p>
+  <div class="site-description" itemprop="description">最重要的是，别放弃希望</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">23</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/Aresea" title="GitHub → https:&#x2F;&#x2F;gitee.com&#x2F;Aresea" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/2441236144@qq.com" title="E-Mail → 2441236144@qq.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/null" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ares</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
