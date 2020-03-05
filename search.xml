@@ -1,6 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>docker-compose</title>
+    <url>/2020/03/05/docker-compose/</url>
+    <content><![CDATA[<h2 id="docker-compose简介"><a href="#docker-compose简介" class="headerlink" title="docker-compose简介"></a>docker-compose简介</h2><p>Docker-Compose项目是Docker官方的开源项目，负责实现对Docker容器集群的快速编排。</p><p>Docker-Compose将所管理的容器分为三层，分别是工程（project），服务（service）以及容器（container）。</p><p>Docker-Compose运行目录下的所有文件（docker-compose.yml，extends文件或环境变量文件等）组成一个工程，若无特殊指定工程名即为当前目录名。一个工程当中可包含多个服务，每个服务中定义了容器运行的镜像，参数，依赖。一个服务当中可包括多个容器实例，Docker-Compose并没有解决负载均衡的问题，因此需要借助其它工具实现服务发现及负载均衡。</p><a id="more"></a>
+
+
+<p>Docker-Compose的工程配置文件默认为docker-compose.yml，可通过环境变量COMPOSE_FILE或-f参数自定义配置文件，其定义了多个有依赖关系的服务及每个服务运行的容器。</p>
+<p>使用一个Dockerfile模板文件，可以让用户很方便的定义一个单独的应用容器。在工作中，经常会碰到需要多个容器相互配合来完成某项任务的情况。例如要实现一个Web项目，除了Web服务容器本身，往往还需要再加上后端的数据库服务容器，甚至还包括负载均衡容器等。</p>
+<p>Compose允许用户通过一个单独的docker-compose.yml模板文件（YAML 格式）来定义一组相关联的应用容器为一个项目（project）。</p>
+<p>Docker-Compose项目由Python编写，调用Docker服务提供的API来对容器进行管理。因此，只要所操作的平台支持Docker API，就可以在其上利用Compose来进行编排管理。</p>
+<p><strong>总结：</strong></p>
+<ul>
+<li>Compose是一个定义和管理多容器的工具，使用Python语言编写</li>
+<li>使用Compose配置文件描述多个容器应用的架构，比如使用什么镜像、数据卷、网络、映射端口等</li>
+<li>然后一条命令管理所有服务，比如启动、停止、重启等</li>
+</ul>
+<h2 id="docker-compose作用"><a href="#docker-compose作用" class="headerlink" title="docker compose作用"></a>docker compose作用</h2><ul>
+<li>使用 compose，我们可以通过 YAML 文件声明式的定义应用程序的各个服务，并由单个命令完成应用的创建和启动。 </li>
+</ul>
+<h2 id="ocker与docker-compose对比"><a href="#ocker与docker-compose对比" class="headerlink" title="ocker与docker-compose对比"></a>ocker与docker-compose对比</h2><ul>
+<li><p>docker是自动化构建镜像，并启动镜像。 docker compose是自动化编排容器。</p>
+</li>
+<li><p>docker是基于Dockerfile得到images,启动的时候是一个单独的container</p>
+</li>
+<li><p>docker-compose是基于docker-compose.yml,通常启动的时候是一个服务，这个服务通常由多个container共同组成，并且端口，配置等由docker-compose定义好。</p>
+</li>
+<li><p>两者都需要安装，但是要使用docker-compose，必须已经安装docker</p>
+</li>
+</ul>
+<h2 id="安装docker-compose"><a href="#安装docker-compose" class="headerlink" title="安装docker-compose"></a>安装docker-compose</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">[root@linux-node4 ~]<span class="comment"># curl -L https://github.com/docker/compose/releases/download/1.15.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose</span></span><br><span class="line">[root@linux-node4 ~]<span class="comment"># chmod +x /usr/local/bin/docker-compose</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">or</span></span><br><span class="line"></span><br><span class="line">pip install docker-compose</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="docker-compose配置文件解析"><a href="#docker-compose配置文件解析" class="headerlink" title="docker-compose配置文件解析"></a>docker-compose配置文件解析</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">version: <span class="string">'3'</span>                       <span class="comment"># cocker compose版本号</span></span><br><span class="line"></span><br><span class="line">services:                          <span class="comment"># 顶级配置文件(名称自己写)</span></span><br><span class="line">  mysql:                           <span class="comment"># 服务名: 容器建通信、管理容器（mysql这个容器取的名字，也是自己写的）</span></span><br><span class="line">    image: mysql:<span class="number">5.7</span>               <span class="comment"># 引入官方mysql镜像（可以大家自己的hub仓库，中大型公司都会自己搭建docker hub仓库）</span></span><br><span class="line">    volumes:</span><br><span class="line">      - ./mysql:/var/lib/mysql         <span class="comment"># 把当前文件夹下的 ./mysql文件夹挂载到docker容器 /var/lib/mysql 路径下</span></span><br><span class="line">    expose:</span><br><span class="line">      - <span class="string">"3306"</span>                        <span class="comment"># 将当前容器的端口3306端口暴露给link到本容器的容器</span></span><br><span class="line">    restart: always                   <span class="comment"># 宿主机重启自动拉起这个docker容器</span></span><br><span class="line">    environment:</span><br><span class="line">      - MYSQL_ROOT_PASSWORD=root             <span class="comment"># mysql服务器root密码root</span></span><br><span class="line">      - MYSQL_DATABASE=djangodocker          <span class="comment"># 创建数据库 djangodocker</span></span><br><span class="line">      - MYSQL_USER=django                    <span class="comment"># 创建一个用户 django</span></span><br><span class="line">      - MYSQL_PASSWORD=django                <span class="comment"># 用户密码为django</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">- 单独部署一个nginx</span><br><span class="line">  - 安装nginx服务</span><br><span class="line">  - 配置nginx.conf</span><br><span class="line">  - 配置 /etc/nginx/conf.d/*.conf</span><br><span class="line">  - 访问端口</span><br><span class="line"></span><br><span class="line">  nginx:</span><br><span class="line">    image: nginx:alpine</span><br><span class="line">    volumes:</span><br><span class="line">      - ./nginx/nginx.conf:/etc/nginx/nginx.conf</span><br><span class="line">      - ./nginx/conf:/etc/nginx/conf.d</span><br><span class="line">      - ./web/staticfiles:/django_static</span><br><span class="line">    ports:</span><br><span class="line">      - <span class="string">"80:80"</span>                             <span class="comment"># 绑定容器的80端口到主机的80端口</span></span><br><span class="line">    depends_on:</span><br><span class="line">      - web                                 <span class="comment"># 必须先启动web容器然才能启动nginx容器</span></span><br><span class="line"></span><br><span class="line">  redis:</span><br><span class="line">    image: redis:alpine</span><br><span class="line">    expose:</span><br><span class="line">      - <span class="string">"6379"</span></span><br><span class="line">    restart: always</span><br><span class="line"></span><br><span class="line">  web:</span><br><span class="line">    build: .</span><br><span class="line">    <span class="comment"># command: python manage.py runserver 0:8000</span></span><br><span class="line">    <span class="comment"># ports:</span></span><br><span class="line">    <span class="comment">#   - "8000:8000"</span></span><br><span class="line">    command: uwsgi --ini uwsgi.ini             <span class="comment"># 启动uwsgi命令</span></span><br><span class="line">    working_dir: /code/web                     <span class="comment"># 项目工作路径</span></span><br><span class="line">    volumes:</span><br><span class="line">      - .:/code                                <span class="comment"># 将当前文件夹下所有文件挂载到容器的 /code 文件夹</span></span><br><span class="line">    expose:</span><br><span class="line">      - <span class="string">"8000"</span></span><br><span class="line">    depends_on:                                <span class="comment"># 必须mysql和reids容器启动后才能启动web容器</span></span><br><span class="line">      - mysql</span><br><span class="line">      - redis</span><br><span class="line"></span><br><span class="line">  celery:</span><br><span class="line">    build: .</span><br><span class="line">    command: celery -A web worker -l info</span><br><span class="line">    working_dir: /code/web</span><br><span class="line">    volumes:</span><br><span class="line">      - .:/code</span><br><span class="line">    depends_on:</span><br><span class="line">      - mysql</span><br><span class="line">      - redis</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<h2 id="Docker-Compose常用命令"><a href="#Docker-Compose常用命令" class="headerlink" title="Docker-Compose常用命令"></a>Docker-Compose常用命令</h2><p> <strong>1、Docker-Compose命令格式</strong> </p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">docker-compose [-f &lt;arg&gt;...] [options] [COMMAND] [ARGS...]</span><br><span class="line">命令选项如下：</span><br><span class="line">-f，–file FILE指定Compose模板文件，默认为docker-compose.yml，可以多次指定。</span><br><span class="line">-p，–project-name NAME指定项目名称，默认将使用所在目录名称作为项目名。</span><br><span class="line">-x-network-driver 使用Docker的可拔插网络后端特性（需要Docker <span class="number">1.9</span>+版本）</span><br><span class="line">-x-network-driver DRIVER指定网络后端的驱动，默认为bridge（需要Docker <span class="number">1.9</span>+版本）</span><br><span class="line">-verbose输出更多调试信息</span><br><span class="line">-v，–version打印版本并退出</span><br></pre></td></tr></table></figure>
+
+<p><strong>2、docker-compose up</strong> </p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">docker-compose up [options] [--scale SERVICE=NUM...] [SERVICE...]</span><br><span class="line">选项包括：</span><br><span class="line">-d 在后台运行服务容器</span><br><span class="line">–no-color 不使用颜色来区分不同的服务的控制输出</span><br><span class="line">–no-deps 不启动服务所链接的容器</span><br><span class="line">–force-recreate 强制重新创建容器，不能与–no-recreate同时使用</span><br><span class="line">–no-recreate 如果容器已经存在，则不重新创建，不能与–force-recreate同时使用</span><br><span class="line">–no-build 不自动构建缺失的服务镜像</span><br><span class="line">–build 在启动容器前构建服务镜像</span><br><span class="line">–abort-on-container-exit 停止所有容器，如果任何一个容器被停止，不能与-d同时使用</span><br><span class="line">-t, –timeout TIMEOUT 停止容器时候的超时（默认为<span class="number">10</span>秒）</span><br><span class="line">–remove-orphans 删除服务中没有在compose文件中定义的容器</span><br><span class="line">–scale SERVICE=NUM 设置服务运行容器的个数，将覆盖在compose中通过scale指定的参数</span><br><span class="line">docker-compose up	启动所有服务</span><br><span class="line">docker-compose up -d	在后台所有启动服务</span><br><span class="line">-f 指定使用的Compose模板文件，默认为docker-compose.yml，可以多次指定。</span><br><span class="line">docker-compose -f docker-compose.yml up -d</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>3、docker-compose</strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">docker-compose ps 			<span class="comment">#列出项目中目前的所有容器</span></span><br><span class="line"></span><br><span class="line">docker-compose stop			<span class="comment">#停止正在运行的容器，可以通过docker-compose start 再次启动</span></span><br><span class="line"></span><br><span class="line">docker-compose -h			<span class="comment">#查看帮助</span></span><br><span class="line"></span><br><span class="line">docker-compose down			<span class="comment">#停用移除所有容器以及网络相关</span></span><br><span class="line"></span><br><span class="line">docker-compose logs			<span class="comment">#查看服务容器的输出</span></span><br><span class="line"></span><br><span class="line">docker-compose build			<span class="comment">#构建（重新构建）项目中的服务容器</span></span><br><span class="line"></span><br><span class="line">docker-compose pull			<span class="comment">#拉取服务依赖的镜像</span></span><br><span class="line"></span><br><span class="line">docker-compose restart			<span class="comment">#重启项目中的服务</span></span><br><span class="line"></span><br><span class="line">docker-compose rm			<span class="comment">#删除所有（停止状态的）服务容器。推荐先执行docker-compose stop命令来停止容器</span></span><br><span class="line"></span><br><span class="line">docker-compose rm -f			<span class="comment">#强制直接删除，包括非停止状态的容器</span></span><br><span class="line"></span><br><span class="line">docker-compose rm -v			<span class="comment">#删除容器所挂载的数据卷</span></span><br><span class="line"></span><br><span class="line">docker-compose start			<span class="comment">#启动已经存在的服务容器</span></span><br><span class="line"></span><br><span class="line">docker-compose pause			<span class="comment">#暂停一个服务容器</span></span><br><span class="line"></span><br><span class="line">docker-compose stop			<span class="comment">#显示各个容器运行的进程情况</span></span><br><span class="line"></span><br><span class="line">docker-compose unpause			<span class="comment">#恢复处于暂停状态中的服务</span></span><br><span class="line"></span><br><span class="line">docker-compose version			<span class="comment">#打印版本信息</span></span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">原文链接：https://blog.csdn.net/hanguofei/article/details/103016549</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>Linux</category>
+      </categories>
+      <tags>
+        <tag>docker</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>nginx和uWSGI区别和作用</title>
     <url>/2020/03/04/nginx%E5%92%8CuWSGI%E5%8C%BA%E5%88%AB%E5%92%8C%E4%BD%9C%E7%94%A8/</url>
     <content><![CDATA[<h2 id="nginx和uWSGI的区别"><a href="#nginx和uWSGI的区别" class="headerlink" title="nginx和uWSGI的区别"></a>nginx和uWSGI的区别</h2><ul>
@@ -118,27 +182,27 @@
 
 <h2 id="二、docker的简单使用"><a href="#二、docker的简单使用" class="headerlink" title="二、docker的简单使用"></a>二、docker的简单使用</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 1、创建一个nginx容器</span></span><br><span class="line">docker run -it nginx</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2、查看docker运行的容器(可以获取到这个容器的id)</span></span><br><span class="line">docker ps</span><br><span class="line"></span><br><span class="line"><span class="comment"># 3、访问这个容器</span></span><br><span class="line"><span class="comment"># 进入这个nginx容器（进入的文件系统和宿主机是完全隔离的，有自己独立的文件系统）</span></span><br><span class="line">docker <span class="keyword">exec</span> -it <span class="number">73877e65</span>c07d bash</span><br><span class="line"></span><br><span class="line"><span class="comment"># 4、查看当前容器的 IP</span></span><br><span class="line">docker inspect <span class="number">73877e65</span>c07d   <span class="comment"># 73877e65c07d是通过docekr ps查看到的容器ID</span></span><br><span class="line">curl <span class="number">172.17</span><span class="number">.0</span><span class="number">.2</span>               <span class="comment"># 测试这个nginx容器是否可以访问</span></span><br></pre></td></tr></table></figure>
 
-<h2 id="三、docker常用命令"><a href="#三、docker常用命令" class="headerlink" title="三、docker常用命令"></a>三、docker常用命令</h2><h3 id="1、docker镜像管理常用命令"><a href="#1、docker镜像管理常用命令" class="headerlink" title="1、docker镜像管理常用命令"></a><strong>1、docker镜像管理常用命令</strong></h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">docker help                      		<span class="comment"># 查看docker帮助</span></span><br><span class="line"></span><br><span class="line">docker image --help              		<span class="comment"># 查看 docker中 镜像相关帮助</span></span><br><span class="line"></span><br><span class="line">docker image ls                  		<span class="comment"># 查看当前所有镜像</span></span><br><span class="line"></span><br><span class="line">docker image inspect nginx       		<span class="comment"># 查看指定镜像（nginx镜像）详细信息</span></span><br><span class="line"></span><br><span class="line">docker pull nginx:<span class="number">1.14</span>           		<span class="comment"># 下载指定版本镜像 nginx</span></span><br><span class="line"></span><br><span class="line">docker image rm nginx:<span class="number">1.14</span>       		<span class="comment"># 删除nginx 1.14版本</span></span><br><span class="line"></span><br><span class="line">docker image save nginx &gt; nginx.tar      	<span class="comment"># 导出niginx镜像</span></span><br></pre></td></tr></table></figure>
+<h2 id="三、docker常用命令"><a href="#三、docker常用命令" class="headerlink" title="三、docker常用命令"></a>三、docker常用命令</h2><h3 id="1、docker镜像相关"><a href="#1、docker镜像相关" class="headerlink" title="1、docker镜像相关"></a><strong>1、docker镜像相关</strong></h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">docker help                      		<span class="comment"># 查看docker帮助</span></span><br><span class="line"></span><br><span class="line">docker image --help              		<span class="comment"># 查看 docker中 镜像相关帮助</span></span><br><span class="line"></span><br><span class="line">docker image ls                  		<span class="comment"># 查看当前所有镜像</span></span><br><span class="line"></span><br><span class="line">docker image inspect nginx       		<span class="comment"># 查看指定镜像（nginx镜像）详细信息</span></span><br><span class="line"></span><br><span class="line">docker pull nginx:<span class="number">1.14</span>           		<span class="comment"># 下载指定版本镜像 nginx</span></span><br><span class="line"></span><br><span class="line">docker image rm nginx:<span class="number">1.14</span>       		<span class="comment"># 删除nginx 1.14版本</span></span><br><span class="line"></span><br><span class="line">docker image save nginx &gt; nginx.tar      	<span class="comment"># 导出niginx镜像</span></span><br></pre></td></tr></table></figure>
 
-<h3 id="2、docker创建容器常用命令"><a href="#2、docker创建容器常用命令" class="headerlink" title="2、docker创建容器常用命令"></a>2、docker创建容器常用命令</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#docker run 常用参数</span></span><br><span class="line">-d:   后台运行容器，并返回容器ID；</span><br><span class="line">-i:   以交互模式运行容器，通常与 -t 同时使用；</span><br><span class="line">-t:   为容器重新分配一个伪输入终端，通常与 -i 同时使用；</span><br><span class="line">-P:   随机端口映射，容器内部端口随机映射到主机的高端口</span><br><span class="line">-p:   指定端口映射，格式为：主机(宿主)端口:容器端口</span><br><span class="line">--name=<span class="string">"nginx-lb"</span>:   为容器指定一个名称；</span><br><span class="line">--dns <span class="number">8.8</span><span class="number">.8</span><span class="number">.8</span>:   指定容器使用的DNS服务器，默认和宿主一致；</span><br></pre></td></tr></table></figure>
+<h3 id="2、docker容器常相关"><a href="#2、docker容器常相关" class="headerlink" title="2、docker容器常相关"></a>2、docker容器常相关</h3><p><strong>docker run 常用参数</strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">-d:   后台运行容器，并返回容器ID；</span><br><span class="line">-i:   以交互模式运行容器，通常与 -t 同时使用；</span><br><span class="line">-t:   为容器重新分配一个伪输入终端，通常与 -i 同时使用；</span><br><span class="line">-P:   随机端口映射，容器内部端口随机映射到主机的高端口</span><br><span class="line">-p:   指定端口映射，格式为：主机(宿主)端口:容器端口</span><br><span class="line">--name=<span class="string">"nginx-lb"</span>:   为容器指定一个名称；</span><br><span class="line">--dns <span class="number">8.8</span><span class="number">.8</span><span class="number">.8</span>:   指定容器使用的DNS服务器，默认和宿主一致；</span><br></pre></td></tr></table></figure>
 
+<p><strong>docker run 其他参数</strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">--dns-search example.com: 指定容器DNS搜索域名，默认和宿主一致；</span><br><span class="line"></span><br><span class="line">-h <span class="string">"mars"</span>: 指定容器的hostname；</span><br><span class="line"></span><br><span class="line">-e username=<span class="string">"ritchie"</span>: 设置环境变量；</span><br><span class="line"></span><br><span class="line">--env-file=[]: 从指定文件读入环境变量；</span><br><span class="line"></span><br><span class="line">--cpuset=<span class="string">"0-2"</span> <span class="keyword">or</span> --cpuset=<span class="string">"0,1,2"</span>: 绑定容器到指定CPU运行；</span><br><span class="line"></span><br><span class="line">-m :设置容器使用内存最大值；</span><br><span class="line"></span><br><span class="line">--net=<span class="string">"bridge"</span>: 指定容器的网络连接类型，支持 bridge/host/none/container: 四种类型；</span><br><span class="line"></span><br><span class="line">--link=[]: 添加链接到另一个容器；</span><br><span class="line"></span><br><span class="line">--expose=[]: 开放一个端口或一组端口；</span><br><span class="line"></span><br><span class="line">--volume , -v:    绑定一个卷</span><br><span class="line"></span><br><span class="line">-a stdin: 指定标准输入输出内容类型，可选 STDIN/STDOUT/STDERR 三项；</span><br></pre></td></tr></table></figure>
 
+<p><strong>docker 容器管理</strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">docker ps					<span class="comment">#查看当前正在运行的容器</span></span><br><span class="line"></span><br><span class="line">docker ps -a					<span class="comment">#查看所有的容器</span></span><br><span class="line"></span><br><span class="line">docker start 容器id				<span class="comment">#启动已停止的容器</span></span><br><span class="line"></span><br><span class="line">docker stop 容器id                		<span class="comment"># 关闭一个容器</span></span><br><span class="line"></span><br><span class="line">docker kill 容器id				<span class="comment">#强制停止容器</span></span><br><span class="line"></span><br><span class="line">docker rm 容器id				<span class="comment">#删除容器</span></span><br><span class="line"></span><br><span class="line">docker rm -f 容器id				<span class="comment">#删除正在运行的容器</span></span><br><span class="line"></span><br><span class="line">docker inspect 容器id				<span class="comment">#查看容器的所有信息</span></span><br><span class="line"></span><br><span class="line">docker container logs 容器id			<span class="comment">#查看容器日志</span></span><br><span class="line"></span><br><span class="line">docker top 容器id				<span class="comment">#查看容器里的进程</span></span><br><span class="line"></span><br><span class="line">docker <span class="keyword">exec</span> -it 容器名称 bash			<span class="comment">#进入容器</span></span><br><span class="line"></span><br><span class="line">exit						<span class="comment">#退出容器</span></span><br><span class="line"></span><br><span class="line">docker run --help                               <span class="comment"># 查看创建容器帮助</span></span><br><span class="line"></span><br><span class="line">docker run -it centos                           <span class="comment"># 创建centos镜像并进入终端</span></span><br><span class="line"></span><br><span class="line">docker run -d nginx                             <span class="comment"># 后台启动nginx容器</span></span><br><span class="line"></span><br><span class="line">docker run -itd centos                          <span class="comment"># 启用一个伪终端守护centos容器</span></span><br></pre></td></tr></table></figure>
 
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#docker run 其他参数</span></span><br><span class="line">--dns-search example.com: 指定容器DNS搜索域名，默认和宿主一致；</span><br><span class="line"></span><br><span class="line">-h <span class="string">"mars"</span>: 指定容器的hostname；</span><br><span class="line"></span><br><span class="line">-e username=<span class="string">"ritchie"</span>: 设置环境变量；</span><br><span class="line"></span><br><span class="line">--env-file=[]: 从指定文件读入环境变量；</span><br><span class="line"></span><br><span class="line">--cpuset=<span class="string">"0-2"</span> <span class="keyword">or</span> --cpuset=<span class="string">"0,1,2"</span>: 绑定容器到指定CPU运行；</span><br><span class="line"></span><br><span class="line">-m :设置容器使用内存最大值；</span><br><span class="line"></span><br><span class="line">--net=<span class="string">"bridge"</span>: 指定容器的网络连接类型，支持 bridge/host/none/container: 四种类型；</span><br><span class="line"></span><br><span class="line">--link=[]: 添加链接到另一个容器；</span><br><span class="line"></span><br><span class="line">--expose=[]: 开放一个端口或一组端口；</span><br><span class="line"></span><br><span class="line">--volume , -v:    绑定一个卷</span><br><span class="line"></span><br><span class="line">-a stdin: 指定标准输入输出内容类型，可选 STDIN/STDOUT/STDERR 三项；</span><br></pre></td></tr></table></figure>
-
-
-
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">docker run --help                               <span class="comment"># 查看创建容器帮助</span></span><br><span class="line"></span><br><span class="line">docker run -it centos                           <span class="comment"># 创建centos镜像并进入终端</span></span><br><span class="line"></span><br><span class="line">docker run -d nginx                             <span class="comment"># 后台启动nginx容器</span></span><br><span class="line"></span><br><span class="line">docker stop <span class="number">6</span>bb09dce461f                	<span class="comment"># 关闭一个容器</span></span><br><span class="line"></span><br><span class="line">docker ps -l                                    <span class="comment"># 查看最近运行的容器</span></span><br><span class="line"></span><br><span class="line">docker run -itd centos                          <span class="comment"># 启用一个伪终端守护centos容器</span></span><br></pre></td></tr></table></figure>
-
-
-
+<p><strong>docker命令解析</strong></p>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">docker container run -d --name web3 -e test=<span class="number">123456</span> -p <span class="number">8800</span>:<span class="number">80</span> -h webhostname --restart always nginx</span><br><span class="line">    </span><br><span class="line">-d                                       <span class="comment"># 后台启动nginx容器</span></span><br><span class="line">--name web3                              <span class="comment"># 自定义容器名字(默认会是一段随机字符串)</span></span><br><span class="line">-e test=<span class="number">123456</span>                           <span class="comment"># 启动容器添加变量 test=123456 (echo $test)</span></span><br><span class="line">-p <span class="number">8800</span>:<span class="number">80</span>                               <span class="comment"># 宿主机的8800端口映射到docker容器的80端口中</span></span><br><span class="line">-h webhostname                           <span class="comment"># docker容器主机名 (a300f394af88)</span></span><br><span class="line">--restart always                         <span class="comment"># 宿主机重启自动拉起这个docker容器</span></span><br><span class="line">nginx                                    <span class="comment"># 使用这个nginx镜像启动容器</span></span><br><span class="line"><span class="comment">#注：http://192.168.56.12:8800/     	访问这个docker  nginx</span></span><br></pre></td></tr></table></figure>
 
 
 
 
 
-<h3 id="3、docker管理容器常用命令"><a href="#3、docker管理容器常用命令" class="headerlink" title="3、docker管理容器常用命令"></a>3、docker管理容器常用命令</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">docker ps				<span class="comment">#查看当前正在运行的容器</span></span><br><span class="line"></span><br><span class="line">docker ps -a				<span class="comment">#查看已退出的容器</span></span><br><span class="line"></span><br><span class="line">docker rm 容器id			<span class="comment">#删除容器</span></span><br></pre></td></tr></table></figure>
+
+
+
 
 ]]></content>
       <categories>
@@ -1385,6 +1449,40 @@
       </tags>
   </entry>
   <entry>
+    <title>关于MySQL</title>
+    <url>/2019/05/22/%E5%85%B3%E4%BA%8EMySQL/</url>
+    <content><![CDATA[<h2 id="什么是-MySQL？"><a href="#什么是-MySQL？" class="headerlink" title="什么是 MySQL？"></a>什么是 MySQL？</h2><ol>
+<li><strong>MySQL</strong> 是一个快速、多线程、多用户和强壮的SQL数据库服务器 </li>
+</ol>
+<h2 id="我们为什么使用MySQL"><a href="#我们为什么使用MySQL" class="headerlink" title="我们为什么使用MySQL"></a>我们为什么使用MySQL</h2><pre><code>1. 我们因为它开源免费，使用范围广泛，具有强大的索引和事务，能支持海量的数据</code></pre> <a id="more"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h2 id="MySQL中的幻读，什么是幻读"><a href="#MySQL中的幻读，什么是幻读" class="headerlink" title="MySQL中的幻读，什么是幻读"></a>MySQL中的幻读，什么是幻读</h2><ol>
+<li>幻读一词摘自MySQL的官方手册</li>
+<li>幻读出现于在开启事务</li>
+</ol>
+]]></content>
+      <categories>
+        <category>MySQL</category>
+      </categories>
+      <tags>
+        <tag>MySQL</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Django</title>
     <url>/2019/05/22/Django/</url>
     <content><![CDATA[<h2 id="如何使用ImageField上传图片"><a href="#如何使用ImageField上传图片" class="headerlink" title="如何使用ImageField上传图片"></a>如何使用ImageField上传图片</h2><figure class="highlight"><table><tr><td class="code"><pre><span class="line"><span class="comment">#models</span></span><br><span class="line">img = models.ImageField(verbose_name=<span class="string">'描述图片'</span>,upload_to=<span class="string">'media'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#settings</span></span><br><span class="line">MEDIA_URL = <span class="string">'/media/'</span></span><br><span class="line">MEDIA_ROOT = os.path.join(BASE_DIR,<span class="string">'media'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#记得form表单写enctype</span></span><br><span class="line">&lt;form action=<span class="string">""</span> method=<span class="string">"post"</span> enctype=<span class="string">"multipart/form-data"</span>&gt; </span><br><span class="line">&lt;/form&gt;</span><br></pre></td></tr></table></figure>
@@ -1453,40 +1551,6 @@
       </categories>
       <tags>
         <tag>Django</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>关于MySQL</title>
-    <url>/2019/05/22/%E5%85%B3%E4%BA%8EMySQL/</url>
-    <content><![CDATA[<h2 id="什么是-MySQL？"><a href="#什么是-MySQL？" class="headerlink" title="什么是 MySQL？"></a>什么是 MySQL？</h2><ol>
-<li><strong>MySQL</strong> 是一个快速、多线程、多用户和强壮的SQL数据库服务器 </li>
-</ol>
-<h2 id="我们为什么使用MySQL"><a href="#我们为什么使用MySQL" class="headerlink" title="我们为什么使用MySQL"></a>我们为什么使用MySQL</h2><pre><code>1. 我们因为它开源免费，使用范围广泛，具有强大的索引和事务，能支持海量的数据</code></pre> <a id="more"></a>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h2 id="MySQL中的幻读，什么是幻读"><a href="#MySQL中的幻读，什么是幻读" class="headerlink" title="MySQL中的幻读，什么是幻读"></a>MySQL中的幻读，什么是幻读</h2><ol>
-<li>幻读一词摘自MySQL的官方手册</li>
-<li>幻读出现于在开启事务</li>
-</ol>
-]]></content>
-      <categories>
-        <category>MySQL</category>
-      </categories>
-      <tags>
-        <tag>MySQL</tag>
       </tags>
   </entry>
   <entry>
