@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <link rel="alternate" href="/atom.xml" title="Ares" type="application/atom+xml">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://obsessed.top').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.5.0',
+    exturl: false,
+    sidebar: {"position":"left","Manual define the sidebar width. If commented, will be default for":null,"Muse | Mist":320,"Pisces | Gemini":240,"width":200,"display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="装饰器什么是装饰器？ 装饰器本质是函数，用来给其他函数添加新的功能 特点：不修改调用方式、不修改源代码 装饰器的应用场景 用户认证，判断用户是否登录 计算函数运行时间（算是一个功能、在项目里用的不多） 插入日志的时候 redis缓存 装饰器求函数运行时间1234567891011121314import timedef timer(func):   #timer(test1)  func=test">
+<meta name="keywords" content="Python">
+<meta property="og:type" content="article">
+<meta property="og:title" content="装饰器、迭代器、生成器">
+<meta property="og:url" content="http:&#x2F;&#x2F;obsessed.top&#x2F;2020&#x2F;03&#x2F;09&#x2F;%E8%A3%85%E9%A5%B0%E5%99%A8%E3%80%81%E8%BF%AD%E4%BB%A3%E5%99%A8%E3%80%81%E7%94%9F%E6%88%90%E5%99%A8&#x2F;index.html">
+<meta property="og:site_name" content="Ares">
+<meta property="og:description" content="装饰器什么是装饰器？ 装饰器本质是函数，用来给其他函数添加新的功能 特点：不修改调用方式、不修改源代码 装饰器的应用场景 用户认证，判断用户是否登录 计算函数运行时间（算是一个功能、在项目里用的不多） 插入日志的时候 redis缓存 装饰器求函数运行时间1234567891011121314import timedef timer(func):   #timer(test1)  func=test">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-03-09T09:39:28.159Z">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://obsessed.top/2020/03/09/%E8%A3%85%E9%A5%B0%E5%99%A8%E3%80%81%E8%BF%AD%E4%BB%A3%E5%99%A8%E3%80%81%E7%94%9F%E6%88%90%E5%99%A8/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>装饰器、迭代器、生成器 | Ares</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ares</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Above all, don't lose hope.</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://obsessed.top/2020/03/09/%E8%A3%85%E9%A5%B0%E5%99%A8%E3%80%81%E8%BF%AD%E4%BB%A3%E5%99%A8%E3%80%81%E7%94%9F%E6%88%90%E5%99%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/20160228201627_f5vax.jpg">
+      <meta itemprop="name" content="Ares">
+      <meta itemprop="description" content="最重要的是，别放弃希望">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ares">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          装饰器、迭代器、生成器
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-03-09 15:18:24 / 修改时间：17:39:28" itemprop="dateCreated datePublished" datetime="2020-03-09T15:18:24+08:00">2020-03-09</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Python/" itemprop="url" rel="index">
+                    <span itemprop="name">Python</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="装饰器"><a href="#装饰器" class="headerlink" title="装饰器"></a>装饰器</h2><h3 id="什么是装饰器？"><a href="#什么是装饰器？" class="headerlink" title="什么是装饰器？"></a>什么是装饰器？</h3><ul>
+<li>装饰器本质是函数，用来给其他函数添加新的功能</li>
+<li>特点：不修改调用方式、不修改源代码</li>
+</ul><h3 id="装饰器的应用场景"><a href="#装饰器的应用场景" class="headerlink" title="装饰器的应用场景"></a>装饰器的应用场景</h3><ul>
+<li>用户认证，判断用户是否登录</li>
+<li>计算函数运行时间（算是一个功能、在项目里用的不多）</li>
+<li>插入日志的时候</li>
+<li>redis缓存</li>
+</ul><h3 id="装饰器求函数运行时间"><a href="#装饰器求函数运行时间" class="headerlink" title="装饰器求函数运行时间"></a>装饰器求函数运行时间</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">timer</span><span class="params">(func)</span>:</span>   <span class="comment">#timer(test1)  func=test1</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">deco</span><span class="params">(*args,**kwargs)</span>:</span></span><br><span class="line">        start_time = time.time()</span><br><span class="line">        func(*args,**kwargs)      <span class="comment">#run test1</span></span><br><span class="line">        stop_time = time.time()</span><br><span class="line">        print(<span class="string">"running time is %s"</span>%(stop_time-start_time))</span><br><span class="line">    <span class="keyword">return</span> deco</span><br><span class="line"></span><br><span class="line"><span class="meta">@timer     # test1=timer(test1)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test1</span><span class="params">()</span>:</span></span><br><span class="line">    time.sleep(<span class="number">3</span>)</span><br><span class="line">    print(<span class="string">"in the test1"</span>)</span><br><span class="line">test1()</span><br></pre></td></tr></table></figure><a id="more"></a>
+
+
+
+
+
+<h3 id="三级装饰器"><a href="#三级装饰器" class="headerlink" title="三级装饰器"></a>三级装饰器</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">auth</span><span class="params">(auth_type)</span>:</span></span><br><span class="line">    print(<span class="string">"auth func:"</span>,auth_type)</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">outer_wrapper</span><span class="params">(func)</span>:</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">wrapper</span><span class="params">(*args, **kwargs)</span>:</span></span><br><span class="line">            print(<span class="string">"wrapper func args:"</span>, *args, **kwargs)</span><br><span class="line">            print(<span class="string">'运行前'</span>)</span><br><span class="line">            func(*args, **kwargs)</span><br><span class="line">            print(<span class="string">'运行后'</span>)</span><br><span class="line">        <span class="keyword">return</span> wrapper</span><br><span class="line">    <span class="keyword">return</span> outer_wrapper</span><br><span class="line"></span><br><span class="line"><span class="meta">@auth(auth_type="local") # home = wrapper()</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">home</span><span class="params">()</span>:</span></span><br><span class="line">    print(<span class="string">"welcome to home  page"</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="string">"from home"</span></span><br><span class="line">home()</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<hr>
+<h2 id="迭代器"><a href="#迭代器" class="headerlink" title="迭代器"></a>迭代器</h2><p><strong>迭代器是访问集合内元素的一种方式</strong>。迭代器对象从集合的第一个元素开始访问，直到所有的元素都被访问一遍后结束。 </p>
+<h3 id="迭代器和可迭代对象"><a href="#迭代器和可迭代对象" class="headerlink" title="迭代器和可迭代对象"></a>迭代器和可迭代对象</h3><ol>
+<li>凡是可作用于<code>for</code>循环的对象都是可迭代的（Iterable）类型；</li>
+<li>凡是可作用于<code>next()</code>函数的对象都是迭代器（<code>Iterator）</code>类型，它们表示一个惰性计算的序列；</li>
+<li>集合数据类型如<code>list</code>、<code>dict</code>、<code>str</code>等是可迭代的但不是迭代器，不过可以通过<code>iter()</code>函数获得一个<code>Iterator</code>对象。</li>
+<li>Python的<code>for</code>循环本质上就是通过不断调用<code>next()</code>函数实现的</li>
+</ol>
+<p><strong>总结：</strong> 一个实现了<strong>iter</strong>方法的对象是可迭代的，一个实现next方法的对象是迭代器</p>
+<h3 id="迭代器的两种方法"><a href="#迭代器的两种方法" class="headerlink" title="迭代器的两种方法"></a>迭代器的两种方法</h3><ol>
+<li><p><strong>__iter__方法</strong></p>
+<p>​    返回迭代器自身 </p>
+</li>
+<li><p><strong>next方法</strong></p>
+<p>​    返回容器的下一个元素 </p>
+</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">a = iter([<span class="number">1</span>,<span class="number">2</span>])              <span class="comment">#生成一个迭代器</span></span><br><span class="line">print(a.__next__())</span><br><span class="line">print(a.__next__())</span><br><span class="line">print(a.__next__())           <span class="comment">#在这一步会引发  “StopIteration” 的异常</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>注意：</strong>如果next方法被调用，但是迭代器中没有值可以返回就会引发一个StopIteration异常 </p>
+<h3 id="判断是否是可迭代对象"><a href="#判断是否是可迭代对象" class="headerlink" title="判断是否是可迭代对象"></a>判断是否是可迭代对象</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> Iterable</span><br><span class="line">print(isinstance([],Iterable))                               <span class="comment">#True</span></span><br><span class="line">print(isinstance(&#123;&#125;,Iterable))                               <span class="comment">#True</span></span><br><span class="line">print(isinstance((),Iterable))                               <span class="comment">#True</span></span><br><span class="line">print(isinstance(<span class="string">"aaa"</span>,Iterable))                            <span class="comment">#True</span></span><br><span class="line">print(isinstance((x <span class="keyword">for</span> x <span class="keyword">in</span> range(<span class="number">10</span>)),Iterable))           <span class="comment">#True</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="判断是否是迭代器"><a href="#判断是否是迭代器" class="headerlink" title="判断是否是迭代器"></a>判断是否是迭代器</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> Iterator</span><br><span class="line">t = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>]</span><br><span class="line">print(isinstance(t,Iterator))           <span class="comment">#False</span></span><br><span class="line">t1 = iter(t)</span><br><span class="line">print(isinstance(t1,Iterator))          <span class="comment">#True</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="使用迭代器生成斐波那契数列"><a href="#使用迭代器生成斐波那契数列" class="headerlink" title="使用迭代器生成斐波那契数列"></a>使用迭代器生成斐波那契数列</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FibIterator</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self,n)</span>:</span></span><br><span class="line">        self.n = n</span><br><span class="line">        self.current = <span class="number">0</span></span><br><span class="line">        self.num1 = <span class="number">0</span></span><br><span class="line">        self.num2 = <span class="number">1</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__next__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> self.current &lt; self.n :</span><br><span class="line">            num = self.num1</span><br><span class="line">            self.num1 , self.num2 = self.num2 , self.num1+self.num2</span><br><span class="line">            self.current += <span class="number">1</span></span><br><span class="line">            <span class="keyword">return</span> num</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">raise</span> StopIteration</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__iter__</span><span class="params">(self)</span>:</span></span><br><span class="line">    	<span class="keyword">return</span> self</span><br><span class="line">    </span><br><span class="line"> </span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    fib = FibIterator(<span class="number">30</span>)</span><br><span class="line">    <span class="keyword">for</span> num <span class="keyword">in</span> fib:</span><br><span class="line">        print(num,end=<span class="string">' '</span>)</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="生成器"><a href="#生成器" class="headerlink" title="生成器"></a>生成器</h2><h3 id="什么是生成器？"><a href="#什么是生成器？" class="headerlink" title="什么是生成器？"></a>什么是生成器？</h3><ul>
+<li>生成器就是一个特殊的迭代器（一边循环，一边计算的机制 ）</li>
+<li>一个有yield关键字的函数就是一个生成器<ul>
+<li>生成器是这样一个函数，它记住上一次返回时在函数体中的位置。</li>
+<li>对生成器函数的第二次（或第 n 次）调用跳转至该函数中间，而上次调用的所有局部变量都保持不变。</li>
+</ul>
+</li>
+</ul>
+<h3 id="生成器的应用场景"><a href="#生成器的应用场景" class="headerlink" title="生成器的应用场景"></a>生成器的应用场景</h3><ul>
+<li>生成器是一个概念，我们平常写代码可能用的并不多，但是python源码大量使用 </li>
+<li>比如我们tornado框架就是基于 生成器+协程 </li>
+<li>比如我们要生成一百万个数据，如果用生成器非常节省空间，用列表浪费大量空间 </li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line">t1 = time.time()</span><br><span class="line">g = (i <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">100000000</span>))</span><br><span class="line">t2 = time.time()</span><br><span class="line">lst = [i <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">100000000</span>)]</span><br><span class="line">t3 = time.time()</span><br><span class="line">print(<span class="string">'生成器时间：'</span>,t2 - t1)  <span class="comment"># 生成器时间： 0.0</span></span><br><span class="line">print(<span class="string">'列表时间：'</span>,t3 - t2)    <span class="comment"># 列表时间： 5.821957349777222</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="为什么使用生成器"><a href="#为什么使用生成器" class="headerlink" title="为什么使用生成器"></a>为什么使用生成器</h3><ul>
+<li>节省空间</li>
+<li>高效</li>
+</ul>
+<h3 id="生成器生成斐波那契数列"><a href="#生成器生成斐波那契数列" class="headerlink" title="生成器生成斐波那契数列"></a>生成器生成斐波那契数列</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fei</span><span class="params">(n)</span>:</span></span><br><span class="line">    num1,num2 = <span class="number">0</span>,<span class="number">1</span></span><br><span class="line">    current = <span class="number">0</span></span><br><span class="line">    <span class="keyword">while</span> current &lt; n:</span><br><span class="line">        num = num1</span><br><span class="line">        num1,num2 = num2,num1+num2</span><br><span class="line">        current += <span class="number">1</span></span><br><span class="line">        <span class="keyword">yield</span> num</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    f = fei(<span class="number">10</span>)</span><br><span class="line">    print(f)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            print(next(f))</span><br><span class="line">        <span class="keyword">except</span> StopIteration:</span><br><span class="line">            <span class="keyword">break</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="生成器读取文件"><a href="#生成器读取文件" class="headerlink" title="生成器读取文件"></a>生成器读取文件</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">read_big_file_v</span><span class="params">(fname)</span>:</span></span><br><span class="line">    block_size = <span class="number">1024</span> * <span class="number">8</span></span><br><span class="line">    <span class="keyword">with</span> open(fname,encoding=<span class="string">"utf8"</span>) <span class="keyword">as</span> fp:</span><br><span class="line">        <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">            chunk = fp.read(block_size)</span><br><span class="line">            <span class="comment"># 当文件没有更多内容时，read 调用将会返回空字符串 ''</span></span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> chunk:</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">            print(chunk)</span><br><span class="line">            print(<span class="string">'1'</span>)</span><br><span class="line">path = <span class="string">r'E:\python\pachong\story\a.txt'</span></span><br><span class="line">read_big_file_v(path)</span><br></pre></td></tr></table></figure>
+
+
+
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Ares
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://obsessed.top/2020/03/09/%E8%A3%85%E9%A5%B0%E5%99%A8%E3%80%81%E8%BF%AD%E4%BB%A3%E5%99%A8%E3%80%81%E7%94%9F%E6%88%90%E5%99%A8/" title="装饰器、迭代器、生成器">http://obsessed.top/2020/03/09/%E8%A3%85%E9%A5%B0%E5%99%A8%E3%80%81%E8%BF%AD%E4%BB%A3%E5%99%A8%E3%80%81%E7%94%9F%E6%88%90%E5%99%A8/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/null" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Python/" rel="tag"># Python</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/09/%E8%BF%9B%E7%A8%8B%E3%80%81%E7%BA%BF%E7%A8%8B%E3%80%81%E5%8D%8F%E7%A8%8B/" rel="prev" title="进程、线程、协程">
+      <i class="fa fa-chevron-left"></i> 进程、线程、协程
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#装饰器"><span class="nav-text">装饰器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是装饰器？"><span class="nav-text">什么是装饰器？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#装饰器的应用场景"><span class="nav-text">装饰器的应用场景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#装饰器求函数运行时间"><span class="nav-text">装饰器求函数运行时间</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三级装饰器"><span class="nav-text">三级装饰器</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#迭代器"><span class="nav-text">迭代器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#迭代器和可迭代对象"><span class="nav-text">迭代器和可迭代对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#迭代器的两种方法"><span class="nav-text">迭代器的两种方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#判断是否是可迭代对象"><span class="nav-text">判断是否是可迭代对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#判断是否是迭代器"><span class="nav-text">判断是否是迭代器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用迭代器生成斐波那契数列"><span class="nav-text">使用迭代器生成斐波那契数列</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#生成器"><span class="nav-text">生成器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是生成器？"><span class="nav-text">什么是生成器？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#生成器的应用场景"><span class="nav-text">生成器的应用场景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么使用生成器"><span class="nav-text">为什么使用生成器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#生成器生成斐波那契数列"><span class="nav-text">生成器生成斐波那契数列</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#生成器读取文件"><span class="nav-text">生成器读取文件</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Ares"
+      src="/images/20160228201627_f5vax.jpg">
+  <p class="site-author-name" itemprop="name">Ares</p>
+  <div class="site-description" itemprop="description">最重要的是，别放弃希望</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">29</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/Aresea" title="GitHub → https:&#x2F;&#x2F;gitee.com&#x2F;Aresea" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/2441236144@qq.com" title="E-Mail → 2441236144@qq.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/null" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ares</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

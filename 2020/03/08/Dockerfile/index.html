@@ -47,18 +47,21 @@
   };
 </script>
 
-  <meta name="description" content="客户端状态保持是一个老生常谈的问题了，归根结底追踪浏览器的用户身份及其相关数据无非就是以下四种方式：session,cookie,sessionStorage,localStorage​    首先cookie和session:​    Cookie机制：如果不在浏览器中设置过期时间，cookie被保存在内存中，生命周期随浏览器的关闭而结束，这种cookie简称会话cookie。如果在浏览器中设置">
-<meta name="keywords" content="Web">
+  <meta name="description" content="关于Dockerfile　　在Docker中创建镜像最常用的方式，就是使用Dockerfile。Dockerfile是一个Docker镜像的描述文件，我们可以理解成火箭发射的A、B、C、D…的步骤。Dockerfile其内部包含了一条条的指令，每一条指令构建一层，因此每一条指令的内容，就是描述该层应当如何构建。">
+<meta name="keywords" content="docker">
 <meta property="og:type" content="article">
-<meta property="og:title" content="彻底弄清楚session,cookie,sessionStorage,localStorage的区别及应用场景">
-<meta property="og:url" content="http:&#x2F;&#x2F;obsessed.top&#x2F;2020&#x2F;02&#x2F;24&#x2F;%E5%BD%BB%E5%BA%95%E5%BC%84%E6%B8%85%E6%A5%9Asession-cookie-sessionStorage-localStorage%E7%9A%84%E5%8C%BA%E5%88%AB%E5%8F%8A%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF&#x2F;index.html">
+<meta property="og:title" content="Dockerfile">
+<meta property="og:url" content="http:&#x2F;&#x2F;obsessed.top&#x2F;2020&#x2F;03&#x2F;08&#x2F;Dockerfile&#x2F;index.html">
 <meta property="og:site_name" content="Ares">
-<meta property="og:description" content="客户端状态保持是一个老生常谈的问题了，归根结底追踪浏览器的用户身份及其相关数据无非就是以下四种方式：session,cookie,sessionStorage,localStorage​    首先cookie和session:​    Cookie机制：如果不在浏览器中设置过期时间，cookie被保存在内存中，生命周期随浏览器的关闭而结束，这种cookie简称会话cookie。如果在浏览器中设置">
+<meta property="og:description" content="关于Dockerfile　　在Docker中创建镜像最常用的方式，就是使用Dockerfile。Dockerfile是一个Docker镜像的描述文件，我们可以理解成火箭发射的A、B、C、D…的步骤。Dockerfile其内部包含了一条条的指令，每一条指令构建一层，因此每一条指令的内容，就是描述该层应当如何构建。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2020-02-24T02:11:05.746Z">
+<meta property="og:image" content="http:&#x2F;&#x2F;obsessed.top&#x2F;2020&#x2F;03&#x2F;08&#x2F;Dockerfile&#x2F;image1.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;obsessed.top&#x2F;2020&#x2F;03&#x2F;08&#x2F;Dockerfile&#x2F;image2.png">
+<meta property="og:updated_time" content="2020-03-09T10:11:11.720Z">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;obsessed.top&#x2F;2020&#x2F;03&#x2F;08&#x2F;Dockerfile&#x2F;image1.png">
 
-<link rel="canonical" href="http://obsessed.top/2020/02/24/%E5%BD%BB%E5%BA%95%E5%BC%84%E6%B8%85%E6%A5%9Asession-cookie-sessionStorage-localStorage%E7%9A%84%E5%8C%BA%E5%88%AB%E5%8F%8A%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF/">
+<link rel="canonical" href="http://obsessed.top/2020/03/08/Dockerfile/">
 
 
 <script id="page-configurations">
@@ -72,7 +75,7 @@
   };
 </script>
 
-  <title>彻底弄清楚session,cookie,sessionStorage,localStorage的区别及应用场景 | Ares</title>
+  <title>Dockerfile | Ares</title>
   
 
 
@@ -212,7 +215,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://obsessed.top/2020/02/24/%E5%BD%BB%E5%BA%95%E5%BC%84%E6%B8%85%E6%A5%9Asession-cookie-sessionStorage-localStorage%E7%9A%84%E5%8C%BA%E5%88%AB%E5%8F%8A%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF/">
+    <link itemprop="mainEntityOfPage" href="http://obsessed.top/2020/03/08/Dockerfile/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/20160228201627_f5vax.jpg">
@@ -225,7 +228,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          彻底弄清楚session,cookie,sessionStorage,localStorage的区别及应用场景
+          Dockerfile
         </h1>
 
         <div class="post-meta">
@@ -234,18 +237,24 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2020-02-24 10:08:59 / 修改时间：10:11:05" itemprop="dateCreated datePublished" datetime="2020-02-24T10:08:59+08:00">2020-02-24</time>
+              <time title="创建时间：2020-03-08 17:51:42" itemprop="dateCreated datePublished" datetime="2020-03-08T17:51:42+08:00">2020-03-08</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-09 18:11:11" itemprop="dateModified" datetime="2020-03-09T18:11:11+08:00">2020-03-09</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Web/" itemprop="url" rel="index">
-                    <span itemprop="name">Web</span>
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
                   </a>
                 </span>
             </span>
@@ -261,11 +270,31 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>客户端状态保持是一个老生常谈的问题了，归根结底追踪浏览器的用户身份及其相关数据无非就是以下四种方式：session,cookie,sessionStorage,localStorage</p><p>​    首先cookie和session:</p><p>​    Cookie机制：如果不在浏览器中设置过期时间，cookie被保存在内存中，生命周期随浏览器的关闭而结束，这种cookie简称会话cookie。如果在浏览器中设置了cookie的过期时间，cookie被保存在硬盘中，关闭浏览器后，cookie数据仍然存在，直到过期时间结束才消失。<br>    Cookie是服务器发给客户端的特殊信息，cookie是以文本的方式保存在客户端，每次请求时都带上它<br>    Session机制：当服务器收到请求需要创建session对象时，首先会检查客户端请求中是否包含sessionid。如果有sessionid，服务器将根据该id返回对应session对象。如果客户端请求中没有sessionid，服务器会创建新的session对象，并把sessionid在本次响应中返回给客户端。通常使用cookie方式存储sessionid到客户端，在交互中浏览器按照规则将sessionid发送给服务器。如果用户禁用cookie，则要使用URL重写，可以通过response.encodeURL(url) 进行实现；API对encodeURL的结束为，当浏览器支持Cookie时，url不做任何处理；当浏览器不支持Cookie的时候，将会重写URL将SessionID拼接到访问地址后。<br>    3、存储内容：cookie只能保存字符串类型，以文本的方式；session通过类似与Hashtable的数据结构来保存，能支持任何类型的对象(session中可含有多个对象)<br>    4、存储的大小：cookie：单个cookie保存的数据不能超过4kb；session大小没有限制。<br>    5、安全性：cookie：针对cookie所存在的攻击：Cookie欺骗，Cookie截获；session的安全性大于cookie。<br>    原因如下：<br>    （1）sessionID存储在cookie中，若要攻破session首先要攻破cookie；<br>    （2）sessionID是要有人登录，或者启动session_start才会有，所以攻破cookie也不一定能得到sessionID；<br>    （3）第二次启动session_start后，前一次的sessionID就是失效了，session过期后，sessionID也随之失效。<br>    （4）sessionID是加密的<br>    （5）综上所述，攻击者必须在短时间内攻破加密的sessionID，并非易事。<br>    6、应用场景：<br>    cookie：<br>    （1）判断用户是否登陆过网站，以便下次登录时能够实现自动登录（或者记住密码）。如果我们删除cookie，则每次登录必须从新填写登录的相关信息。<br>    （2）保存上次登录的时间等信息。<br>    （3）保存上次查看的页面<br>    （4）浏览计数<br>    session：Session用于保存每个用户的专用信息，变量的值保存在服务器端，通过SessionID来区分不同的客户。<br>    （1）网上商城中的购物车<br>    （2）保存用户登录信息<br>    （3）将某些数据放入session中，供同一用户的不同页面使用<br>    （4）防止用户非法登录<br>    7、缺点：cookie：<br>    （1）大小受限<br>    （2）用户可以操作（禁用）cookie，使功能受限<br>    （3）安全性较低<br>    （4）有些状态不可能保存在客户端。<br>    （5）每次访问都要传送cookie给服务器，浪费带宽。<br>    （6）cookie数据有路径（path）的概念，可以限制cookie只属于某个路径下。<br>    session：<br>    （1）Session保存的东西越多，就越占用服务器内存，对于用户在线人数较多的网站，服务器的内存压力会比较大。<br>    （2）依赖于cookie（sessionID保存在cookie），如果禁用cookie，则要使用URL重写，不安全<br>    （3）创建Session变量有很大的随意性，可随时调用，不需要开发者做精确地处理，所以，过度使用session变量将会导致代码不可读而且不好维护。</p><a id="more"></a>
+        <h2 id="关于Dockerfile"><a href="#关于Dockerfile" class="headerlink" title="关于Dockerfile"></a>关于Dockerfile</h2><p>　　在Docker中创建镜像最常用的方式，就是使用Dockerfile。Dockerfile是一个Docker镜像的描述文件，我们可以理解成火箭发射的A、B、C、D…的步骤。Dockerfile其内部<strong>包含了一条条的指令</strong>，<strong>每一条指令构建一层，因此每一条指令的内容，就是描述该层应当如何构建</strong>。 </p><a id="more"></a>
+<img src="/2020/03/08/Dockerfile/image1.png" class title="docker">  
 
+<p><strong>一个Dockerfile的实例如下：</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#基于python3.6的镜像</span></span><br><span class="line">FROM python:<span class="number">3.6</span></span><br><span class="line">    </span><br><span class="line"><span class="comment">#维护人的信息</span></span><br><span class="line">MAINTAINER zhangsan</span><br><span class="line"></span><br><span class="line"><span class="comment">#执行的命令</span></span><br><span class="line">RUN  mkdir /code</span><br><span class="line"></span><br><span class="line"><span class="comment">#设置当前工作目录</span></span><br><span class="line">WORKDIR /code</span><br><span class="line"></span><br><span class="line"><span class="comment">#copy文件</span></span><br><span class="line">ADD . /code/</span><br><span class="line"></span><br><span class="line"><span class="comment">#执行的命令</span></span><br><span class="line">RUN pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple</span><br><span class="line"></span><br><span class="line"><span class="comment">#开启8000端口</span></span><br><span class="line">EXPOSE <span class="number">8000</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#当启动容器时执行的脚本文件</span></span><br><span class="line">CMD [<span class="string">"python"</span>, <span class="string">"manage.py"</span>, <span class="string">"runserver"</span>, <span class="string">"0:8000"</span>]</span><br></pre></td></tr></table></figure>
 
-<p>​    说白了，这两种状态保持方式都差强人意，于是webStroage应运而生</p>
-<p>​    WebStorage的目的是克服由cookie所带来的一些限制，当数据需要被严格控制在客户端时，不需要持续的将数据发回服务器。<br>    WebStorage两个主要目标：（1）提供一种在cookie之外存储会话数据的路径。（2）提供一种存储大量可以跨会话存在的数据的机制。<br>    HTML5的WebStorage提供了两种API：localStorage（本地存储）和sessionStorage（会话存储）。<br>    1、生命周期：localStorage:localStorage的生命周期是永久的，关闭页面或浏览器之后localStorage中的数据也不会消失。localStorage除非主动删除数据，否则数据永远不会消失。<br>    sessionStorage的生命周期是在仅在当前会话下有效。sessionStorage引入了一个“浏览器窗口”的概念，sessionStorage是在同源的窗口中始终存在的数据。只要这个浏览器窗口没有关闭，即使刷新页面或者进入同源另一个页面，数据依然存在。但是sessionStorage在关闭了浏览器窗口后就会被销毁。同时独立的打开同一个窗口同一个页面，sessionStorage也是不一样的。<br>    2、存储大小：localStorage和sessionStorage的存储数据大小一般都是：5MB<br>    3、存储位置：localStorage和sessionStorage都保存在客户端，不与服务器进行交互通信。<br>    4、存储内容类型：localStorage和sessionStorage只能存储字符串类型，对于复杂的对象可以使用ECMAScript提供的JSON对象的stringify和parse来处理<br>    5、获取方式：localStorage：window.localStorage;；sessionStorage：window.sessionStorage;。<br>    6、应用场景：localStoragese：常用于长期登录（+判断用户是否已登录），适合长期保存在本地的数据（令牌）。sessionStorage：敏感账号一次性登录；<br>    WebStorage的优点：<br>    （1）存储空间更大：cookie为4KB，而WebStorage是5MB；<br>    （2）节省网络流量：WebStorage不会传送到服务器，存储在本地的数据可以直接获取，也不会像cookie一样美词请求都会传送到服务器，所以减少了客户端和服务器端的交互，节省了网络流量；<br>    （3）对于那种只需要在用户浏览一组页面期间保存而关闭浏览器后就可以丢弃的数据，sessionStorage会非常方便；<br>    （4）快速显示：有的数据存储在WebStorage上，再加上浏览器本身的缓存。获取数据时可以从本地获取会比从服务器端获取快得多，所以速度更快；<br>    （5）安全性：WebStorage不会随着HTTP header发送到服务器端，所以安全性相对于cookie来说比较高一些，不会担心截获，但是仍然存在伪造问题；<br>    （6）WebStorage提供了一些方法，数据操作比cookie方便；<br>            setItem (key, value) —— 保存数据，以键值对的方式储存信息。</p>
+<p><strong>由上可知，Dockerfile结构大致分为四个部分：</strong> </p>
+<ol>
+<li>基础镜像信息 </li>
+<li>维护者信息</li>
+<li>镜像操作命令</li>
+<li>容器启动时执行指令</li>
+</ol>
+<img src="/2020/03/08/Dockerfile/image2.png" class title="Dockerfile">  
+
+<hr>
+<h2 id="Dockerfile案例"><a href="#Dockerfile案例" class="headerlink" title="Dockerfile案例"></a>Dockerfile案例</h2><p><strong>初始化一个django项目并用docker启动</strong> </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]<span class="comment"># django-admin startproject demo</span></span><br><span class="line">[root@node1 demo]<span class="comment"># cd demo</span></span><br><span class="line">[root@node1 demo]<span class="comment"># python3 manage.py runserver 0.0.0.0:8000                  # 测试项目是否可以启动</span></span><br><span class="line"></span><br><span class="line">[root@node1 demo]<span class="comment"># vim Dockerfile                                            # dockerfile内容如下,路径放到django项目根路径</span></span><br><span class="line">[root@node1 demo]<span class="comment"># vim requirements.txt                                      # django需要安装的包，路径放到django项目根路径</span></span><br><span class="line">[root@node1 demo]<span class="comment"># docker build -t dj_demo:v1 -f Dockerfile . </span></span><br><span class="line">[root@node1 demo]<span class="comment"># docker run -d -p 192.168.56.11:8000:8000 dj_demo:v1</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>Dockerfile</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">FROM python:<span class="number">3.6</span></span><br><span class="line">MAINTAINER zhangsan</span><br><span class="line">RUN  mkdir /code</span><br><span class="line">WORKDIR /code</span><br><span class="line">ADD . /code/</span><br><span class="line">RUN pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple</span><br><span class="line">EXPOSE <span class="number">8000</span></span><br><span class="line">CMD [<span class="string">"python"</span>, <span class="string">"manage.py"</span>, <span class="string">"runserver"</span>, <span class="string">"0:8000"</span>]</span><br></pre></td></tr></table></figure>
+
+<p><strong>requirements.txt</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Django==<span class="number">2.0</span><span class="number">.4</span></span><br><span class="line">mysqlclient==<span class="number">1.4</span><span class="number">.6</span></span><br></pre></td></tr></table></figure>
+
 
     </div>
 
@@ -281,7 +310,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="http://obsessed.top/2020/02/24/%E5%BD%BB%E5%BA%95%E5%BC%84%E6%B8%85%E6%A5%9Asession-cookie-sessionStorage-localStorage%E7%9A%84%E5%8C%BA%E5%88%AB%E5%8F%8A%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF/" title="彻底弄清楚session,cookie,sessionStorage,localStorage的区别及应用场景">http://obsessed.top/2020/02/24/%E5%BD%BB%E5%BA%95%E5%BC%84%E6%B8%85%E6%A5%9Asession-cookie-sessionStorage-localStorage%E7%9A%84%E5%8C%BA%E5%88%AB%E5%8F%8A%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF/</a>
+    <a href="http://obsessed.top/2020/03/08/Dockerfile/" title="Dockerfile">http://obsessed.top/2020/03/08/Dockerfile/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/null" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -292,7 +321,7 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/Web/" rel="tag"># Web</a>
+              <a href="/tags/docker/" rel="tag"># docker</a>
           </div>
 
         
@@ -301,10 +330,13 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/02/23/%E5%9F%BA%E4%BA%8EJWT%E6%8A%80%E6%9C%AF%E5%8F%8ARSA%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86%E5%AE%9E%E7%8E%B0%E7%9C%9F%E6%AD%A3%E6%97%A0%E7%8A%B6%E6%80%81%E7%9A%84%E5%8D%95%E7%82%B9%E7%99%BB%E5%BD%95/" rel="prev" title="基于JWT技术及RSA非对称加密实现真正无状态的单点登录">
-      <i class="fa fa-chevron-left"></i> 基于JWT技术及RSA非对称加密实现真正无状态的单点登录
+    <a href="/2020/03/05/docker-compose/" rel="prev" title="docker-compose">
+      <i class="fa fa-chevron-left"></i> docker-compose
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2020/03/09/%E8%BF%9B%E7%A8%8B%E3%80%81%E7%BA%BF%E7%A8%8B%E3%80%81%E5%8D%8F%E7%A8%8B/" rel="next" title="进程、线程、协程">
+      进程、线程、协程 <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -342,6 +374,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#关于Dockerfile"><span class="nav-text">关于Dockerfile</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Dockerfile案例"><span class="nav-text">Dockerfile案例</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -357,20 +390,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-count">29</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-count">9</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-count">11</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

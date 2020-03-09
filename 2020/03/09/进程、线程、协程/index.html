@@ -47,17 +47,18 @@
   };
 </script>
 
-  <meta name="description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.">
+  <meta name="description" content="进程 进程是资源分配的最小单位（ 内存、cpu、网络、io）  一个运行起来的程序就是一个进程  什么是程序（程序是我们存储在硬盘里的代码） 硬盘（256G）、内存条（8G） 当我们双击图标，打开程序的时候，实际上就是通过I&#x2F;O操作（读写）内存条里面 内存条就是我们所指的资源  CPU分时 CPU比你的手速快多了，分时处理每个线程，但是由于太快然你觉得每个线程都是独占cpu cpu是计算，只有时间">
+<meta name="keywords" content="Python">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hello World">
-<meta property="og:url" content="http:&#x2F;&#x2F;obsessed.top&#x2F;2019&#x2F;11&#x2F;22&#x2F;hello-world&#x2F;index.html">
+<meta property="og:title" content="进程、线程、协程">
+<meta property="og:url" content="http:&#x2F;&#x2F;obsessed.top&#x2F;2020&#x2F;03&#x2F;09&#x2F;%E8%BF%9B%E7%A8%8B%E3%80%81%E7%BA%BF%E7%A8%8B%E3%80%81%E5%8D%8F%E7%A8%8B&#x2F;index.html">
 <meta property="og:site_name" content="Ares">
-<meta property="og:description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.">
+<meta property="og:description" content="进程 进程是资源分配的最小单位（ 内存、cpu、网络、io）  一个运行起来的程序就是一个进程  什么是程序（程序是我们存储在硬盘里的代码） 硬盘（256G）、内存条（8G） 当我们双击图标，打开程序的时候，实际上就是通过I&#x2F;O操作（读写）内存条里面 内存条就是我们所指的资源  CPU分时 CPU比你的手速快多了，分时处理每个线程，但是由于太快然你觉得每个线程都是独占cpu cpu是计算，只有时间">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-11-26T03:29:11.503Z">
+<meta property="og:updated_time" content="2020-03-09T09:50:50.221Z">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://obsessed.top/2019/11/22/hello-world/">
+<link rel="canonical" href="http://obsessed.top/2020/03/09/%E8%BF%9B%E7%A8%8B%E3%80%81%E7%BA%BF%E7%A8%8B%E3%80%81%E5%8D%8F%E7%A8%8B/">
 
 
 <script id="page-configurations">
@@ -71,7 +72,7 @@
   };
 </script>
 
-  <title>Hello World | Ares</title>
+  <title>进程、线程、协程 | Ares</title>
   
 
 
@@ -211,11 +212,11 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://obsessed.top/2019/11/22/hello-world/">
+    <link itemprop="mainEntityOfPage" href="http://obsessed.top/2020/03/09/%E8%BF%9B%E7%A8%8B%E3%80%81%E7%BA%BF%E7%A8%8B%E3%80%81%E5%8D%8F%E7%A8%8B/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/20160228201627_f5vax.jpg">
-      <meta itemprop="name" content="郭庆">
+      <meta itemprop="name" content="Ares">
       <meta itemprop="description" content="最重要的是，别放弃希望">
     </span>
 
@@ -224,7 +225,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Hello World
+          进程、线程、协程
         </h1>
 
         <div class="post-meta">
@@ -233,16 +234,21 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2019-11-22 17:16:48" itemprop="dateCreated datePublished" datetime="2019-11-22T17:16:48+08:00">2019-11-22</time>
+              <time title="创建时间：2020-03-09 14:56:41 / 修改时间：17:50:50" itemprop="dateCreated datePublished" datetime="2020-03-09T14:56:41+08:00">2020-03-09</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2019-11-26 11:29:11" itemprop="dateModified" datetime="2019-11-26T11:29:11+08:00">2019-11-26</time>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
               </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Python/" itemprop="url" rel="index">
+                    <span itemprop="name">Python</span>
+                  </a>
+                </span>
+            </span>
 
           
 
@@ -255,20 +261,100 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<a id="more"></a>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
+        <h2 id="进程"><a href="#进程" class="headerlink" title="进程"></a>进程</h2><ul>
+<li><strong>进程是资源分配的最小单位（ 内存、cpu、网络、io）</strong> </li>
+<li><strong>一个运行起来的程序就是一个进程</strong> <ul>
+<li>什么是程序（程序是我们存储在硬盘里的代码）</li>
+<li>硬盘（256G）、内存条（8G）</li>
+<li>当我们双击图标，打开程序的时候，实际上就是通过I/O操作（读写）内存条里面</li>
+<li>内存条就是我们所指的资源 </li>
+<li>CPU分时<ul>
+<li>CPU比你的手速快多了，分时处理每个线程，但是由于太快然你觉得每个线程都是独占cpu</li>
+<li>cpu是计算，只有时间片到了，获取cpu，线程真正执行</li>
+<li>当你想使用 网络、磁盘等资源的时候，需要cpu的调度</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>进程具有独立的内存空间，所以没有办法相互通信<ul>
+<li>进程如何通信<ul>
+<li>进程queue(父子进程通信)</li>
+<li>pipe（同一程序下两个进程通信）</li>
+<li>managers（同一程序下多个进程通信）</li>
+<li>RabbitMQ、redis等（不同程序间通信）</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>为什么需要进程池<ul>
+<li>一次性开启指定数量的进程</li>
+<li>如果有十个进程，有一百个任务，一次可以处理多少个（一次性只能处理十个）</li>
+<li>防止进程开启数量过多导致服务器压力过大</li>
+</ul>
+</li>
+</ul><a id="more"></a>
+<h2 id="线程"><a href="#线程" class="headerlink" title="线程"></a>线程</h2><ul>
+<li>有了进程为什么还需要线程<ul>
+<li>因为进程不能同一时间只能做一个事情</li>
+</ul>
+</li>
+<li>什么是线程<ul>
+<li>线程是操作系统调度的最小单位</li>
+<li>线程是进程正真的执行者，是一些指令的集合（进程资源的拥有者）</li>
+<li>同一个进程下的读多个<strong>线程共享内存空间</strong>，数据直接访问（数据共享）</li>
+<li>为了保证数据安全，必须使用<strong>线程锁</strong></li>
+</ul>
+</li>
+<li>GIL全局解释器锁<ul>
+<li>在python全局解释器下，保证同一时间只有一个线程运行</li>
+<li>防止多个线程都修改数据</li>
+</ul>
+</li>
+<li>线程锁（互斥锁）<ul>
+<li>GIL锁只能保证同一时间只能有一个线程对某个资源操作，但当上一个线程还未执行完毕时可能就会释放GIL，其他线程就可以操作了</li>
+<li>线程锁本质把线程中的数据加了一把互斥锁<ul>
+<li>mysql中共享锁 &amp; 互斥锁</li>
+<li>mysql共享锁：共享锁，所有线程都能读，而不能写 </li>
+<li>mysql排它锁：排它，任何线程读取这个这个数据的权利都没有 </li>
+<li>加上线程锁之后所有其他线程，读都不能读这个数据 </li>
+</ul>
+</li>
+<li>有了GIL全局解释器锁为什么还需要线程锁<ul>
+<li>因为cpu是分时使用的</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>死锁定义<ul>
+<li>两个以上的进程或线程在执行过程中，因争夺资源而造成的一种互相等待的现象，若无外力作用，它们都将无法推进下去</li>
+</ul>
+</li>
+</ul>
+<h2 id="协程"><a href="#协程" class="headerlink" title="协程"></a>协程</h2><ul>
+<li>什么是协程<ul>
+<li>协程微线程，纤程，本质是一个单线程</li>
+<li>协程能在单线程处理高并发<ul>
+<li>线程遇到I/O操作会等待、阻塞，协程遇到I/O会自动切换（剩下的只有CPU操作）</li>
+<li>线程的状态保存在CPU的寄存器和栈里而协程拥有自己的空间，所以无需上下文切换的开销，所以快</li>
+</ul>
+</li>
+<li>为甚么协程能够遇到I/O自动切换<ul>
+<li>协程有一个gevent模块(封装了greenlet模块)，遇到I/O自动切换</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>协程缺点<ul>
+<li>无法利用多核资源：<strong>协程的本质是个单线程,它不能同时将 单个CPU 的多个核用上</strong>,协程需要和进程配合才能运行在多CPU上</li>
+<li><strong>线程阻塞（Blocking）操作（如IO时）会阻塞掉整个程序</strong></li>
+</ul>
+</li>
+<li>协程最大的优点<ul>
+<li>不仅是处理高并发（单线程下处理高并发）</li>
+<li>特别节省资源（500日活，用php写需要两百多态机器，但是golang只需要二十多太机器）</li>
+</ul>
+</li>
+</ul>
 
     </div>
 
@@ -280,11 +366,11 @@
 <div>
 <ul class="post-copyright">
   <li class="post-copyright-author">
-    <strong>本文作者： </strong>郭庆
+    <strong>本文作者： </strong>Ares
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="http://obsessed.top/2019/11/22/hello-world/" title="Hello World">http://obsessed.top/2019/11/22/hello-world/</a>
+    <a href="http://obsessed.top/2020/03/09/%E8%BF%9B%E7%A8%8B%E3%80%81%E7%BA%BF%E7%A8%8B%E3%80%81%E5%8D%8F%E7%A8%8B/" title="进程、线程、协程">http://obsessed.top/2020/03/09/%E8%BF%9B%E7%A8%8B%E3%80%81%E7%BA%BF%E7%A8%8B%E3%80%81%E5%8D%8F%E7%A8%8B/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/null" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -294,6 +380,9 @@
 
 
       <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Python/" rel="tag"># Python</a>
+          </div>
 
         
 
@@ -301,12 +390,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2019/07/20/router-link%E4%BC%A0%E9%80%92%E5%92%8C%E8%8E%B7%E5%8F%96%E5%8F%82%E6%95%B0/" rel="prev" title="router-link传递和获取参数">
-      <i class="fa fa-chevron-left"></i> router-link传递和获取参数
+    <a href="/2020/03/08/Dockerfile/" rel="prev" title="Dockerfile">
+      <i class="fa fa-chevron-left"></i> Dockerfile
     </a></div>
       <div class="post-nav-item">
-    <a href="/2019/11/26/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/" rel="next" title="正则表达式">
-      正则表达式 <i class="fa fa-chevron-right"></i>
+    <a href="/2020/03/09/%E8%A3%85%E9%A5%B0%E5%99%A8%E3%80%81%E8%BF%AD%E4%BB%A3%E5%99%A8%E3%80%81%E7%94%9F%E6%88%90%E5%99%A8/" rel="next" title="装饰器、迭代器、生成器">
+      装饰器、迭代器、生成器 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -345,15 +434,15 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Quick-Start"><span class="nav-text">Quick Start</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Create-a-new-post"><span class="nav-text">Create a new post</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Run-server"><span class="nav-text">Run server</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Generate-static-files"><span class="nav-text">Generate static files</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Deploy-to-remote-sites"><span class="nav-text">Deploy to remote sites</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#进程"><span class="nav-text">进程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#线程"><span class="nav-text">线程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#协程"><span class="nav-text">协程</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
       <div class="site-overview-wrap sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <img class="site-author-image" itemprop="image" alt="郭庆"
+    <img class="site-author-image" itemprop="image" alt="Ares"
       src="/images/20160228201627_f5vax.jpg">
-  <p class="site-author-name" itemprop="name">郭庆</p>
+  <p class="site-author-name" itemprop="name">Ares</p>
   <div class="site-description" itemprop="description">最重要的是，别放弃希望</div>
 </div>
 <div class="site-state-wrap motion-element">
@@ -361,20 +450,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-count">29</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">9</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">11</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -415,7 +504,7 @@
 <div class="copyright">
   
   &copy; 2016 – 
-  <span itemprop="copyrightYear">2019</span>
+  <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

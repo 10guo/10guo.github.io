@@ -1,6 +1,240 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>装饰器、迭代器、生成器</title>
+    <url>/2020/03/09/%E8%A3%85%E9%A5%B0%E5%99%A8%E3%80%81%E8%BF%AD%E4%BB%A3%E5%99%A8%E3%80%81%E7%94%9F%E6%88%90%E5%99%A8/</url>
+    <content><![CDATA[<h2 id="装饰器"><a href="#装饰器" class="headerlink" title="装饰器"></a>装饰器</h2><h3 id="什么是装饰器？"><a href="#什么是装饰器？" class="headerlink" title="什么是装饰器？"></a>什么是装饰器？</h3><ul>
+<li>装饰器本质是函数，用来给其他函数添加新的功能</li>
+<li>特点：不修改调用方式、不修改源代码</li>
+</ul><h3 id="装饰器的应用场景"><a href="#装饰器的应用场景" class="headerlink" title="装饰器的应用场景"></a>装饰器的应用场景</h3><ul>
+<li>用户认证，判断用户是否登录</li>
+<li>计算函数运行时间（算是一个功能、在项目里用的不多）</li>
+<li>插入日志的时候</li>
+<li>redis缓存</li>
+</ul><h3 id="装饰器求函数运行时间"><a href="#装饰器求函数运行时间" class="headerlink" title="装饰器求函数运行时间"></a>装饰器求函数运行时间</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">timer</span><span class="params">(func)</span>:</span>   <span class="comment">#timer(test1)  func=test1</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">deco</span><span class="params">(*args,**kwargs)</span>:</span></span><br><span class="line">        start_time = time.time()</span><br><span class="line">        func(*args,**kwargs)      <span class="comment">#run test1</span></span><br><span class="line">        stop_time = time.time()</span><br><span class="line">        print(<span class="string">"running time is %s"</span>%(stop_time-start_time))</span><br><span class="line">    <span class="keyword">return</span> deco</span><br><span class="line"></span><br><span class="line"><span class="meta">@timer     # test1=timer(test1)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test1</span><span class="params">()</span>:</span></span><br><span class="line">    time.sleep(<span class="number">3</span>)</span><br><span class="line">    print(<span class="string">"in the test1"</span>)</span><br><span class="line">test1()</span><br></pre></td></tr></table></figure><a id="more"></a>
+
+
+
+
+
+<h3 id="三级装饰器"><a href="#三级装饰器" class="headerlink" title="三级装饰器"></a>三级装饰器</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">auth</span><span class="params">(auth_type)</span>:</span></span><br><span class="line">    print(<span class="string">"auth func:"</span>,auth_type)</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">outer_wrapper</span><span class="params">(func)</span>:</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">wrapper</span><span class="params">(*args, **kwargs)</span>:</span></span><br><span class="line">            print(<span class="string">"wrapper func args:"</span>, *args, **kwargs)</span><br><span class="line">            print(<span class="string">'运行前'</span>)</span><br><span class="line">            func(*args, **kwargs)</span><br><span class="line">            print(<span class="string">'运行后'</span>)</span><br><span class="line">        <span class="keyword">return</span> wrapper</span><br><span class="line">    <span class="keyword">return</span> outer_wrapper</span><br><span class="line"></span><br><span class="line"><span class="meta">@auth(auth_type="local") # home = wrapper()</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">home</span><span class="params">()</span>:</span></span><br><span class="line">    print(<span class="string">"welcome to home  page"</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="string">"from home"</span></span><br><span class="line">home()</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<hr>
+<h2 id="迭代器"><a href="#迭代器" class="headerlink" title="迭代器"></a>迭代器</h2><p><strong>迭代器是访问集合内元素的一种方式</strong>。迭代器对象从集合的第一个元素开始访问，直到所有的元素都被访问一遍后结束。 </p>
+<h3 id="迭代器和可迭代对象"><a href="#迭代器和可迭代对象" class="headerlink" title="迭代器和可迭代对象"></a>迭代器和可迭代对象</h3><ol>
+<li>凡是可作用于<code>for</code>循环的对象都是可迭代的（Iterable）类型；</li>
+<li>凡是可作用于<code>next()</code>函数的对象都是迭代器（<code>Iterator）</code>类型，它们表示一个惰性计算的序列；</li>
+<li>集合数据类型如<code>list</code>、<code>dict</code>、<code>str</code>等是可迭代的但不是迭代器，不过可以通过<code>iter()</code>函数获得一个<code>Iterator</code>对象。</li>
+<li>Python的<code>for</code>循环本质上就是通过不断调用<code>next()</code>函数实现的</li>
+</ol>
+<p><strong>总结：</strong> 一个实现了<strong>iter</strong>方法的对象是可迭代的，一个实现next方法的对象是迭代器</p>
+<h3 id="迭代器的两种方法"><a href="#迭代器的两种方法" class="headerlink" title="迭代器的两种方法"></a>迭代器的两种方法</h3><ol>
+<li><p><strong>__iter__方法</strong></p>
+<p>​    返回迭代器自身 </p>
+</li>
+<li><p><strong>next方法</strong></p>
+<p>​    返回容器的下一个元素 </p>
+</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">a = iter([<span class="number">1</span>,<span class="number">2</span>])              <span class="comment">#生成一个迭代器</span></span><br><span class="line">print(a.__next__())</span><br><span class="line">print(a.__next__())</span><br><span class="line">print(a.__next__())           <span class="comment">#在这一步会引发  “StopIteration” 的异常</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>注意：</strong>如果next方法被调用，但是迭代器中没有值可以返回就会引发一个StopIteration异常 </p>
+<h3 id="判断是否是可迭代对象"><a href="#判断是否是可迭代对象" class="headerlink" title="判断是否是可迭代对象"></a>判断是否是可迭代对象</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> Iterable</span><br><span class="line">print(isinstance([],Iterable))                               <span class="comment">#True</span></span><br><span class="line">print(isinstance(&#123;&#125;,Iterable))                               <span class="comment">#True</span></span><br><span class="line">print(isinstance((),Iterable))                               <span class="comment">#True</span></span><br><span class="line">print(isinstance(<span class="string">"aaa"</span>,Iterable))                            <span class="comment">#True</span></span><br><span class="line">print(isinstance((x <span class="keyword">for</span> x <span class="keyword">in</span> range(<span class="number">10</span>)),Iterable))           <span class="comment">#True</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="判断是否是迭代器"><a href="#判断是否是迭代器" class="headerlink" title="判断是否是迭代器"></a>判断是否是迭代器</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> Iterator</span><br><span class="line">t = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>]</span><br><span class="line">print(isinstance(t,Iterator))           <span class="comment">#False</span></span><br><span class="line">t1 = iter(t)</span><br><span class="line">print(isinstance(t1,Iterator))          <span class="comment">#True</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="使用迭代器生成斐波那契数列"><a href="#使用迭代器生成斐波那契数列" class="headerlink" title="使用迭代器生成斐波那契数列"></a>使用迭代器生成斐波那契数列</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FibIterator</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self,n)</span>:</span></span><br><span class="line">        self.n = n</span><br><span class="line">        self.current = <span class="number">0</span></span><br><span class="line">        self.num1 = <span class="number">0</span></span><br><span class="line">        self.num2 = <span class="number">1</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__next__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> self.current &lt; self.n :</span><br><span class="line">            num = self.num1</span><br><span class="line">            self.num1 , self.num2 = self.num2 , self.num1+self.num2</span><br><span class="line">            self.current += <span class="number">1</span></span><br><span class="line">            <span class="keyword">return</span> num</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">raise</span> StopIteration</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__iter__</span><span class="params">(self)</span>:</span></span><br><span class="line">    	<span class="keyword">return</span> self</span><br><span class="line">    </span><br><span class="line"> </span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    fib = FibIterator(<span class="number">30</span>)</span><br><span class="line">    <span class="keyword">for</span> num <span class="keyword">in</span> fib:</span><br><span class="line">        print(num,end=<span class="string">' '</span>)</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="生成器"><a href="#生成器" class="headerlink" title="生成器"></a>生成器</h2><h3 id="什么是生成器？"><a href="#什么是生成器？" class="headerlink" title="什么是生成器？"></a>什么是生成器？</h3><ul>
+<li>生成器就是一个特殊的迭代器（一边循环，一边计算的机制 ）</li>
+<li>一个有yield关键字的函数就是一个生成器<ul>
+<li>生成器是这样一个函数，它记住上一次返回时在函数体中的位置。</li>
+<li>对生成器函数的第二次（或第 n 次）调用跳转至该函数中间，而上次调用的所有局部变量都保持不变。</li>
+</ul>
+</li>
+</ul>
+<h3 id="生成器的应用场景"><a href="#生成器的应用场景" class="headerlink" title="生成器的应用场景"></a>生成器的应用场景</h3><ul>
+<li>生成器是一个概念，我们平常写代码可能用的并不多，但是python源码大量使用 </li>
+<li>比如我们tornado框架就是基于 生成器+协程 </li>
+<li>比如我们要生成一百万个数据，如果用生成器非常节省空间，用列表浪费大量空间 </li>
+</ul>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line">t1 = time.time()</span><br><span class="line">g = (i <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">100000000</span>))</span><br><span class="line">t2 = time.time()</span><br><span class="line">lst = [i <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">100000000</span>)]</span><br><span class="line">t3 = time.time()</span><br><span class="line">print(<span class="string">'生成器时间：'</span>,t2 - t1)  <span class="comment"># 生成器时间： 0.0</span></span><br><span class="line">print(<span class="string">'列表时间：'</span>,t3 - t2)    <span class="comment"># 列表时间： 5.821957349777222</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="为什么使用生成器"><a href="#为什么使用生成器" class="headerlink" title="为什么使用生成器"></a>为什么使用生成器</h3><ul>
+<li>节省空间</li>
+<li>高效</li>
+</ul>
+<h3 id="生成器生成斐波那契数列"><a href="#生成器生成斐波那契数列" class="headerlink" title="生成器生成斐波那契数列"></a>生成器生成斐波那契数列</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fei</span><span class="params">(n)</span>:</span></span><br><span class="line">    num1,num2 = <span class="number">0</span>,<span class="number">1</span></span><br><span class="line">    current = <span class="number">0</span></span><br><span class="line">    <span class="keyword">while</span> current &lt; n:</span><br><span class="line">        num = num1</span><br><span class="line">        num1,num2 = num2,num1+num2</span><br><span class="line">        current += <span class="number">1</span></span><br><span class="line">        <span class="keyword">yield</span> num</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    f = fei(<span class="number">10</span>)</span><br><span class="line">    print(f)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            print(next(f))</span><br><span class="line">        <span class="keyword">except</span> StopIteration:</span><br><span class="line">            <span class="keyword">break</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="生成器读取文件"><a href="#生成器读取文件" class="headerlink" title="生成器读取文件"></a>生成器读取文件</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">read_big_file_v</span><span class="params">(fname)</span>:</span></span><br><span class="line">    block_size = <span class="number">1024</span> * <span class="number">8</span></span><br><span class="line">    <span class="keyword">with</span> open(fname,encoding=<span class="string">"utf8"</span>) <span class="keyword">as</span> fp:</span><br><span class="line">        <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">            chunk = fp.read(block_size)</span><br><span class="line">            <span class="comment"># 当文件没有更多内容时，read 调用将会返回空字符串 ''</span></span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> chunk:</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">            print(chunk)</span><br><span class="line">            print(<span class="string">'1'</span>)</span><br><span class="line">path = <span class="string">r'E:\python\pachong\story\a.txt'</span></span><br><span class="line">read_big_file_v(path)</span><br></pre></td></tr></table></figure>
+
+
+
+]]></content>
+      <categories>
+        <category>Python</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>进程、线程、协程</title>
+    <url>/2020/03/09/%E8%BF%9B%E7%A8%8B%E3%80%81%E7%BA%BF%E7%A8%8B%E3%80%81%E5%8D%8F%E7%A8%8B/</url>
+    <content><![CDATA[<h2 id="进程"><a href="#进程" class="headerlink" title="进程"></a>进程</h2><ul>
+<li><strong>进程是资源分配的最小单位（ 内存、cpu、网络、io）</strong> </li>
+<li><strong>一个运行起来的程序就是一个进程</strong> <ul>
+<li>什么是程序（程序是我们存储在硬盘里的代码）</li>
+<li>硬盘（256G）、内存条（8G）</li>
+<li>当我们双击图标，打开程序的时候，实际上就是通过I/O操作（读写）内存条里面</li>
+<li>内存条就是我们所指的资源 </li>
+<li>CPU分时<ul>
+<li>CPU比你的手速快多了，分时处理每个线程，但是由于太快然你觉得每个线程都是独占cpu</li>
+<li>cpu是计算，只有时间片到了，获取cpu，线程真正执行</li>
+<li>当你想使用 网络、磁盘等资源的时候，需要cpu的调度</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>进程具有独立的内存空间，所以没有办法相互通信<ul>
+<li>进程如何通信<ul>
+<li>进程queue(父子进程通信)</li>
+<li>pipe（同一程序下两个进程通信）</li>
+<li>managers（同一程序下多个进程通信）</li>
+<li>RabbitMQ、redis等（不同程序间通信）</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>为什么需要进程池<ul>
+<li>一次性开启指定数量的进程</li>
+<li>如果有十个进程，有一百个任务，一次可以处理多少个（一次性只能处理十个）</li>
+<li>防止进程开启数量过多导致服务器压力过大</li>
+</ul>
+</li>
+</ul><a id="more"></a>
+<h2 id="线程"><a href="#线程" class="headerlink" title="线程"></a>线程</h2><ul>
+<li>有了进程为什么还需要线程<ul>
+<li>因为进程不能同一时间只能做一个事情</li>
+</ul>
+</li>
+<li>什么是线程<ul>
+<li>线程是操作系统调度的最小单位</li>
+<li>线程是进程正真的执行者，是一些指令的集合（进程资源的拥有者）</li>
+<li>同一个进程下的读多个<strong>线程共享内存空间</strong>，数据直接访问（数据共享）</li>
+<li>为了保证数据安全，必须使用<strong>线程锁</strong></li>
+</ul>
+</li>
+<li>GIL全局解释器锁<ul>
+<li>在python全局解释器下，保证同一时间只有一个线程运行</li>
+<li>防止多个线程都修改数据</li>
+</ul>
+</li>
+<li>线程锁（互斥锁）<ul>
+<li>GIL锁只能保证同一时间只能有一个线程对某个资源操作，但当上一个线程还未执行完毕时可能就会释放GIL，其他线程就可以操作了</li>
+<li>线程锁本质把线程中的数据加了一把互斥锁<ul>
+<li>mysql中共享锁 &amp; 互斥锁</li>
+<li>mysql共享锁：共享锁，所有线程都能读，而不能写 </li>
+<li>mysql排它锁：排它，任何线程读取这个这个数据的权利都没有 </li>
+<li>加上线程锁之后所有其他线程，读都不能读这个数据 </li>
+</ul>
+</li>
+<li>有了GIL全局解释器锁为什么还需要线程锁<ul>
+<li>因为cpu是分时使用的</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>死锁定义<ul>
+<li>两个以上的进程或线程在执行过程中，因争夺资源而造成的一种互相等待的现象，若无外力作用，它们都将无法推进下去</li>
+</ul>
+</li>
+</ul>
+<h2 id="协程"><a href="#协程" class="headerlink" title="协程"></a>协程</h2><ul>
+<li>什么是协程<ul>
+<li>协程微线程，纤程，本质是一个单线程</li>
+<li>协程能在单线程处理高并发<ul>
+<li>线程遇到I/O操作会等待、阻塞，协程遇到I/O会自动切换（剩下的只有CPU操作）</li>
+<li>线程的状态保存在CPU的寄存器和栈里而协程拥有自己的空间，所以无需上下文切换的开销，所以快</li>
+</ul>
+</li>
+<li>为甚么协程能够遇到I/O自动切换<ul>
+<li>协程有一个gevent模块(封装了greenlet模块)，遇到I/O自动切换</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>协程缺点<ul>
+<li>无法利用多核资源：<strong>协程的本质是个单线程,它不能同时将 单个CPU 的多个核用上</strong>,协程需要和进程配合才能运行在多CPU上</li>
+<li><strong>线程阻塞（Blocking）操作（如IO时）会阻塞掉整个程序</strong></li>
+</ul>
+</li>
+<li>协程最大的优点<ul>
+<li>不仅是处理高并发（单线程下处理高并发）</li>
+<li>特别节省资源（500日活，用php写需要两百多态机器，但是golang只需要二十多太机器）</li>
+</ul>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Python</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Dockerfile</title>
+    <url>/2020/03/08/Dockerfile/</url>
+    <content><![CDATA[<h2 id="关于Dockerfile"><a href="#关于Dockerfile" class="headerlink" title="关于Dockerfile"></a>关于Dockerfile</h2><p>　　在Docker中创建镜像最常用的方式，就是使用Dockerfile。Dockerfile是一个Docker镜像的描述文件，我们可以理解成火箭发射的A、B、C、D…的步骤。Dockerfile其内部<strong>包含了一条条的指令</strong>，<strong>每一条指令构建一层，因此每一条指令的内容，就是描述该层应当如何构建</strong>。 </p><a id="more"></a>
+<img src="/2020/03/08/Dockerfile/image1.png" class title="docker">  
+
+<p><strong>一个Dockerfile的实例如下：</strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#基于python3.6的镜像</span></span><br><span class="line">FROM python:<span class="number">3.6</span></span><br><span class="line">    </span><br><span class="line"><span class="comment">#维护人的信息</span></span><br><span class="line">MAINTAINER zhangsan</span><br><span class="line"></span><br><span class="line"><span class="comment">#执行的命令</span></span><br><span class="line">RUN  mkdir /code</span><br><span class="line"></span><br><span class="line"><span class="comment">#设置当前工作目录</span></span><br><span class="line">WORKDIR /code</span><br><span class="line"></span><br><span class="line"><span class="comment">#copy文件</span></span><br><span class="line">ADD . /code/</span><br><span class="line"></span><br><span class="line"><span class="comment">#执行的命令</span></span><br><span class="line">RUN pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple</span><br><span class="line"></span><br><span class="line"><span class="comment">#开启8000端口</span></span><br><span class="line">EXPOSE <span class="number">8000</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#当启动容器时执行的脚本文件</span></span><br><span class="line">CMD [<span class="string">"python"</span>, <span class="string">"manage.py"</span>, <span class="string">"runserver"</span>, <span class="string">"0:8000"</span>]</span><br></pre></td></tr></table></figure>
+
+<p><strong>由上可知，Dockerfile结构大致分为四个部分：</strong> </p>
+<ol>
+<li>基础镜像信息 </li>
+<li>维护者信息</li>
+<li>镜像操作命令</li>
+<li>容器启动时执行指令</li>
+</ol>
+<img src="/2020/03/08/Dockerfile/image2.png" class title="Dockerfile">  
+
+<hr>
+<h2 id="Dockerfile案例"><a href="#Dockerfile案例" class="headerlink" title="Dockerfile案例"></a>Dockerfile案例</h2><p><strong>初始化一个django项目并用docker启动</strong> </p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">[root@node1 ~]<span class="comment"># django-admin startproject demo</span></span><br><span class="line">[root@node1 demo]<span class="comment"># cd demo</span></span><br><span class="line">[root@node1 demo]<span class="comment"># python3 manage.py runserver 0.0.0.0:8000                  # 测试项目是否可以启动</span></span><br><span class="line"></span><br><span class="line">[root@node1 demo]<span class="comment"># vim Dockerfile                                            # dockerfile内容如下,路径放到django项目根路径</span></span><br><span class="line">[root@node1 demo]<span class="comment"># vim requirements.txt                                      # django需要安装的包，路径放到django项目根路径</span></span><br><span class="line">[root@node1 demo]<span class="comment"># docker build -t dj_demo:v1 -f Dockerfile . </span></span><br><span class="line">[root@node1 demo]<span class="comment"># docker run -d -p 192.168.56.11:8000:8000 dj_demo:v1</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>Dockerfile</strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">FROM python:<span class="number">3.6</span></span><br><span class="line">MAINTAINER zhangsan</span><br><span class="line">RUN  mkdir /code</span><br><span class="line">WORKDIR /code</span><br><span class="line">ADD . /code/</span><br><span class="line">RUN pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple</span><br><span class="line">EXPOSE <span class="number">8000</span></span><br><span class="line">CMD [<span class="string">"python"</span>, <span class="string">"manage.py"</span>, <span class="string">"runserver"</span>, <span class="string">"0:8000"</span>]</span><br></pre></td></tr></table></figure>
+
+<p><strong>requirements.txt</strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">Django==<span class="number">2.0</span><span class="number">.4</span></span><br><span class="line">mysqlclient==<span class="number">1.4</span><span class="number">.6</span></span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>Linux</category>
+      </categories>
+      <tags>
+        <tag>docker</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>docker-compose</title>
     <url>/2020/03/05/docker-compose/</url>
     <content><![CDATA[<h2 id="docker-compose简介"><a href="#docker-compose简介" class="headerlink" title="docker-compose简介"></a>docker-compose简介</h2><p>Docker-Compose项目是Docker官方的开源项目，负责实现对Docker容器集群的快速编排。</p><p>Docker-Compose将所管理的容器分为三层，分别是工程（project），服务（service）以及容器（container）。</p><p>Docker-Compose运行目录下的所有文件（docker-compose.yml，extends文件或环境变量文件等）组成一个工程，若无特殊指定工程名即为当前目录名。一个工程当中可包含多个服务，每个服务中定义了容器运行的镜像，参数，依赖。一个服务当中可包括多个容器实例，Docker-Compose并没有解决负载均衡的问题，因此需要借助其它工具实现服务发现及负载均衡。</p><a id="more"></a>
@@ -1449,40 +1683,6 @@
       </tags>
   </entry>
   <entry>
-    <title>关于MySQL</title>
-    <url>/2019/05/22/%E5%85%B3%E4%BA%8EMySQL/</url>
-    <content><![CDATA[<h2 id="什么是-MySQL？"><a href="#什么是-MySQL？" class="headerlink" title="什么是 MySQL？"></a>什么是 MySQL？</h2><ol>
-<li><strong>MySQL</strong> 是一个快速、多线程、多用户和强壮的SQL数据库服务器 </li>
-</ol>
-<h2 id="我们为什么使用MySQL"><a href="#我们为什么使用MySQL" class="headerlink" title="我们为什么使用MySQL"></a>我们为什么使用MySQL</h2><pre><code>1. 我们因为它开源免费，使用范围广泛，具有强大的索引和事务，能支持海量的数据</code></pre> <a id="more"></a>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h2 id="MySQL中的幻读，什么是幻读"><a href="#MySQL中的幻读，什么是幻读" class="headerlink" title="MySQL中的幻读，什么是幻读"></a>MySQL中的幻读，什么是幻读</h2><ol>
-<li>幻读一词摘自MySQL的官方手册</li>
-<li>幻读出现于在开启事务</li>
-</ol>
-]]></content>
-      <categories>
-        <category>MySQL</category>
-      </categories>
-      <tags>
-        <tag>MySQL</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Django</title>
     <url>/2019/05/22/Django/</url>
     <content><![CDATA[<h2 id="如何使用ImageField上传图片"><a href="#如何使用ImageField上传图片" class="headerlink" title="如何使用ImageField上传图片"></a>如何使用ImageField上传图片</h2><figure class="highlight"><table><tr><td class="code"><pre><span class="line"><span class="comment">#models</span></span><br><span class="line">img = models.ImageField(verbose_name=<span class="string">'描述图片'</span>,upload_to=<span class="string">'media'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#settings</span></span><br><span class="line">MEDIA_URL = <span class="string">'/media/'</span></span><br><span class="line">MEDIA_ROOT = os.path.join(BASE_DIR,<span class="string">'media'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#记得form表单写enctype</span></span><br><span class="line">&lt;form action=<span class="string">""</span> method=<span class="string">"post"</span> enctype=<span class="string">"multipart/form-data"</span>&gt; </span><br><span class="line">&lt;/form&gt;</span><br></pre></td></tr></table></figure>
@@ -1551,6 +1751,40 @@
       </categories>
       <tags>
         <tag>Django</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>关于MySQL</title>
+    <url>/2019/05/22/%E5%85%B3%E4%BA%8EMySQL/</url>
+    <content><![CDATA[<h2 id="什么是-MySQL？"><a href="#什么是-MySQL？" class="headerlink" title="什么是 MySQL？"></a>什么是 MySQL？</h2><ol>
+<li><strong>MySQL</strong> 是一个快速、多线程、多用户和强壮的SQL数据库服务器 </li>
+</ol>
+<h2 id="我们为什么使用MySQL"><a href="#我们为什么使用MySQL" class="headerlink" title="我们为什么使用MySQL"></a>我们为什么使用MySQL</h2><pre><code>1. 我们因为它开源免费，使用范围广泛，具有强大的索引和事务，能支持海量的数据</code></pre> <a id="more"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h2 id="MySQL中的幻读，什么是幻读"><a href="#MySQL中的幻读，什么是幻读" class="headerlink" title="MySQL中的幻读，什么是幻读"></a>MySQL中的幻读，什么是幻读</h2><ol>
+<li>幻读一词摘自MySQL的官方手册</li>
+<li>幻读出现于在开启事务</li>
+</ol>
+]]></content>
+      <categories>
+        <category>MySQL</category>
+      </categories>
+      <tags>
+        <tag>MySQL</tag>
       </tags>
   </entry>
   <entry>
