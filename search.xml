@@ -1683,6 +1683,40 @@
       </tags>
   </entry>
   <entry>
+    <title>关于MySQL</title>
+    <url>/2019/05/22/%E5%85%B3%E4%BA%8EMySQL/</url>
+    <content><![CDATA[<h2 id="什么是-MySQL？"><a href="#什么是-MySQL？" class="headerlink" title="什么是 MySQL？"></a>什么是 MySQL？</h2><ol>
+<li><strong>MySQL</strong> 是一个快速、多线程、多用户和强壮的SQL数据库服务器 </li>
+</ol>
+<h2 id="我们为什么使用MySQL"><a href="#我们为什么使用MySQL" class="headerlink" title="我们为什么使用MySQL"></a>我们为什么使用MySQL</h2><pre><code>1. 我们因为它开源免费，使用范围广泛，具有强大的索引和事务，能支持海量的数据</code></pre> <a id="more"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h2 id="MySQL中的幻读，什么是幻读"><a href="#MySQL中的幻读，什么是幻读" class="headerlink" title="MySQL中的幻读，什么是幻读"></a>MySQL中的幻读，什么是幻读</h2><ol>
+<li>幻读一词摘自MySQL的官方手册</li>
+<li>幻读出现于在开启事务</li>
+</ol>
+]]></content>
+      <categories>
+        <category>MySQL</category>
+      </categories>
+      <tags>
+        <tag>MySQL</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Django</title>
     <url>/2019/05/22/Django/</url>
     <content><![CDATA[<h2 id="如何使用ImageField上传图片"><a href="#如何使用ImageField上传图片" class="headerlink" title="如何使用ImageField上传图片"></a>如何使用ImageField上传图片</h2><figure class="highlight"><table><tr><td class="code"><pre><span class="line"><span class="comment">#models</span></span><br><span class="line">img = models.ImageField(verbose_name=<span class="string">'描述图片'</span>,upload_to=<span class="string">'media'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#settings</span></span><br><span class="line">MEDIA_URL = <span class="string">'/media/'</span></span><br><span class="line">MEDIA_ROOT = os.path.join(BASE_DIR,<span class="string">'media'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#记得form表单写enctype</span></span><br><span class="line">&lt;form action=<span class="string">""</span> method=<span class="string">"post"</span> enctype=<span class="string">"multipart/form-data"</span>&gt; </span><br><span class="line">&lt;/form&gt;</span><br></pre></td></tr></table></figure>
@@ -1751,40 +1785,6 @@
       </categories>
       <tags>
         <tag>Django</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>关于MySQL</title>
-    <url>/2019/05/22/%E5%85%B3%E4%BA%8EMySQL/</url>
-    <content><![CDATA[<h2 id="什么是-MySQL？"><a href="#什么是-MySQL？" class="headerlink" title="什么是 MySQL？"></a>什么是 MySQL？</h2><ol>
-<li><strong>MySQL</strong> 是一个快速、多线程、多用户和强壮的SQL数据库服务器 </li>
-</ol>
-<h2 id="我们为什么使用MySQL"><a href="#我们为什么使用MySQL" class="headerlink" title="我们为什么使用MySQL"></a>我们为什么使用MySQL</h2><pre><code>1. 我们因为它开源免费，使用范围广泛，具有强大的索引和事务，能支持海量的数据</code></pre> <a id="more"></a>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h2 id="MySQL中的幻读，什么是幻读"><a href="#MySQL中的幻读，什么是幻读" class="headerlink" title="MySQL中的幻读，什么是幻读"></a>MySQL中的幻读，什么是幻读</h2><ol>
-<li>幻读一词摘自MySQL的官方手册</li>
-<li>幻读出现于在开启事务</li>
-</ol>
-]]></content>
-      <categories>
-        <category>MySQL</category>
-      </categories>
-      <tags>
-        <tag>MySQL</tag>
       </tags>
   </entry>
   <entry>
