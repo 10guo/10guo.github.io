@@ -210,6 +210,265 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://obsessed.top/2020/03/02/docker%E5%91%BD%E4%BB%A4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/20160228201627_f5vax.png">
+      <meta itemprop="name" content="Ares">
+      <meta itemprop="description" content="最重要的是，别放弃希望">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ares">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/03/02/docker%E5%91%BD%E4%BB%A4/" class="post-title-link" itemprop="url">docker命令</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-02 16:49:26" itemprop="dateCreated datePublished" datetime="2020-03-02T16:49:26+08:00">2020-03-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-05 14:34:51" itemprop="dateModified" datetime="2020-03-05T14:34:51+08:00">2020-03-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="一、docker的安装"><a href="#一、docker的安装" class="headerlink" title="一、docker的安装"></a>一、docker的安装</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1、安装依赖包</span></span><br><span class="line">yum install -y yum-utils device-mapper-persistent-data lvm2</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2、添加Docker软件包源(否则doker安装的不是新版本)</span></span><br><span class="line">yum-config-manager \</span><br><span class="line">--add-repo \</span><br><span class="line">https://download.docker.com/linux/centos/docker-ce.repo</span><br><span class="line"></span><br><span class="line"><span class="comment"># 3、安装Docker CE</span></span><br><span class="line">yum install -y docker-ce</span><br><span class="line"></span><br><span class="line"><span class="comment"># 4、启动Docker服务并设置开机启动</span></span><br><span class="line">systemctl start docker</span><br><span class="line">systemctl enable docker</span><br><span class="line"></span><br><span class="line"><span class="comment"># 5、测试docker是否安装成功（hello-world是官方提供的一个测试镜像）</span></span><br><span class="line">docker run hello-world</span><br><span class="line"></span><br><span class="line"><span class="comment"># 6、查看docker基本信息</span></span><br><span class="line">docker info</span><br><span class="line">docker version</span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/03/02/docker%E5%91%BD%E4%BB%A4/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://obsessed.top/2020/03/02/docker/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/20160228201627_f5vax.png">
+      <meta itemprop="name" content="Ares">
+      <meta itemprop="description" content="最重要的是，别放弃希望">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ares">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/03/02/docker/" class="post-title-link" itemprop="url">docker</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-02 14:11:28" itemprop="dateCreated datePublished" datetime="2020-03-02T14:11:28+08:00">2020-03-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-03 21:20:34" itemprop="dateModified" datetime="2020-03-03T21:20:34+08:00">2020-03-03</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="一、Docker简介"><a href="#一、Docker简介" class="headerlink" title="一、Docker简介"></a>一、Docker简介</h2><ol>
+<li><p>Docker 是应用最广泛的开源容器引擎，让开发者可以打包他们的应用以及依赖包到一个可移植的容器中 </p>
+</li>
+<li><p>然后发布到任何流行的 Linux或Windows 机器上，也可以实现虚拟化。 </p>
+</li>
+<li><p>每个容器拥有一套和宿主机完全隔离的文件系统（共用linux内核），程序在这个虚拟容器里运行，就好像在真实的物理机上运行一样。 </p>
+<p>容器：</p>
+<p><strong>1）</strong>容器是一个操作系统级别下的虚拟化技术，运行一个容器就行运行一个进程一样</p>
+<p><strong>2）</strong>容器依赖linux内核特性：Namespace（资源隔离）和Cgroups（资源限制）</p>
+</li>
+</ol>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/03/02/docker/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://obsessed.top/2020/03/02/nginx%E9%85%8D%E7%BD%AE%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/20160228201627_f5vax.png">
+      <meta itemprop="name" content="Ares">
+      <meta itemprop="description" content="最重要的是，别放弃希望">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ares">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/03/02/nginx%E9%85%8D%E7%BD%AE%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/" class="post-title-link" itemprop="url">nginx配置负载均衡</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-02 12:23:54" itemprop="dateCreated datePublished" datetime="2020-03-02T12:23:54+08:00">2020-03-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-03 16:07:16" itemprop="dateModified" datetime="2020-03-03T16:07:16+08:00">2020-03-03</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="1、搭载实验环境（使用docker部署两台nginx容器）"><a href="#1、搭载实验环境（使用docker部署两台nginx容器）" class="headerlink" title="1、搭载实验环境（使用docker部署两台nginx容器）"></a>1、搭载实验环境（使用docker部署两台nginx容器）</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#使用docker搭建第一台nginx服务</span></span><br><span class="line">[root@node1 ~]<span class="comment"># docker container run -d --name web01 -p 81:80 nginx</span></span><br><span class="line">测试访问：http://<span class="number">192.168</span><span class="number">.26</span><span class="number">.128</span><span class="number">.81</span>/</span><br><span class="line">[root@node1 ~]<span class="comment"># docker exec -it web01 bash</span></span><br><span class="line">root@b68021de00b8:/<span class="comment"># echo web01 &gt; /usr/share/nginx/html/index.html</span></span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/03/02/nginx%E9%85%8D%E7%BD%AE%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://obsessed.top/2020/03/02/nginx%E6%98%AF%E4%BB%80%E4%B9%88/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -815,285 +1074,11 @@
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://obsessed.top/2020/02/22/python%E5%AF%B9%E6%8E%A5%E6%94%AF%E4%BB%98%E5%AE%9D/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/20160228201627_f5vax.png">
-      <meta itemprop="name" content="Ares">
-      <meta itemprop="description" content="最重要的是，别放弃希望">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Ares">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/02/22/python%E5%AF%B9%E6%8E%A5%E6%94%AF%E4%BB%98%E5%AE%9D/" class="post-title-link" itemprop="url">python对接支付宝</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-02-22 10:17:55" itemprop="dateCreated datePublished" datetime="2020-02-22T10:17:55+08:00">2020-02-22</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-03-03 17:24:59" itemprop="dateModified" datetime="2020-03-03T17:24:59+08:00">2020-03-03</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>支付宝开发网址</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">支付宝开放平台： https://open.alipay.com/platform/home.htm</span><br><span class="line">支付宝沙箱环境： https://openhome.alipay.com/platform/appDaily.htm?tab=info</span><br><span class="line">支付宝开发者文档：https://openhome.alipay.com/developmentDocument.htm</span><br><span class="line">电脑网站支付流程：https://docs.open.alipay.com/270</span><br><span class="line">生成签名：https://docs.open.alipay.com/291/106103/</span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/02/22/python%E5%AF%B9%E6%8E%A5%E6%94%AF%E4%BB%98%E5%AE%9D/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://obsessed.top/2020/01/02/saltstack%E5%AE%89%E8%A3%85/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/20160228201627_f5vax.png">
-      <meta itemprop="name" content="Ares">
-      <meta itemprop="description" content="最重要的是，别放弃希望">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Ares">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/01/02/saltstack%E5%AE%89%E8%A3%85/" class="post-title-link" itemprop="url">saltstack安装</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-01-02 23:00:27" itemprop="dateCreated datePublished" datetime="2020-01-02T23:00:27+08:00">2020-01-02</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-03-02 11:33:06" itemprop="dateModified" datetime="2020-03-02T11:33:06+08:00">2020-03-02</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index">
-                    <span itemprop="name">Linux</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="1-准备虚拟环境"><a href="#1-准备虚拟环境" class="headerlink" title="1.  准备虚拟环境"></a>1.  准备虚拟环境</h2><ol>
-<li>在VMware中创建一个中创建一个CentOS 64位的操作系统</li>
-<li>在配置时使用系统自动分配的IP</li>
-</ol><h2 id="2-配置"><a href="#2-配置" class="headerlink" title="2.  配置"></a>2.  配置</h2><ol>
-<li><h3 id="配置网卡"><a href="#配置网卡" class="headerlink" title="配置网卡"></a><strong>配置网卡</strong></h3><p>​    vi /etc/sysconfig/network-scripts/ifcfg-eth0 </p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">BOOTPROTO=static <span class="comment">#dhcp改为static（修改）</span></span><br><span class="line">ONBOOT=yes <span class="comment">#开机启用本配置，一般在最后一行（修改）</span></span><br><span class="line"> </span><br><span class="line">IPADDR=<span class="number">192.168</span><span class="number">.179</span><span class="number">.111</span> <span class="comment">#静态IP（增加）</span></span><br><span class="line">GATEWAY=<span class="number">192.168</span><span class="number">.179</span><span class="number">.2</span> <span class="comment">#默认网关，虚拟机安装的话，通常是2，也就是VMnet8的网关设置（增加）</span></span><br><span class="line">NETMASK=<span class="number">255.255</span><span class="number">.255</span><span class="number">.0</span> <span class="comment">#子网掩码（增加）</span></span><br><span class="line">DNS1=<span class="number">192.168</span><span class="number">.179</span><span class="number">.2</span> <span class="comment">#DNS 配置，虚拟机安装的话，DNS就网关就行，多个DNS网址的话再增加（增加）</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><h3 id="重启网卡"><a href="#重启网卡" class="headerlink" title="重启网卡"></a>重启网卡</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">service network restart</span><br></pre></td></tr></table></figure>
-</li>
-<li><h3 id="随便找个域名ping一下测试DNS是否OK"><a href="#随便找个域名ping一下测试DNS是否OK" class="headerlink" title="随便找个域名ping一下测试DNS是否OK"></a>随便找个域名ping一下测试DNS是否OK</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ping baidu.com</span><br></pre></td></tr></table></figure>
-</li>
-<li><h3 id="设置主机名"><a href="#设置主机名" class="headerlink" title="设置主机名"></a><strong>设置主机名</strong></h3><p>vi /etc/hostname</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">linux-node1.example.com				<span class="comment">#为主机名</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><h3 id="设置主机名解析"><a href="#设置主机名解析" class="headerlink" title="设置主机名解析"></a>设置主机名解析</h3><p>vi /etc/hosts </p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">192.168</span><span class="number">.56</span><span class="number">.11</span> linux-node1 linux-node1.example.com</span><br><span class="line"></span><br><span class="line"><span class="number">192.168</span><span class="number">.56</span><span class="number">.12</span> linux-node2 linux-node2.example.com</span><br></pre></td></tr></table></figure>
-</li>
-<li><h3 id="安装最新epel-yum源"><a href="#安装最新epel-yum源" class="headerlink" title="安装最新epel yum源"></a><strong>安装最新epel yum源</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 此地址中有各种源（https://opsx.alibaba.com/mirror）</span></span><br><span class="line">rpm -ivh https://mirrors.aliyun.com/epel/epel-release-latest<span class="number">-7.</span>noarch.rpm</span><br></pre></td></tr></table></figure>
-</li>
-<li><h3 id="yum安装-一些基础包"><a href="#yum安装-一些基础包" class="headerlink" title="yum安装 一些基础包"></a><strong>yum安装 一些基础包</strong></h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum -y install net-tools vim lrzsz tree screen lsof tcpdump nc mtr nmap</span><br></pre></td></tr></table></figure>
-</li>
-<li><h3 id="关闭selinux"><a href="#关闭selinux" class="headerlink" title="关闭selinux"></a><strong>关闭selinux</strong></h3><p>vim /etc/selinux/config </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELINUX=disabled</span><br></pre></td></tr></table></figure>
-</li>
-<li><h3 id="重启系统"><a href="#重启系统" class="headerlink" title="重启系统"></a><strong>重启系统</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum update -y &amp;&amp; reboot          <span class="comment"># 升级所有包同时也升级软件和系统内核, 并重启</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><h3 id="确认是否一些服务是否已按计划关闭"><a href="#确认是否一些服务是否已按计划关闭" class="headerlink" title="确认是否一些服务是否已按计划关闭"></a><strong>确认是否一些服务是否已按计划关闭</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">getenforce          <span class="comment"># selinux是否关闭</span></span><br><span class="line"></span><br><span class="line">firewall-cmd --state         <span class="comment"># 防火墙是否关闭</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><h3 id="附带关于CentOS7防火墙的命令"><a href="#附带关于CentOS7防火墙的命令" class="headerlink" title="附带关于CentOS7防火墙的命令"></a>附带关于CentOS7防火墙的命令</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">1. 使用命令：firewall-cmd --state     			查看防火墙状态</span><br><span class="line">		running			#代表开启</span><br><span class="line">2. 使用命令：systemctl stop firewalld.service	 	关闭运行的防火墙</span><br><span class="line">		not running		#代表关闭</span><br><span class="line">3. 注意  前面的方法，一旦重启操作系统，防火墙就自动开启了</span><br><span class="line"></span><br><span class="line">4. 输入命令：systemctl disable firewalld.service		禁止防火墙服务器自动启动</span><br></pre></td></tr></table></figure>
-
-</li>
-</ol>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/01/02/saltstack%E5%AE%89%E8%A3%85/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://obsessed.top/2019/12/19/git/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/20160228201627_f5vax.png">
-      <meta itemprop="name" content="Ares">
-      <meta itemprop="description" content="最重要的是，别放弃希望">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Ares">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/12/19/git/" class="post-title-link" itemprop="url">Git</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-12-19 10:51:12" itemprop="dateCreated datePublished" datetime="2019-12-19T10:51:12+08:00">2019-12-19</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-03-03 17:30:50" itemprop="dateModified" datetime="2020-03-03T17:30:50+08:00">2020-03-03</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Git/" itemprop="url" rel="index">
-                    <span itemprop="name">Git</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="Git"><a href="#Git" class="headerlink" title="Git"></a>Git</h2><p>Git是一个<strong>免费的开源</strong>分布式版本控制系统，旨在快速高效地处理从小型到大型项目的所有事务。</p><p>Git易于学习， 占地面积小，具有闪电般快速的性能。它超越了Subversion，CVS，Perforce和ClearCase等SCM工具，具有廉价本地分支，便捷的<strong>临时区域</strong>和<strong>多个工作流程</strong>等功能</p><h2 id="git流程"><a href="#git流程" class="headerlink" title="git流程"></a>git流程</h2><p><strong><img src="/2019/12/19/git/git%E6%B5%81%E7%A8%8B%E5%9B%BE.png" class title="git流程图"></strong> </p><ul>
-<li><code>workspace</code>：工作区 </li>
-<li><code>Index/Stage</code>：暂存区 </li>
-<li><code>Repository</code>：仓库区/本地仓库</li>
-<li><code>Remote</code>：远程仓库</li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2019/12/19/git/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -1139,7 +1124,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">29</span>
+          <span class="site-state-item-count">32</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

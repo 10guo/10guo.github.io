@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <link rel="alternate" href="/atom.xml" title="Ares" type="application/atom+xml">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://obsessed.top').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.5.0',
+    exturl: false,
+    sidebar: {"position":"left","Manual define the sidebar width. If commented, will be default for":null,"Muse | Mist":320,"Pisces | Gemini":240,"width":200,"display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="1https:&#x2F;&#x2F;c.runoob.com&#x2F;compile&#x2F;6			#在线编译器支持python2和python31、python解释器默认编码1234567#python2&amp;gt;&amp;gt;&amp;gt; sys.getdefaultencoding()&amp;apos;ascii&amp;apos;#python3&amp;gt;&amp;gt;&amp;gt; sys.getdefaultencoding()&amp;apos;utf-8&amp;apos;">
+<meta name="keywords" content="Python">
+<meta property="og:type" content="article">
+<meta property="og:title" content="python2与python3的区别">
+<meta property="og:url" content="http:&#x2F;&#x2F;obsessed.top&#x2F;2020&#x2F;03&#x2F;10&#x2F;python2%E4%B8%8Epython3%E7%9A%84%E5%8C%BA%E5%88%AB&#x2F;index.html">
+<meta property="og:site_name" content="Ares">
+<meta property="og:description" content="1https:&#x2F;&#x2F;c.runoob.com&#x2F;compile&#x2F;6			#在线编译器支持python2和python31、python解释器默认编码1234567#python2&amp;gt;&amp;gt;&amp;gt; sys.getdefaultencoding()&amp;apos;ascii&amp;apos;#python3&amp;gt;&amp;gt;&amp;gt; sys.getdefaultencoding()&amp;apos;utf-8&amp;apos;">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http:&#x2F;&#x2F;obsessed.top&#x2F;2020&#x2F;03&#x2F;10&#x2F;python2%E4%B8%8Epython3%E7%9A%84%E5%8C%BA%E5%88%AB&#x2F;image-20200310084245988.png">
+<meta property="og:updated_time" content="2020-03-10T08:51:37.264Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;obsessed.top&#x2F;2020&#x2F;03&#x2F;10&#x2F;python2%E4%B8%8Epython3%E7%9A%84%E5%8C%BA%E5%88%AB&#x2F;image-20200310084245988.png">
+
+<link rel="canonical" href="http://obsessed.top/2020/03/10/python2%E4%B8%8Epython3%E7%9A%84%E5%8C%BA%E5%88%AB/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>python2与python3的区别 | Ares</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ares</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Above all, don't lose hope.</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://obsessed.top/2020/03/10/python2%E4%B8%8Epython3%E7%9A%84%E5%8C%BA%E5%88%AB/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/20160228201627_f5vax.png">
+      <meta itemprop="name" content="Ares">
+      <meta itemprop="description" content="最重要的是，别放弃希望">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ares">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          python2与python3的区别
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-03-10 15:00:27 / 修改时间：16:51:37" itemprop="dateCreated datePublished" datetime="2020-03-10T15:00:27+08:00">2020-03-10</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Python/" itemprop="url" rel="index">
+                    <span itemprop="name">Python</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://c.runoob.com/compile/<span class="number">6</span>			<span class="comment">#在线编译器支持python2和python3</span></span><br></pre></td></tr></table></figure><h2 id="1、python解释器默认编码"><a href="#1、python解释器默认编码" class="headerlink" title="1、python解释器默认编码"></a>1、python解释器默认编码</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#python2</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>sys.getdefaultencoding()</span><br><span class="line"><span class="string">'ascii'</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#python3</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>sys.getdefaultencoding()</span><br><span class="line"><span class="string">'utf-8'</span></span><br></pre></td></tr></table></figure><a id="more"></a>
+
+
+
+
+
+<p>在Python 2中，如果代码中包含非英文字符，需要在代码文件的最开始声明编码，如下</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br></pre></td></tr></table></figure>
+
+<p>在Python 3中，默认的字符串就是Unicode，就省去了这个麻烦，下面的代码在Python 3可以正常地运行</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">a = <span class="string">"你好"</span></span><br><span class="line">print(a)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>python2 解释器默认编码：ascii</li>
+<li>python3 解释器默认编码：utf-8</li>
+</ul>
+<h2 id="2、input函数"><a href="#2、input函数" class="headerlink" title="2、input函数"></a>2、input函数</h2><p>在python2中input是将用户输入的内容作为<strong>表达式</strong>来对待</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">content = input(<span class="string">"请输入您的内容："</span>)</span><br><span class="line">print(content)</span><br></pre></td></tr></table></figure>
+
+<p>输出</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">请输入您的内容: <span class="number">100</span>+<span class="number">200</span></span><br><span class="line"><span class="number">300</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>在python3中input是将用户输入的内容作为<strong>字符串</strong>来对待</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">content = input(<span class="string">"请输入您的内容："</span>)</span><br><span class="line">print(content)</span><br></pre></td></tr></table></figure>
+
+<p>输出</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">请输入您的内容: <span class="number">100</span>+<span class="number">200</span></span><br><span class="line"><span class="number">100</span>+<span class="number">200</span></span><br></pre></td></tr></table></figure>
+
+<p>如果要想使<strong>python2</strong>去实现<strong>python3</strong>的功能，也就是说在python2中通过<strong>input</strong>输入也实现统一作为“字符串”的话，那么就不能使用<strong>input</strong>了，而应该去使用<strong>raw_input</strong>。 但是在python3中没有<strong>raw_input</strong>函数</p>
+<h2 id="3、print函数"><a href="#3、print函数" class="headerlink" title="3、print函数"></a>3、print函数</h2><p>Python 2中print是<strong>语句</strong>（statement），Python 3中print则变成了<strong>函数</strong>。在Python 3中调用print需要加上括号，不加括号会报SyntaxError </p>
+<p><strong>Python 2</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">print</span> <span class="string">"hello world"</span></span><br></pre></td></tr></table></figure>
+
+<p>输出</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hello world</span><br></pre></td></tr></table></figure>
+
+<p><strong>Python 3</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">print(<span class="string">"hello world"</span>)</span><br></pre></td></tr></table></figure>
+
+<p>输出</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hello world</span><br></pre></td></tr></table></figure>
+
+<p>python3</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">print</span> <span class="string">"hello world"</span></span><br></pre></td></tr></table></figure>
+
+<p>输出</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"> File <span class="string">"&lt;stdin&gt;"</span>, line <span class="number">1</span></span><br><span class="line">    <span class="keyword">print</span> <span class="string">"hello world"</span></span><br><span class="line">                      ^</span><br><span class="line">SyntaxError: Missing parentheses <span class="keyword">in</span> call to <span class="string">'print'</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="4、整数相除"><a href="#4、整数相除" class="headerlink" title="4、整数相除"></a>4、整数相除</h2><p>在Python 2中，3/2的结果是整数，在Python 3中，结果则是浮点数 </p>
+<p>Python 2</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">print</span> <span class="string">'3 / 2 ='</span>, <span class="number">3</span> / <span class="number">2</span></span><br><span class="line"><span class="keyword">print</span> <span class="string">'3 / 2.0 ='</span>, <span class="number">3</span> / <span class="number">2.0</span></span><br></pre></td></tr></table></figure>
+
+<p>输出</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">3</span> / <span class="number">2</span> = <span class="number">1</span></span><br><span class="line"><span class="number">3</span> / <span class="number">2.0</span> = <span class="number">1.5</span></span><br></pre></td></tr></table></figure>
+
+<p>Python 3</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">print(<span class="string">'3 / 2 ='</span>, <span class="number">3</span> / <span class="number">2</span>)</span><br><span class="line">print(<span class="string">'3 / 2.0 ='</span>, <span class="number">3</span> / <span class="number">2.0</span>)</span><br></pre></td></tr></table></figure>
+
+<p>输出</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">3</span> / <span class="number">2</span> = <span class="number">1.5</span></span><br><span class="line"><span class="number">3</span> / <span class="number">2.0</span> = <span class="number">1.5</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="5、异常处理"><a href="#5、异常处理" class="headerlink" title="5、异常处理"></a>5、异常处理</h2><p>Python 2中捕获异常一般用下面的语法</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    <span class="number">1</span>/<span class="number">0</span> </span><br><span class="line"><span class="keyword">except</span> ZeroDivisionError, e:</span><br><span class="line">    <span class="keyword">print</span> str(e)</span><br></pre></td></tr></table></figure>
+
+<p>或者</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    <span class="number">1</span>/<span class="number">0</span> </span><br><span class="line"><span class="keyword">except</span> ZeroDivisionError <span class="keyword">as</span> e:</span><br><span class="line">    <span class="keyword">print</span> str(e)</span><br></pre></td></tr></table></figure>
+
+<p><strong>Python 3中不再支持前一种语法，必须使用as关键字。</strong></p>
+<h2 id="6、range-xrange"><a href="#6、range-xrange" class="headerlink" title="6、range / xrange"></a>6、range / xrange</h2><ul>
+<li>python2：<ul>
+<li>xrange：不会在内存中立即创建，而是在循环时，边循环边创建</li>
+<li>range：在内存立即把所有的值创建</li>
+</ul>
+</li>
+<li>python3： <ul>
+<li>只有range，相当于python2中的xrange</li>
+<li>range：不会在内存中立即创建，而是在循环时，边循环边创建</li>
+</ul>
+</li>
+</ul>
+<h2 id="7、包的定义"><a href="#7、包的定义" class="headerlink" title="7、包的定义"></a>7、包的定义</h2><ul>
+<li>python2：文件夹中必须有<code>__init__.py</code>文件</li>
+</ul>
+<ul>
+<li>python3：不需要有<code>__init__.py</code>文件</li>
+</ul>
+<h2 id="8、map-函数"><a href="#8、map-函数" class="headerlink" title="8、map 函数"></a>8、map 函数</h2><p>python2</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">f</span><span class="params">(x)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> x*x</span><br><span class="line">print(map(f, [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>]))</span><br></pre></td></tr></table></figure>
+
+<p>输出</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[<span class="number">1</span>, <span class="number">4</span>, <span class="number">9</span>, <span class="number">16</span>, <span class="number">25</span>, <span class="number">36</span>, <span class="number">49</span>, <span class="number">64</span>, <span class="number">81</span>]</span><br></pre></td></tr></table></figure>
+
+<p>python3</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">f</span><span class="params">(x)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> x*x</span><br><span class="line">print(map(f, [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>]))</span><br></pre></td></tr></table></figure>
+
+<p>输出</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;map object at <span class="number">0x7f39cebe1f60</span>&gt;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>python2：返回列表，直接创建值，可以通过索引取值</li>
+<li>python3：返回迭代器，不直接创建值，通过循环，边循环边创建</li>
+</ul>
+<h2 id="9、class类"><a href="#9、class类" class="headerlink" title="9、class类"></a>9、class类</h2><p>在<strong>Python2</strong>中，<strong>基类object</strong>书写与否 会对结果造成很大的影响，这个知识点涉及到<strong>新式类、经典类</strong>的问题 </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">在Python <span class="number">3.</span>x中取消了经典类，默认都是新式类，并且不必显式的继承object，也就是说：</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span><span class="params">(object)</span>:</span><span class="keyword">pass</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span><span class="params">()</span>:</span><span class="keyword">pass</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span>:</span><span class="keyword">pass</span></span><br><span class="line">三种写法并无区别，推荐第一种</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">但是在Python2.x中，默认都是经典类，只有显式继承了object才是新式类，即：</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span><span class="params">(object)</span>:</span><span class="keyword">pass</span> 新式类写法</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span><span class="params">()</span>:</span><span class="keyword">pass</span> 经典类写法</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span>:</span><span class="keyword">pass</span> 经典类写法</span><br></pre></td></tr></table></figure>
+
+<img src="/2020/03/10/python2%E4%B8%8Epython3%E7%9A%84%E5%8C%BA%E5%88%AB/image-20200310084245988.png" class>  
+
+<p>上代码：</p>
+<p>python2中的深度优先 </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">D</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">talk</span><span class="params">(self)</span>:</span></span><br><span class="line">        print(<span class="string">'D'</span>)</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">B</span><span class="params">(D)</span>:</span></span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line">    <span class="comment"># def talk(self):</span></span><br><span class="line">    <span class="comment">#     print('B')</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">C</span><span class="params">(D)</span>:</span></span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">talk</span><span class="params">(self)</span>:</span></span><br><span class="line">        print(<span class="string">'C'</span>)</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span><span class="params">(B,C)</span>:</span></span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">a = A()</span><br><span class="line">a.talk()</span><br></pre></td></tr></table></figure>
+
+<p>输出</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">D</span><br></pre></td></tr></table></figure>
+
+<p>python2中广度优先和python3</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">D</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">talk</span><span class="params">(self)</span>:</span></span><br><span class="line">        print(<span class="string">'D'</span>)</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">B</span><span class="params">(D)</span>:</span></span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line">    <span class="comment"># def talk(self):</span></span><br><span class="line">    <span class="comment">#     print('B')</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">C</span><span class="params">(D)</span>:</span></span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">talk</span><span class="params">(self)</span>:</span></span><br><span class="line">        print(<span class="string">'C'</span>)</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span><span class="params">(B,C)</span>:</span></span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">a = A()</span><br><span class="line">a.talk()</span><br></pre></td></tr></table></figure>
+
+<p>输出</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">C</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Ares
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://obsessed.top/2020/03/10/python2%E4%B8%8Epython3%E7%9A%84%E5%8C%BA%E5%88%AB/" title="python2与python3的区别">http://obsessed.top/2020/03/10/python2%E4%B8%8Epython3%E7%9A%84%E5%8C%BA%E5%88%AB/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/null" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Python/" rel="tag"># Python</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/10/python%E5%9F%BA%E7%A1%80/" rel="prev" title="python基础">
+      <i class="fa fa-chevron-left"></i> python基础
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/03/10/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/" rel="next" title="面向对象">
+      面向对象 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、python解释器默认编码"><span class="nav-text">1、python解释器默认编码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2、input函数"><span class="nav-text">2、input函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3、print函数"><span class="nav-text">3、print函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4、整数相除"><span class="nav-text">4、整数相除</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5、异常处理"><span class="nav-text">5、异常处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6、range-xrange"><span class="nav-text">6、range / xrange</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7、包的定义"><span class="nav-text">7、包的定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8、map-函数"><span class="nav-text">8、map 函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#9、class类"><span class="nav-text">9、class类</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Ares"
+      src="/images/20160228201627_f5vax.png">
+  <p class="site-author-name" itemprop="name">Ares</p>
+  <div class="site-description" itemprop="description">最重要的是，别放弃希望</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">32</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/Aresea" title="GitHub → https:&#x2F;&#x2F;gitee.com&#x2F;Aresea" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/2441236144@qq.com" title="E-Mail → 2441236144@qq.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/null" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ares</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
