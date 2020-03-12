@@ -24,7 +24,7 @@
 <h2 id="创建类"><a href="#创建类" class="headerlink" title="创建类"></a>创建类</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Role</span><span class="params">(object)</span>:</span>                    <span class="comment">#1、在定义类时继承object就是新式类，没有就是就是旧类式</span></span><br><span class="line">    public_object = <span class="string">"public"</span>           <span class="comment">#2、在类例定义一个公有属性：所有实例都能访问的属性叫“公有属性”</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self,name,role,weapon,life_value=<span class="number">100</span>,money=<span class="number">15000</span>)</span>:</span>  <span class="comment">#构造函数==初始化方法：模板</span></span><br><span class="line">        self.name = name               <span class="comment">#3、普通属性</span></span><br><span class="line">        self.__heart= <span class="string">"Normal"</span>         <span class="comment">#4、私有属性在外面无法访问</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">shot</span><span class="params">(self)</span>:</span>                    <span class="comment">#5、类的方法</span></span><br><span class="line">        print(<span class="string">"%s is shooting..."</span>%self.name)</span><br></pre></td></tr></table></figure>
 
 <p>在<strong>Python2</strong>中，<strong>基类object</strong>书写与否 会对结果造成很大的影响，这个知识点涉及到<strong>新式类、经典类</strong>的问题 </p>
-<p><a href="http://obsessed.top//2020/03/10/python2%E4%B8%8Epython3%E7%9A%84%E5%8C%BA%E5%88%AB/">可以查看另一篇博客</a></p>
+<p><a href="http://obsessed.top/2020/03/10/python2%E4%B8%8Epython3%E7%9A%84%E5%8C%BA%E5%88%AB/">可以查看另一篇博客</a></p>
 <p>详细代码：</p>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Role</span><span class="params">(object)</span>:</span>    <span class="comment">#在定义类时继承object就是新式类，没有就是就是旧类式</span></span><br><span class="line">    public_object = <span class="string">"public"</span>   <span class="comment">#在类例定义一个公有属性：所有实例都能访问的属性叫“公有属性”</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self,name,role,weapon,life_value=<span class="number">100</span>,money=<span class="number">15000</span>)</span>:</span>  <span class="comment">#构造函数==初始化方法：模板</span></span><br><span class="line">        self.name = name    <span class="comment">#普通属性</span></span><br><span class="line">        self.role = role</span><br><span class="line">        self.weapon = weapon</span><br><span class="line">        self.life_value = life_value</span><br><span class="line">        self.money = money</span><br><span class="line">        self.__heart= <span class="string">"Normal"</span>    <span class="comment">#私有属性在外面无法访问</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">shot</span><span class="params">(self)</span>:</span>     <span class="comment">#类的方法</span></span><br><span class="line">        print(<span class="string">"%s is shooting..."</span>%self.name)</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">got_shot</span><span class="params">(self)</span>:</span></span><br><span class="line">        print(<span class="string">"ah...,I got shot..."</span>)</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">buy_gun</span><span class="params">(self,gun_name)</span>:</span></span><br><span class="line">        print(<span class="string">"%s just bought %s"</span> %(self.name,gun_name))</span><br><span class="line">        self.weapon = gun_name          <span class="comment">#在购买后让实例值改变</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#在下面实例化其实就是传入： Role('r1','Alex','police','AK47') 把r1传给了self</span></span><br><span class="line"><span class="comment">#r1就是实例化后产生的当前Role类的实例，所以self就是实例本身</span></span><br><span class="line"><span class="comment">#我理解r1其实就是__init__函数的内存地址</span></span><br><span class="line"><span class="comment">#所以在下面函数中调用self.name就相当于调用r1.name所以可以调用</span></span><br><span class="line">r1 = Role(<span class="string">'Alex'</span>,<span class="string">'police'</span>,<span class="string">'AK47'</span>) <span class="comment">#生成一个角色  只要一实例化就会自动调用__init__</span></span><br><span class="line">r2 = Role(<span class="string">'Jack'</span>,<span class="string">'terrorist'</span>,<span class="string">'B22'</span>)  <span class="comment">#生成一个角色</span></span><br><span class="line"></span><br><span class="line">r1.shot()</span><br><span class="line">print(r2.weapon)        <span class="comment">#在调用r2.buy_gun('AK47')前是：B22</span></span><br><span class="line">r2.buy_gun(<span class="string">'AK47'</span>)</span><br><span class="line">print(r2.weapon)        <span class="comment">#在调用r2.buy_gun('AK47')后是：AK47</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#私有属性</span></span><br><span class="line"><span class="comment"># print(r2.__heart)     #这里的.__heart是私有属性，所以在外部无法访问</span></span><br><span class="line">print(r2._Role__heart)  <span class="comment">#强制访问私有属性的方法</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#公有属性</span></span><br><span class="line">print(r2.public_object) <span class="comment">#打印出类的公有属性</span></span><br><span class="line">Role.public_object = <span class="string">'change_public'</span>    <span class="comment">#从全局改变类的公有属性 r1,r2的公有属性都会变</span></span><br><span class="line">print(r2.public_object)  <span class="comment">#这里打印可以看出公有属性变成类“change_public"</span></span><br><span class="line">r2.public_object = <span class="string">"public_r2"</span>          <span class="comment">#改变r2对象的公有属性，r1不会变</span></span><br><span class="line">print(r2.public_object)                  <span class="comment">#打印出改变后的r2公有属性</span></span><br></pre></td></tr></table></figure>
 
@@ -2061,6 +2061,86 @@
 ]]></content>
   </entry>
   <entry>
+    <title>TCP三次握手四次挥手</title>
+    <url>/2019/08/12/TCP%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B/</url>
+    <content><![CDATA[<img src="/2019/08/12/TCP%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B/f58f6ad856c6802b636d20d8f5ba2c3e.png" class><h2 id="三次握手-建立TCP连接"><a href="#三次握手-建立TCP连接" class="headerlink" title="三次握手-建立TCP连接"></a>三次握手-建立TCP连接</h2><img src="/2019/08/12/TCP%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B/824317-20161211213831272-742191218.png" class><ol>
+<li>第一次握手：Client将标志位SYN置为1，随机产生一个值seq=x，并将该数据包发送给Server，Client进入SYN_SENT状态，等待Server确认。 </li>
+</ol><ol start="2">
+<li>第二次握手：Server收到数据包后由标志位SYN=1知道Client请求建立连接，Server将标志位SYN和ACK都置为1，ack=x+1，随机产生一个值seq=y，并将该数据包发送给Client以确认连接请求，Server进入SYN_RCVD状态。 </li>
+</ol><a id="more"></a>
+
+
+
+
+
+
+
+<ol start="3">
+<li>第三次握手：Client收到确认后，检查ack是否为x+1，ACK是否为1，如果正确则将标志位ACK置为1，ack=y+1，并将该数据包发送给Server，Server检查ack是否为y+1，ACK是否为1，如果正确则连接建立成功，Client和Server进入ESTABLISHED状态，完成三次握手，随后Client与Server之间可以开始传输数据了。</li>
+</ol>
+<h2 id="三次握手中为什么TCP客户端最后还要发送一次确认呢"><a href="#三次握手中为什么TCP客户端最后还要发送一次确认呢" class="headerlink" title="三次握手中为什么TCP客户端最后还要发送一次确认呢"></a><strong>三次握手中为什么TCP客户端最后还要发送一次确认呢</strong></h2><p>三次握手能确认双发收发功能都正常，缺一不可。<br> 第一次握手：Client什么都不能确认；Server确认了对方发送正常。<br> 第二次握手：Client确认了：自己发送、接收正常，对方发送、接收正常；Server确认了：自己接收正常，对方发送正常。<br> 第三次握手：Client确认了：自己发送、接收正常，对方发送、接收正常；Server确认了：自己发送、接收正常，对方发送接收正常。</p>
+<p> 三次握手的另一个目标是确认确认双方都支持TCP，告知对方用TCP传输。<br> 第一次握手：Server猜测Client可能要建立TCP请求，但不确定，因为也可能是Client乱发了一个数据包给自己。<br> 第二次握手：通过ack=x+1，Client知道Server是支持TCP的，且理解了自己要建立TCP连接的意图。<br> 第三次握手：通过ack=y+1，Server知道Client是支持TCP的，且确实是要建立TCP连接。</p>
+<h2 id="第三次握手失败了怎么办"><a href="#第三次握手失败了怎么办" class="headerlink" title="第三次握手失败了怎么办"></a><strong>第三次握手失败了怎么办</strong></h2><p> 当client与server的第三次握手失败了之后，即client发送至server的确认建立连接报文段未能到达server，server在等待client回复ACK的过程中超时了，那么server会向client发送一个RTS报文段并进入关闭状态，即：并不等待client第三次握手的ACK包重传，直接关闭连接请求，这主要是为了防止泛洪攻击，即坏人伪造许多IP向server发送连接请求，从而将server的未连接队列塞满，浪费server的资源。</p>
+<h2 id="三次握手有什么缺陷可以被黑客利用，用来对服务器进行攻击"><a href="#三次握手有什么缺陷可以被黑客利用，用来对服务器进行攻击" class="headerlink" title="三次握手有什么缺陷可以被黑客利用，用来对服务器进行攻击"></a><strong>三次握手有什么缺陷可以被黑客利用，用来对服务器进行攻击</strong></h2><p>在三次握手过程中，Server发送SYN-ACK之后，收到Client的ACK之前的TCP连接称为半连接（half-open connect），此时Server处于SYN_RCVD状态，当收到ACK后，Server转入ESTABLISHED状态。SYN攻击就是Client在短时间内伪造大量不存在的IP地址，并向Server不断地发送SYN包，Server回复确认包，并等待Client的确认，由于源地址是不存在的，因此，Server需要不断重发直至超时，这些伪造的SYN包将产时间占用未连接队列，导致正常的SYN请求因为队列满而被丢弃，从而引起网络堵塞甚至系统瘫痪。SYN攻击时一种典型的DDOS攻击，检测SYN攻击的方式非常简单，即当Server上有大量半连接状态且源IP地址是随机的，则可以断定遭到SYN攻击了。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">netstat -nap | grep SYN_RECV</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="怎么防范这种攻击？"><a href="#怎么防范这种攻击？" class="headerlink" title="怎么防范这种攻击？"></a><strong>怎么防范这种攻击？</strong></h3><ol>
+<li>缩短服务器接收客户端SYN报文之后的等待连接时间，即SYN timeout时间，也就是server接收到SYN报文段，到最后放弃此连接请求的超时时间，将SYN timeout设置的更低，便可以成倍的减少server的负荷，但是过低的SYN timeout可能会影响正常的TCP连接的建立，一旦网络不通畅便可能导致client连接请求失败</li>
+<li><strong>SYN cookie + SYN proxy 无缝集成（较好的解决方案）</strong><ul>
+<li>SYN cookie：当server接收到client的SYN之后，不立即分配资源，而是根据client发送过来的SYN包计算出一个cookie值，这个cookie值用来存储server返回给client的SYN+ACK数据包中的初始序列号，当client返回第三次握手的ACK包之后进行校验，如果校验成功则server分配资源，建立连接。</li>
+<li>SYN proxy代理，作为server与client连接的代理，代替server与client建立三次握手的连接，同时SYN proxy与client建立好了三次握手连接之后，确保是正常的TCP连接，而不是TCP泛洪攻击，那么SYN proxy就与server建立三次握手连接，作为代理（网关？）来连通client与server。（类似VPN了解一下）</li>
+</ul>
+</li>
+</ol>
+<h2 id="四次挥手-断开连接"><a href="#四次挥手-断开连接" class="headerlink" title="四次挥手-断开连接"></a>四次挥手-断开连接</h2><img src="/2019/08/12/TCP%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B/888866620_gaitubao_823x571.png" class>
+
+<ol>
+<li>第一次挥手：Client发送一个FIN，用来关闭Client到Server的数据传送，Client进入FIN_WAIT_1状态。 </li>
+<li>第二次挥手：Server收到FIN后，发送一个ACK给Client，确认序号为收到序号+1（与SYN相同，一个FIN占用一个序号），Server进入CLOSE_WAIT状态。 </li>
+<li>第三次挥手：Server发送一个FIN，用来关闭Server到Client的数据传送，Server进入LAST_ACK状态。 </li>
+<li>第四次挥手：Client收到FIN后，Client进入TIME_WAIT状态，接着发送一个ACK给Server，确认序号为收到序号+1，Server进入CLOSED状态，完成四次挥手。 </li>
+</ol>
+<h2 id="为什么要四次挥手"><a href="#为什么要四次挥手" class="headerlink" title="为什么要四次挥手"></a><strong>为什么要四次挥手</strong></h2><ol>
+<li>server发送FIN数据包并携带ACK至client之后直接断开连接，如果client没有收到这个FIN数据包，那么client会一直处于等待关闭状态，这是为了确保TCP协议是面向连接安全有保证的。</li>
+<li>上面解释了为什么不是三次挥手，同理，两次挥手也是不安全的。不能保证server与client都能正确关闭连接释放资源，而不会造成资源浪费。</li>
+</ol>
+<h2 id="四次挥手之后client为什么还要等待2MSL的时间才释放资源关闭连接？"><a href="#四次挥手之后client为什么还要等待2MSL的时间才释放资源关闭连接？" class="headerlink" title="四次挥手之后client为什么还要等待2MSL的时间才释放资源关闭连接？"></a><strong>四次挥手之后client为什么还要等待2MSL的时间才释放资源关闭连接？</strong></h2><ol>
+<li>如果client第四次挥手的确认报文段没有被server接收，那么server便会重发第三次挥手的FIN报文段，因此client要停留2MSL的时长来处理可能会重复收到的报文段。</li>
+<li>让之前建立的client-server通信过程中或者是挥手过程中由于网络不通畅产生的滞留报文段失效。如果不等待2MSL，那么建立新连接之后，可能会收到上一次连接的旧报文段，可能会造成混乱。</li>
+</ol>
+<h2 id="如果已经建立了连接，但是客户端突然出现故障了怎么办"><a href="#如果已经建立了连接，但是客户端突然出现故障了怎么办" class="headerlink" title="如果已经建立了连接，但是客户端突然出现故障了怎么办"></a>如果已经建立了连接，但是客户端突然出现故障了怎么办</h2><p>TCP还设有一个保活计时器，显然，客户端如果出现故障，服务器不能一直等下去，白白浪费资源。服务器每收到一次客户端的请求后都会重新复位这个计时器，时间通常是设置为2小时，若两小时还没有收到客户端的任何数据，服务器就会发送一个探测报文段，以后每隔75秒钟发送一次。若一连发送10个探测报文仍然没反应，服务器就认为客户端出了故障，接着就关闭连接。 </p>
+]]></content>
+      <categories>
+        <category>TCP/IP</category>
+      </categories>
+      <tags>
+        <tag>TCP/IP</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>TCP/IP</title>
+    <url>/2019/08/10/TCP-IP/</url>
+    <content><![CDATA[<h2 id="传输层中的-TCP-和-UDP"><a href="#传输层中的-TCP-和-UDP" class="headerlink" title="传输层中的 TCP 和 UDP"></a>传输层中的 TCP 和 UDP</h2><p>TCP/IP 中有两个具有代表性的传输层协议，分别是 TCP 和 UDP。</p><ul>
+<li>TCP 是面向连接的、可靠的流协议。流就是指不间断的数据结构，当应用程序采用 TCP 发送消息时，虽然可以保证发送的顺序，但还是犹如没有任何间隔的数据流发送给接收端。TCP 为提供可靠性传输，实行“顺序控制”或“重发控制”机制。此外还具备“流控制（流量控制）”、“拥塞控制”、提高网络利用率等众多功能。 </li>
+<li>UDP 是不具有可靠性的数据报协议。细微的处理它会交给上层的应用去完成。在 UDP 的情况下，虽然可以确保发送消息的大小，却不能保证消息一定会到达。因此，应用有时会根据自己的需要进行重发处理。 </li>
+<li>TCP 和 UDP 的优缺点无法简单地、绝对地去做比较：TCP 用于在传输层有必要实现可靠传输的情况；而在一方面，UDP 主要用于那些对高速传输和实时性有较高要求的通信或广播通信。TCP 和 UDP 应该根据应用的目的按需使用。 </li>
+</ul><a id="more"></a>
+
+<h2 id="TCP的定时器"><a href="#TCP的定时器" class="headerlink" title="TCP的定时器"></a>TCP的定时器</h2><p><strong>重传定时器</strong>：前文中保证TCP可靠传输的超时重传机制使用的定时器，当发送报文后开始计时，若没有在定时器结束前收到ACK包，则代表数据丢失，进行重传，避免陷入无限等待。</p>
+<p><strong>坚持定时器</strong>：对付零窗口通知设立。以滑动窗口为例，当从零窗口恢复时，接受端发送一个非零的ACK包，而ACK包没有对应的响应，若此ACK包丢失，则发送端仍认为为零窗口状态，而接收端不会重新发送非零的ACK包，则陷入死循环状态。解决方法就是在发送端确认窗口为0时实力该计时器，计时结束发送探测报文告知接收端重发ACK包，并每个一段时间将该计时器重置哦，直至出现非零窗口。</p>
+<p><strong>保活计时器</strong>：防止TCP连接出现长时间的空闲，一般设置为两个小时。如果某端因为出现了故障，两个小时后另一端发送10个探测报文（每个间隔一段时间）没有收到回复则直接断开TCP连接，而非通过四次挥手断开连接。</p>
+<p><strong>时间等待计时器</strong>：TCP连接断开时四次挥手使用的计时器。即等待2MSL后关闭主动关闭一端的连接。</p>
+]]></content>
+      <categories>
+        <category>TCP/IP</category>
+      </categories>
+      <tags>
+        <tag>TCP/IP</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>router-link传递和获取参数</title>
     <url>/2019/07/20/router-link%E4%BC%A0%E9%80%92%E5%92%8C%E8%8E%B7%E5%8F%96%E5%8F%82%E6%95%B0/</url>
     <content><![CDATA[<h2 id="router-link-to传递和获取参数"><a href="#router-link-to传递和获取参数" class="headerlink" title="router-link to传递和获取参数"></a>router-link to传递和获取参数</h2><p>跳转链接：</p><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;router-link :to=&quot;&#123;path:&apos;libraryDetail/&apos;, query:&#123;library_id:data.library_id&#125;&#125;&quot;&gt;</span><br></pre></td></tr></table></figure><a id="more"></a>
@@ -2097,40 +2177,6 @@
 <li>避免了长事务中的数据库加锁开销</li>
 </ul>
 <h5 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h5><p>对于写多的场景并不适用，因为当写操作非常频繁时，更新失败的几率就越大，上层逻辑进行retry的次数也会增多，从而降低了系统的性能。</p>
-]]></content>
-      <categories>
-        <category>MySQL</category>
-      </categories>
-      <tags>
-        <tag>MySQL</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>关于MySQL</title>
-    <url>/2019/05/22/%E5%85%B3%E4%BA%8EMySQL/</url>
-    <content><![CDATA[<h2 id="什么是-MySQL？"><a href="#什么是-MySQL？" class="headerlink" title="什么是 MySQL？"></a>什么是 MySQL？</h2><ol>
-<li><strong>MySQL</strong> 是一个快速、多线程、多用户和强壮的SQL数据库服务器 </li>
-</ol>
-<h2 id="我们为什么使用MySQL"><a href="#我们为什么使用MySQL" class="headerlink" title="我们为什么使用MySQL"></a>我们为什么使用MySQL</h2><pre><code>1. 我们因为它开源免费，使用范围广泛，具有强大的索引和事务，能支持海量的数据</code></pre> <a id="more"></a>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h2 id="MySQL中的幻读，什么是幻读"><a href="#MySQL中的幻读，什么是幻读" class="headerlink" title="MySQL中的幻读，什么是幻读"></a>MySQL中的幻读，什么是幻读</h2><ol>
-<li>幻读一词摘自MySQL的官方手册</li>
-<li>幻读出现于在开启事务</li>
-</ol>
 ]]></content>
       <categories>
         <category>MySQL</category>
@@ -2208,6 +2254,40 @@
       </categories>
       <tags>
         <tag>Django</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>关于MySQL</title>
+    <url>/2019/05/22/%E5%85%B3%E4%BA%8EMySQL/</url>
+    <content><![CDATA[<h2 id="什么是-MySQL？"><a href="#什么是-MySQL？" class="headerlink" title="什么是 MySQL？"></a>什么是 MySQL？</h2><ol>
+<li><strong>MySQL</strong> 是一个快速、多线程、多用户和强壮的SQL数据库服务器 </li>
+</ol>
+<h2 id="我们为什么使用MySQL"><a href="#我们为什么使用MySQL" class="headerlink" title="我们为什么使用MySQL"></a>我们为什么使用MySQL</h2><pre><code>1. 我们因为它开源免费，使用范围广泛，具有强大的索引和事务，能支持海量的数据</code></pre> <a id="more"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h2 id="MySQL中的幻读，什么是幻读"><a href="#MySQL中的幻读，什么是幻读" class="headerlink" title="MySQL中的幻读，什么是幻读"></a>MySQL中的幻读，什么是幻读</h2><ol>
+<li>幻读一词摘自MySQL的官方手册</li>
+<li>幻读出现于在开启事务</li>
+</ol>
+]]></content>
+      <categories>
+        <category>MySQL</category>
+      </categories>
+      <tags>
+        <tag>MySQL</tag>
       </tags>
   </entry>
   <entry>
