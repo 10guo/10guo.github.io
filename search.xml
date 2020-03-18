@@ -1,6 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Redis持久化</title>
+    <url>/2020/03/18/Redis%E6%8C%81%E4%B9%85%E5%8C%96/</url>
+    <content><![CDATA[<h2 id="Redis官网"><a href="#Redis官网" class="headerlink" title="Redis官网"></a>Redis官网</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">https://redis.io/		<span class="comment">#官方文档</span></span><br><span class="line">http://redis.cn/		<span class="comment">#中文文档</span></span><br></pre></td></tr></table></figure><h2 id="为什么要做持久化存储"><a href="#为什么要做持久化存储" class="headerlink" title="为什么要做持久化存储?"></a>为什么要做持久化存储?</h2><p>持久化存储是将 Redis 存储在内存中的数据存储在硬盘中，实现数据的永久保存。我们都知道 Redis 是一个基于内存的 nosql 数据库，内存存储很容易造成数据的丢失，因为当服务器关机等一些异常情况都会导致存储在内存中的数据丢失。 </p><a id="more"></a>
+
+
+
+
+
+
+<h2 id="持久化存储分类"><a href="#持久化存储分类" class="headerlink" title="持久化存储分类"></a>持久化存储分类</h2><p>在 Redis 中，持久化存储分为两种。一种是 RDB数据快照的方式，另外一种是 AOF日志追加的方式。 </p>
+<h2 id="RDB持久化原理"><a href="#RDB持久化原理" class="headerlink" title="RDB持久化原理"></a><strong>RDB持久化原理</strong></h2><ol>
+<li>RDB持久化是指在指定的时间间隔内将内存中的数据集快照写入磁盘 　　　　　　　　</li>
+<li>实际操作过程是fork一个子进程，先将数据集写入临时文件，写入成功后，再替换之前的文件，用二进制压缩存储 </li>
+</ol>
+<img src="/2020/03/18/Redis%E6%8C%81%E4%B9%85%E5%8C%96/1080958-20180314095937765-220628310.png" class>
+
+<h2 id="RDB持久化"><a href="#RDB持久化" class="headerlink" title="RDB持久化"></a>RDB持久化</h2><h3 id="1-手动执行指令触发-进行存储"><a href="#1-手动执行指令触发-进行存储" class="headerlink" title="1. 手动执行指令触发, 进行存储"></a>1. 手动执行指令触发, 进行存储</h3><ul>
+<li>save　　　　　　这个指令会阻塞redis, 执行完之前不再接收其他处理</li>
+<li>bgsave　　　　　这个指令会创建一个子进程去处理持久化存储, 线上使用</li>
+</ul>
+<h3 id="2-配置conf文件触发自动存储"><a href="#2-配置conf文件触发自动存储" class="headerlink" title="2. 配置conf文件触发自动存储"></a>2. 配置conf文件触发自动存储</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">daemonize yes                    <span class="comment">#后台运行</span></span><br><span class="line">bind <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>                   <span class="comment">#redis绑定地址</span></span><br><span class="line">port <span class="number">6379</span>                        <span class="comment">#端口</span></span><br><span class="line">requirepass redhat                <span class="comment">#redis登录密码</span></span><br><span class="line">logfile /data/<span class="number">6379</span>/redis.log    <span class="comment">#日志文件</span></span><br><span class="line">dir /data/<span class="number">6379</span>                  <span class="comment">#定义持久化文件存储位置</span></span><br><span class="line"></span><br><span class="line">dbfilename  dbmp.rdb            <span class="comment">#rdb持久化文件</span></span><br><span class="line">save <span class="number">900</span> <span class="number">1</span>                    </span><br><span class="line">save <span class="number">300</span> <span class="number">10</span>                        </span><br><span class="line">save <span class="number">60</span>  <span class="number">10000</span>                   </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">save m n   当m秒后, 达到n个存储, 就执行bgsave指令, 进行持久化存储</span><br><span class="line"></span><br><span class="line">其他可选配置</span><br><span class="line"></span><br><span class="line">stop-writes-on-bgsave-error yes　　<span class="comment"># 当bgsave出现错误时，Redis是否停止执行写命令；设置为yes，则当硬盘出现问题时，可以及时发现，避免数据的大量丢失；设置为no，则Redis无视bgsave的错误继续执行写命令，当对Redis服务器的系统(尤其是硬盘)使用了监控时，该选项考虑设置为no</span></span><br><span class="line"></span><br><span class="line">rdbcompression yes　　<span class="comment"># 是否开启RDB文件压缩</span></span><br><span class="line"></span><br><span class="line">rdbchecksum yes　　　　<span class="comment"># 是否开启RDB文件的校验，在写入文件和读取文件时都起作用；关闭checksum在写入文件和启动文件时大约能带来10%的性能提升，但是数据损坏时无法发现</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="AOF持久化原理"><a href="#AOF持久化原理" class="headerlink" title="AOF持久化原理"></a><strong>AOF持久化原理</strong></h2><p>AOF持久化以日志的形式记录服务器所处理的每一个写、删除操作，查询操作不会记录，以文本的方式记录，可以打开文件看到详细的操作记录。 </p>
+<img src="/2020/03/18/Redis%E6%8C%81%E4%B9%85%E5%8C%96/1080958-20180314100424696-1890061620.png" class>
+
+<h2 id="AOF持久化"><a href="#AOF持久化" class="headerlink" title="AOF持久化"></a><strong>AOF持久化</strong></h2><h2 id="1-触发配置"><a href="#1-触发配置" class="headerlink" title="1. 触发配置"></a>1. 触发配置</h2><ul>
+<li>Redis服务默认开启RDB, 关闭AOF; 开启AOF只在配置文件中加入 appendonly yes</li>
+<li>启动Redis服务时会优先加载AOF</li>
+</ul>
+<h2 id="2-AOF的常见配置"><a href="#2-AOF的常见配置" class="headerlink" title="2. AOF的常见配置"></a>2. AOF的常见配置</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">appendonly no        <span class="comment"># 是否开启AOF</span></span><br><span class="line"></span><br><span class="line">appendfilename <span class="string">"appendonly.aof"</span>    <span class="comment"># AOF文件名</span></span><br><span class="line"></span><br><span class="line">dir /data/<span class="number">6379</span>                  <span class="comment"># 定义持久化文件存储位置</span></span><br><span class="line"></span><br><span class="line">appendfsync everysec    <span class="comment"># 持久化策略,每秒都存, always总是</span></span><br><span class="line"></span><br><span class="line">no-appendfsync-on-rewrite no     <span class="comment"># AOF重写期间是否禁止fsync；如果开启该选项，可以减轻文件重写时CPU和硬盘的负载（尤其是硬盘），但是可能会丢失AOF重写期间的数据；需要在负载和安全性之间进行平衡</span></span><br><span class="line"></span><br><span class="line">auto-aof-rewrite-percentage <span class="number">100</span>    <span class="comment"># 执行AOF重写时，当前AOF大小(即aof_current_size)和上一次重写时AOF大小(aof_base_size)的比值。</span></span><br><span class="line"></span><br><span class="line">auto-aof-rewrite-min-size <span class="number">64</span>mb     <span class="comment"># 执行AOF重写时，文件的最小体积，默认值为64MB。</span></span><br><span class="line"></span><br><span class="line">aof-load-truncated yes    <span class="comment"># 如果AOF文件结尾损坏，Redis启动时是否仍载入AOF文件</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="RDB优缺点介绍"><a href="#RDB优缺点介绍" class="headerlink" title="RDB优缺点介绍"></a><strong>RDB优缺点介绍</strong></h2><h3 id="1-RDB优点"><a href="#1-RDB优点" class="headerlink" title="1. RDB优点"></a><strong>1. RDB优点</strong></h3><ol>
+<li>整个Redis数据库将只包含一个文件，一旦系统出现灾难性故障，我们可以非常容易的进行恢复。</li>
+<li>性能最大化，它仅需要fork出子进程，由子进程完成持久化工作，极大的避免服务进程执行IO操作了。</li>
+<li>相比于AOF机制，如果数据集很大，RDB的启动效率会更高</li>
+</ol>
+<h3 id="2-RDB缺点"><a href="#2-RDB缺点" class="headerlink" title="2. RDB缺点"></a><strong>2. RDB缺点</strong></h3><ol>
+<li>RDB容易丢数据，因为系统一旦在定时持久化之前出现宕机现象，此前没有来得及写入磁盘的数据都将丢</li>
+<li>RDB通过fork子进程来完成持久化的，如果当数据集较大时，可能会导致整个服务器停止服务几百毫秒，甚至是1秒钟。</li>
+</ol>
+<h2 id="AOF优缺点介绍"><a href="#AOF优缺点介绍" class="headerlink" title="AOF优缺点介绍"></a><strong>AOF优缺点介绍</strong></h2><h3 id="1-AOF优点"><a href="#1-AOF优点" class="headerlink" title="1. AOF优点"></a><strong>1. AOF优点</strong></h3><ol>
+<li>数据安全性高，Redis中提供了3中同步策略，即每秒同步、每修改同步和不同步</li>
+<li>由于该机制对日志文件的写入操作采用的是append模式，因此在写入过程中即使出现宕机现象，也不会破坏日志文件中已经存在的内容</li>
+<li>如果日志过大，Redis可以自动启用rewrite机制。即Redis以append模式不断的将修改数据写入到老的磁盘文件中</li>
+<li>AOF包含一个格式清晰、易于理解的日志文件用于记录所有的修改操作。事实上，我们也可以通过该文件完成数据的重建</li>
+</ol>
+<h3 id="2-AOF缺点"><a href="#2-AOF缺点" class="headerlink" title="2. AOF缺点"></a><strong>2. AOF缺点</strong></h3><ol>
+<li>对于相同数量的数据集而言，AOF文件通常要大于RDB文件，RDB 在恢复大数据集时的速度比 AOF 的恢复速度要快。</li>
+<li>AOF在运行效率上往往会慢于RDB</li>
+</ol>
+<h2 id="选择AOF还是RDB进行数据的持久化"><a href="#选择AOF还是RDB进行数据的持久化" class="headerlink" title="选择AOF还是RDB进行数据的持久化"></a>选择AOF还是RDB进行数据的持久化</h2><ol>
+<li>针对不同的情况来选择，建议使用两种方式相结合. </li>
+<li>针对数据安全性、完整性要求高的采用aof方式. </li>
+<li>针对不太重要的数据可以使用rdb方式. </li>
+<li>对于数据进行全量备份，便于数据备份的可以采用rdb方式. </li>
+</ol>
+]]></content>
+      <categories>
+        <category>Redis</category>
+      </categories>
+      <tags>
+        <tag>Redis</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>面向对象</title>
     <url>/2020/03/10/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/</url>
     <content><![CDATA[<h2 id="面向对象和面向过程的区别"><a href="#面向对象和面向过程的区别" class="headerlink" title="面向对象和面向过程的区别"></a>面向对象和面向过程的区别</h2><p>面向过程是<br>分析出解决问题所需要的步骤，然后用函数把这些步骤一步一步实现，使用的时候一个一个依次调用就可以了<br>面向对象是<br>把构成问题事务分解成各个对象，建立对象的目的不是为了完成一个步骤，而是为了描叙某个事物在整个解决问题的步骤中的行为<br>可以拿生活中的实例来理解面向过程与面向对象，例如五子棋</p><a id="more"></a>
@@ -1818,6 +1885,123 @@
       </tags>
   </entry>
   <entry>
+    <title>Centos7下安装redis</title>
+    <url>/2019/12/20/Centos7%E4%B8%8B%E5%AE%89%E8%A3%85redis/</url>
+    <content><![CDATA[<h2 id="一、安装redis"><a href="#一、安装redis" class="headerlink" title="一、安装redis"></a>一、安装redis</h2><h3 id="第一步：下载redis安装包"><a href="#第一步：下载redis安装包" class="headerlink" title="第一步：下载redis安装包"></a>第一步：下载redis安装包</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">wget http://download.redis.io/releases/redis<span class="number">-4.0</span><span class="number">.6</span>.tar.gz</span><br></pre></td></tr></table></figure><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">[root@node1 local]<span class="comment"># wget http://download.redis.io/releases/redis-4.0.6.tar.gz</span></span><br><span class="line">-<span class="number">-2017</span><span class="number">-12</span><span class="number">-13</span> <span class="number">12</span>:<span class="number">35</span>:<span class="number">12</span>--  http://download.redis.io/releases/redis<span class="number">-4.0</span><span class="number">.6</span>.tar.gz</span><br><span class="line">Resolving download.redis.io (download.redis.io)... <span class="number">109.74</span><span class="number">.203</span><span class="number">.151</span></span><br><span class="line">Connecting to download.redis.io (download.redis.io)|<span class="number">109.74</span><span class="number">.203</span><span class="number">.151</span>|:<span class="number">80.</span>.. connected.</span><br><span class="line">HTTP request sent, awaiting response... <span class="number">200</span> OK</span><br><span class="line">Length: <span class="number">1723533</span> (<span class="number">1.6</span>M) [application/x-gzip]</span><br><span class="line">Saving to: ‘redis<span class="number">-4.0</span><span class="number">.6</span>.tar.gz’</span><br><span class="line"></span><br><span class="line">100%[==========================================================================================================&gt;] 1,723,533    608KB/s   in 2.8s   </span><br><span class="line"></span><br><span class="line"><span class="number">2017</span><span class="number">-12</span><span class="number">-13</span> <span class="number">12</span>:<span class="number">35</span>:<span class="number">15</span> (<span class="number">608</span> KB/s) - ‘redis<span class="number">-4.0</span><span class="number">.6</span>.tar.gz’ saved [<span class="number">1723533</span>/<span class="number">1723533</span>]</span><br></pre></td></tr></table></figure><a id="more"></a>
+
+
+
+<h3 id="第二步：解压压缩包"><a href="#第二步：解压压缩包" class="headerlink" title="第二步：解压压缩包"></a>第二步：解压压缩包</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">tar -zxvf redis<span class="number">-4.0</span><span class="number">.6</span>.tar.gz</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">[root@node1 local]<span class="comment"># tar -zxvf redis-4.0.6.tar.gz</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="第三步：yum安装gcc依赖"><a href="#第三步：yum安装gcc依赖" class="headerlink" title="第三步：yum安装gcc依赖"></a>第三步：yum安装gcc依赖</h3><p>yum install gcc</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[root@iZwz991stxdwj560bfmadtZ local]# yum install gcc</span><br></pre></td></tr></table></figure>
+
+<p>遇到选择,输入y即可</p>
+<h3 id="第四步：跳转到redis解压目录下"><a href="#第四步：跳转到redis解压目录下" class="headerlink" title="第四步：跳转到redis解压目录下"></a>第四步：跳转到redis解压目录下</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">[root@node1 local]<span class="comment"># cd redis-4.0.6</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="第五步：编译安装"><a href="#第五步：编译安装" class="headerlink" title="第五步：编译安装"></a>第五步：编译安装</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">[root@node1 redis<span class="number">-4.0</span><span class="number">.6</span>]<span class="comment"># make MALLOC=libc</span></span><br></pre></td></tr></table></figure>
+
+<p>将/usr/local/redis-4.0.6/src目录下的文件加到/usr/local/bin目录</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">[root@node1 redis<span class="number">-4.0</span><span class="number">.6</span>]<span class="comment"># cd src &amp;&amp; make install</span></span><br><span class="line">    CC Makefile.dep</span><br><span class="line"></span><br><span class="line">Hint: It<span class="string">'s a good idea to run '</span>make test<span class="string">' ;)</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    INSTALL install</span></span><br><span class="line"><span class="string">    INSTALL install</span></span><br><span class="line"><span class="string">    INSTALL install</span></span><br><span class="line"><span class="string">    INSTALL install</span></span><br><span class="line"><span class="string">    INSTALL install</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="二、启动redis的三种方式"><a href="#二、启动redis的三种方式" class="headerlink" title="二、启动redis的三种方式"></a>二、启动redis的三种方式</h2><p>先切换到redis src目录下</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">[root@iZwz991stxdwj560bfmadtZ redis<span class="number">-4.0</span><span class="number">.6</span>]<span class="comment"># cd src</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="1、直接启动redis"><a href="#1、直接启动redis" class="headerlink" title="1、直接启动redis"></a>1、直接启动redis</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">[root@node1 src]<span class="comment"># ./redis-server</span></span><br><span class="line"><span class="number">18685</span>:C <span class="number">13</span> Dec <span class="number">12</span>:<span class="number">56</span>:<span class="number">12.507</span> <span class="comment"># oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo</span></span><br><span class="line"><span class="number">18685</span>:C <span class="number">13</span> Dec <span class="number">12</span>:<span class="number">56</span>:<span class="number">12.507</span> <span class="comment"># Redis version=4.0.6, bits=64, commit=00000000, modified=0, pid=18685, just started</span></span><br><span class="line"><span class="number">18685</span>:C <span class="number">13</span> Dec <span class="number">12</span>:<span class="number">56</span>:<span class="number">12.507</span> <span class="comment"># Warning: no config file specified, using the default config. In order to specify a config file use ./redis-server /path/to/redis.conf</span></span><br><span class="line">                _._                                                  </span><br><span class="line">           _.-``__ <span class="string">''</span>-._                                             </span><br><span class="line">      _.-``    `.  `_.  <span class="string">''</span>-._           Redis <span class="number">4.0</span><span class="number">.6</span> (<span class="number">00000000</span>/<span class="number">0</span>) <span class="number">64</span> bit</span><br><span class="line">  .-`` .-```.  ```\/    _.,_ <span class="string">''</span>-._                                   </span><br><span class="line"> (    <span class="string">'      ,       .-`  | `,    )     Running in standalone mode</span></span><br><span class="line"><span class="string"> |`-._`-...-` __...-.``-._|'</span>` _.-<span class="string">'|     Port: 6379</span></span><br><span class="line"><span class="string"> |    `-._   `._    /     _.-'</span>    |     PID: <span class="number">18685</span></span><br><span class="line">  `-._    `-._  `-./  _.-<span class="string">'    _.-'</span>                                   </span><br><span class="line"> |`-._`-._    `-.__.-<span class="string">'    _.-'</span>_.-<span class="string">'|                                  </span></span><br><span class="line"><span class="string"> |    `-._`-._        _.-'</span>_.-<span class="string">'    |           http://redis.io        </span></span><br><span class="line"><span class="string">  `-._    `-._`-.__.-'</span>_.-<span class="string">'    _.-'</span>                                   </span><br><span class="line"> |`-._`-._    `-.__.-<span class="string">'    _.-'</span>_.-<span class="string">'|                                  </span></span><br><span class="line"><span class="string"> |    `-._`-._        _.-'</span>_.-<span class="string">'    |                                  </span></span><br><span class="line"><span class="string">  `-._    `-._`-.__.-'</span>_.-<span class="string">'    _.-'</span>                                   </span><br><span class="line">      `-._    `-.__.-<span class="string">'    _.-'</span>                                       </span><br><span class="line">          `-._        _.-<span class="string">'                                           </span></span><br><span class="line"><span class="string">              `-.__.-'</span>                                               </span><br><span class="line"></span><br><span class="line"><span class="number">18685</span>:M <span class="number">13</span> Dec <span class="number">12</span>:<span class="number">56</span>:<span class="number">12.508</span> <span class="comment"># WARNING: The TCP backlog setting of 511 cannot be enforced because /proc/sys/net/core/somaxconn is set to the lower value of 128.</span></span><br><span class="line"><span class="number">18685</span>:M <span class="number">13</span> Dec <span class="number">12</span>:<span class="number">56</span>:<span class="number">12.508</span> <span class="comment"># Server initialized</span></span><br><span class="line"><span class="number">18685</span>:M <span class="number">13</span> Dec <span class="number">12</span>:<span class="number">56</span>:<span class="number">12.508</span> <span class="comment"># WARNING overcommit_memory is set to 0! Background save may fail under low memory condition. To fix this issue add 'vm.overcommit_memory = 1' to /etc/sysctl.conf and then reboot or run the command 'sysctl vm.overcommit_memory=1' for this to take effect.</span></span><br><span class="line"><span class="number">18685</span>:M <span class="number">13</span> Dec <span class="number">12</span>:<span class="number">56</span>:<span class="number">12.508</span> <span class="comment"># WARNING you have Transparent Huge Pages (THP) support enabled in your kernel. This will create latency and memory usage issues with Redis. To fix this issue run the command 'echo never &gt; /sys/kernel/mm/transparent_hugepage/enabled' as root, and add it to your /etc/rc.local in order to retain the setting after a reboot. Redis must be restarted after THP is disabled.</span></span><br><span class="line"><span class="number">18685</span>:M <span class="number">13</span> Dec <span class="number">12</span>:<span class="number">56</span>:<span class="number">12.508</span> * Ready to accept connections</span><br></pre></td></tr></table></figure>
+
+<p>如上图：redis启动成功，但是这种启动方式需要一直打开窗口，不能进行其他操作，不太方便。</p>
+<p>按 ctrl + c可以关闭窗口。</p>
+<h3 id="2、以后台进程方式启动redis"><a href="#2、以后台进程方式启动redis" class="headerlink" title="2、以后台进程方式启动redis"></a>2、以后台进程方式启动redis</h3><p>第一步：修改redis.conf文件</p>
+<p>将</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">daemonize no</span><br></pre></td></tr></table></figure>
+
+
+
+<p>修改为</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">daemonize yes</span><br></pre></td></tr></table></figure>
+
+<p>　</p>
+<p>第二步：指定redis.conf文件启动</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">[root@node1 src]<span class="comment"># ./redis-server /usr/local/redis-4.0.6/redis.conf </span></span><br><span class="line"><span class="number">18713</span>:C <span class="number">13</span> Dec <span class="number">13</span>:<span class="number">07</span>:<span class="number">41.109</span> <span class="comment"># oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo</span></span><br><span class="line"><span class="number">18713</span>:C <span class="number">13</span> Dec <span class="number">13</span>:<span class="number">07</span>:<span class="number">41.109</span> <span class="comment"># Redis version=4.0.6, bits=64, commit=00000000, modified=0, pid=18713, just started</span></span><br><span class="line"><span class="number">18713</span>:C <span class="number">13</span> Dec <span class="number">13</span>:<span class="number">07</span>:<span class="number">41.109</span> <span class="comment"># Configuration loaded</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p>第三步：关闭redis进程</p>
+<p>首先使用ps -aux | grep redis查看redis进程</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">[root@node1 src]<span class="comment"># ps -aux | grep redis</span></span><br><span class="line">root     18714  0.0  0.1 141752  2008 ?        Ssl  13:07   0:00 ./redis-server 127.0.0.1:6379</span><br><span class="line">root     <span class="number">18719</span>  <span class="number">0.0</span>  <span class="number">0.0</span> <span class="number">112644</span>   <span class="number">968</span> pts/<span class="number">0</span>    R+   <span class="number">13</span>:<span class="number">09</span>   <span class="number">0</span>:<span class="number">00</span> grep --color=auto redis</span><br></pre></td></tr></table></figure>
+
+
+
+<p>使用kill命令杀死进程</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">[root@node1 src]<span class="comment"># kill 18714</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="3、设置redis开机自启动"><a href="#3、设置redis开机自启动" class="headerlink" title="3、设置redis开机自启动"></a>3、设置redis开机自启动</h3><p>1、在/etc目录下新建redis目录</p>
+<p>mkdir redis</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">[root@node1 etc]<span class="comment"># mkdir redis</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>2、将/usr/local/redis-4.0.6/redis.conf 文件复制一份到/etc/redis目录下，并命名为6379.conf　　</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">[root@node1 redis]<span class="comment"># cp /usr/local/redis-4.0.6/redis.conf /etc/redis/6379.conf</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>3、将redis的启动脚本复制一份放到/etc/init.d目录下</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">[root@node1 init.d]<span class="comment"># cp /usr/local/redis-4.0.6/utils/redis_init_script /etc/init.d/redisd</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>4、设置redis开机自启动</p>
+<p>先切换到/etc/init.d目录下</p>
+<p>然后执行自启命令</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">[root@node1 init.d]<span class="comment"># chkconfig redisd on</span></span><br><span class="line">service redisd does <span class="keyword">not</span> support chkconfig</span><br></pre></td></tr></table></figure>
+
+
+
+<p>看结果是redisd不支持chkconfig</p>
+<p>解决方法：</p>
+<p>使用vim编辑redisd文件，在第一行加入如下两行注释，保存退出</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># chkconfig:   2345 90 10</span></span><br><span class="line"><span class="comment"># description:  Redis is a persistent key-value database</span></span><br></pre></td></tr></table></figure>
+
+<p>注释的意思是，redis服务必须在运行级2，3，4，5下被启动或关闭，启动的优先级是90，关闭的优先级是10。</p>
+ <img src="/2019/12/20/Centos7%E4%B8%8B%E5%AE%89%E8%A3%85redis/818973-20171213132912738-1132742812.png" class>  
+
+
+
+<p>再次执行开机自启命令，成功</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">[root@node1 init.d]<span class="comment"># chkconfig redisd on</span></span><br></pre></td></tr></table></figure>
+
+<p>现在可以直接已服务的形式启动和关闭redis了 </p>
+<p>启动：</p>
+<p>service redisd start　</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">[root@node1 ~]<span class="comment"># service redisd start</span></span><br><span class="line">Starting Redis server...</span><br><span class="line"><span class="number">2288</span>:C <span class="number">13</span> Dec <span class="number">13</span>:<span class="number">51</span>:<span class="number">38.087</span> <span class="comment"># oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo</span></span><br><span class="line"><span class="number">2288</span>:C <span class="number">13</span> Dec <span class="number">13</span>:<span class="number">51</span>:<span class="number">38.087</span> <span class="comment"># Redis version=4.0.6, bits=64, commit=00000000, modified=0, pid=2288, just started</span></span><br><span class="line"><span class="number">2288</span>:C <span class="number">13</span> Dec <span class="number">13</span>:<span class="number">51</span>:<span class="number">38.087</span> <span class="comment"># Configuration loaded</span></span><br></pre></td></tr></table></figure>
+
+<p>关闭：</p>
+<p>方法1：service redisd stop</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">[root@node1 ~]<span class="comment"># service redisd stop</span></span><br><span class="line">Stopping ...</span><br><span class="line">Redis stopped</span><br></pre></td></tr></table></figure>
+
+
+
+<p>方法2：redis-cli SHUTDOWN</p>
+<h2 id="三、参考资料"><a href="#三、参考资料" class="headerlink" title="三、参考资料"></a>三、参考资料</h2><p>如果出现如下问题：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">[root@node1 ~]<span class="comment"># service redisd start</span></span><br><span class="line">/var/run/redis_6379.pid exists, process <span class="keyword">is</span> already running <span class="keyword">or</span> crashed</span><br></pre></td></tr></table></figure>
+
+<p>科学的处理办法2种</p>
+<p>1：可用安装文件启动     redis-server /etc/redis/6379.conf</p>
+<p>2：shutdown -r now 软重启让系统自动恢复下就行了</p>
+]]></content>
+      <categories>
+        <category>Redis</category>
+      </categories>
+      <tags>
+        <tag>Redis</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Git</title>
     <url>/2019/12/19/git/</url>
     <content><![CDATA[<h2 id="Git"><a href="#Git" class="headerlink" title="Git"></a>Git</h2><p>Git是一个<strong>免费的开源</strong>分布式版本控制系统，旨在快速高效地处理从小型到大型项目的所有事务。</p><p>Git易于学习， 占地面积小，具有闪电般快速的性能。它超越了Subversion，CVS，Perforce和ClearCase等SCM工具，具有廉价本地分支，便捷的<strong>临时区域</strong>和<strong>多个工作流程</strong>等功能</p><h2 id="git流程"><a href="#git流程" class="headerlink" title="git流程"></a>git流程</h2><p><strong><img src="/2019/12/19/git/git%E6%B5%81%E7%A8%8B%E5%9B%BE.png" class title="git流程图"></strong> </p><ul>
@@ -2061,6 +2245,141 @@
 ]]></content>
   </entry>
   <entry>
+    <title>MySQL主从复制</title>
+    <url>/2019/08/18/MySQL%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6/</url>
+    <content><![CDATA[<h2 id="MySQL主从复制原理图"><a href="#MySQL主从复制原理图" class="headerlink" title="MySQL主从复制原理图"></a>MySQL主从复制原理图</h2><img src="/2019/08/18/MySQL%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6/20190529071516_23557.png" class><h2 id="MySQL主从复制原理"><a href="#MySQL主从复制原理" class="headerlink" title="MySQL主从复制原理"></a>MySQL主从复制原理</h2><p>利用数据库<strong>bin-log</strong>二进制文件，该文件包含有数据库操作的所有SQL语句</p><p>复制该文件至其余数据库服务中并执行即可</p><h2 id="MySQL主从复制过程"><a href="#MySQL主从复制过程" class="headerlink" title="MySQL主从复制过程"></a>MySQL主从复制过程</h2><p>1、MySQL的主从复制是一个异步的复制过程（虽然一般情况下感觉是实时的），数据将从一个MySQL数据库（我们称之为Master）复制到另一个MySQL数据库（我们称之为Slave），在Master与Salve之间实现整个主从复制的过程是由三个线程参与完成的。其中有两个线程（SQL线程和IO线程）在Slave端，另外一个线程（I/O线程）在Master端。</p><a id="more"></a>  
+
+
+
+
+<p>2、要实现MySQL的主从复制，首先必须打开Master端的binlog记录功能，否则就无法实现。因为整个复制过程实际上就是Slave从Master端获取binlog日志，然后再在Slave上以相同顺序执行获取的binlog日志中所记录的各种SQL操作。注意binlog日志只记录增删改（不记录查询语句）</p>
+<p>3、从库IO在第一次把信息放入到relay中后会触发SQL线程，然后后边就交给SQL线程来处理，把binlog文件中的SQL语句解析出来后变成SQL语句放入数据库中</p>
+<h2 id="为什么要搭建主从复制？"><a href="#为什么要搭建主从复制？" class="headerlink" title="为什么要搭建主从复制？"></a>为什么要搭建主从复制？</h2><ol>
+<li>构建主从热备，当某天数据库宕机或或数据丢失情况，可以有备份数据库继续工作</li>
+<li>降低IO频次，多库之间可以合理分配读写压力，提高单个数据库服务的数据库访问压力</li>
+<li>隔离读写，在某些锁表情况下，可以使数据库读操作继续进行</li>
+</ol>
+<h2 id="配置MySQL主从复制"><a href="#配置MySQL主从复制" class="headerlink" title="配置MySQL主从复制"></a>配置MySQL主从复制</h2><p>首先准备两台Centos7的服务器，一台作为主机(master)，一台作为从机(slave)，都安装好mysql5.7，具体怎样安装mysql服务请移步： <a href="http://obsessed.top/2019/08/17/MySQL安装与基本配置">http://obsessed.top/2019/08/17/MySQL安装与基本配置</a></p>
+<p>进入master服务器</p>
+<p>修改mysql配置文件 vim /etc/my.cnf，加入如下配置</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">server-id=<span class="number">1</span></span><br><span class="line">innodb_flush_log_at_trx_commit=<span class="number">2</span></span><br><span class="line">sync_binlog=<span class="number">1</span></span><br><span class="line">log-bin=mysql-bin<span class="number">-1</span></span><br></pre></td></tr></table></figure>
+
+<p>配置说明： </p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#设置主服务 的ID (id可以自己随便设置但是要保证和slave的id不一样)</span></span><br><span class="line">server-id=<span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#设为1当然是最安全的，但性能也是最差的（相对其他两个参数而言，但不是不能接受）。如果对数据一致性和完整性要求不高，完全可以设为2，如果只最求性能，例如高并发写的日志服务器，设为0来获得更高性能</span></span><br><span class="line">innodb_flush_log_at_trx_commit=<span class="number">2</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#开启binlog 志同步功能</span></span><br><span class="line">sync_binlog=<span class="number">1</span> </span><br><span class="line"></span><br><span class="line"><span class="comment">#binlog 日志文件名</span></span><br><span class="line">log-bin=mysql-bin<span class="number">-200</span> </span><br><span class="line"></span><br><span class="line"><span class="comment"># 这个表示只同步某个库 (如果没有此项，表示同步所有的库)</span></span><br><span class="line">binlog-do-db=xxxx</span><br></pre></td></tr></table></figure>
+
+<p>保存后，重启mysql</p>
+ <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">systemctl restart mysqld</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p>进入mysql命令行 mysql -uroot -p你的密码 </p>
+<p>输入授权命令 </p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">GRANT REPLICATION SLAVE ON *.* to <span class="string">'repl'</span>@<span class="string">'%'</span> identified by <span class="string">'Admin123!'</span>;</span><br></pre></td></tr></table></figure>
+
+<p>意思是所有slave都可以通过账号repl和密码Admin123!来同步master的数据 </p>
+<p>然后查看master的状态：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">show master status;</span><br></pre></td></tr></table></figure>
+
+<img src="/2019/08/18/MySQL%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6/2019052222.png" class>  
+
+<p>把file列和Position列记录下来，一会配置slave要用到 </p>
+<p>此时Master的配置已经搞定，登录一下从机(slave) </p>
+<p>同理修改slave服务器的mysql配置 vim /etc/my.cnf 加入下面的配置，需要注意的是server-id不要和master一样 </p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">server-id=<span class="number">201</span> </span><br><span class="line">innodb_flush_log_at_trx_commit=<span class="number">2</span> </span><br><span class="line">sync_binlog=<span class="number">1</span> </span><br><span class="line">log-bin=mysql-bin<span class="number">-201</span></span><br></pre></td></tr></table></figure>
+
+<p>保存后重启服务</p>
+<p>进入mysql命令行 mysql -uroot -p你的密码</p>
+<p>输入命令： </p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">change master to master_host=<span class="string">'39.106.228.179'</span>,master_user=<span class="string">'repl'</span> ,master_password=<span class="string">'Admin123!'</span>, master_log_file=<span class="string">'mysql-bin-1.000016'</span> ,master_log_pos=<span class="number">154</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">命令说明：</span><br><span class="line"></span><br><span class="line">master_host: 主机的ip</span><br><span class="line"></span><br><span class="line">master_user : 主机授权的用户.</span><br><span class="line"></span><br><span class="line">master_password : 主机授权时候填写的密码</span><br><span class="line"></span><br><span class="line">master_log_file : 主机show master status;中的File</span><br><span class="line"></span><br><span class="line">master_log_pos: 主机show master status;中的Position.</span><br></pre></td></tr></table></figure>
+
+<p>输入命令启动slave </p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">start slave;</span><br></pre></td></tr></table></figure>
+
+<p>可以查看slave的状态: </p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">show slave status G;</span><br></pre></td></tr></table></figure>
+
+<p>然后我们就可以测试一下对master进行写入，看看salve是否可以同步数据了 </p>
+<p>MySQL的主从复制功能有一定的延迟性，如果对数据实时一致性的要求比较高的场景不推荐使用。 </p>
+]]></content>
+      <categories>
+        <category>MySQL</category>
+      </categories>
+      <tags>
+        <tag>MySQL</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>MySQL安装与基本配置</title>
+    <url>/2019/08/17/MySQL%E5%AE%89%E8%A3%85%E4%B8%8E%E5%9F%BA%E6%9C%AC%E9%85%8D%E7%BD%AE/</url>
+    <content><![CDATA[<p>首先准备一台Centos7的服务器</p><h3 id="1、下载并安装MySQL官方的-Yum-Repository"><a href="#1、下载并安装MySQL官方的-Yum-Repository" class="headerlink" title="1、下载并安装MySQL官方的 Yum Repository"></a>1、下载并安装MySQL官方的 Yum Repository</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">[root@node1 ~]<span class="comment"># wget -i -c http://dev.mysql.com/get/mysql57-community-release-el7-10.noarch.rpm</span></span><br></pre></td></tr></table></figure><p>如果提示wget命令不存在，先执行 </p><a id="more"></a>
+
+
+
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">yum -y install wget</span><br></pre></td></tr></table></figure>
+
+<p>使用上面的命令就直接下载了安装用的Yum Repository，大概25KB的样子，然后就可以直接yum安装了。 </p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">[root@node1 ~]<span class="comment"># yum -y install mysql57-community-release-el7-10.noarch.rpm</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>之后就开始安装MySQL服务器。 </p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">[root@node1 ~]<span class="comment"># yum -y install mysql-community-server</span></span><br></pre></td></tr></table></figure>
+
+<p>这步可能会花些时间，安装完成后就会覆盖掉之前的mariadb。 </p>
+<img src="/2019/08/17/MySQL%E5%AE%89%E8%A3%85%E4%B8%8E%E5%9F%BA%E6%9C%AC%E9%85%8D%E7%BD%AE/200000125682544.png" class>  
+
+<p>至此MySQL就安装完成了，然后是对MySQL的一些设置。 </p>
+<h3 id="2、MySQL数据库设置"><a href="#2、MySQL数据库设置" class="headerlink" title="2、MySQL数据库设置"></a>2、MySQL数据库设置</h3><p>首先启动MySQL </p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># systemctl start  mysqld.service</span></span><br></pre></td></tr></table></figure>
+
+<p>  查看MySQL运行状态，运行状态如图：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># systemctl status mysqld.service</span></span><br></pre></td></tr></table></figure>
+
+<img src="/2019/08/17/MySQL%E5%AE%89%E8%A3%85%E4%B8%8E%E5%9F%BA%E6%9C%AC%E9%85%8D%E7%BD%AE/1079354-20170726202441687-1168874203.png" class>  
+
+<p>此时MySQL已经开始正常运行，不过要想进入MySQL还得先找出此时root用户的密码，通过如下命令可以在日志文件中找出密码： </p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># grep "password" /var/log/mysqld.log</span></span><br></pre></td></tr></table></figure>
+
+<img src="/2019/08/17/MySQL%E5%AE%89%E8%A3%85%E4%B8%8E%E5%9F%BA%E6%9C%AC%E9%85%8D%E7%BD%AE/1079354-20170726202722796-1932560887.png" class> 
+
+<p> 如下命令进入数据库：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># mysql -uroot -p</span></span><br></pre></td></tr></table></figure>
+
+<p>  输入初始密码，此时不能做任何事情，因为MySQL默认必须修改密码之后才能操作数据库：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">mysql&gt; ALTER USER <span class="string">'root'</span>@<span class="string">'localhost'</span> IDENTIFIED BY <span class="string">'new password'</span>;</span><br></pre></td></tr></table></figure>
+
+<p>  这里有个问题，新密码设置的时候如果设置的过于简单会报错：</p>
+<img src="/2019/08/17/MySQL%E5%AE%89%E8%A3%85%E4%B8%8E%E5%9F%BA%E6%9C%AC%E9%85%8D%E7%BD%AE/1079354-20170726203136000-1398594667.png" class> 
+
+<p>原因是因为MySQL有密码设置的规范，具体是与validate_password_policy的值有关： </p>
+<img src="/2019/08/17/MySQL%E5%AE%89%E8%A3%85%E4%B8%8E%E5%9F%BA%E6%9C%AC%E9%85%8D%E7%BD%AE/1079354-20170726203904812-1008115240.png" class> 
+
+<p>  MySQL完整的初始密码规则可以通过如下命令查看： </p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">mysql&gt; SHOW VARIABLES LIKE <span class="string">'validate_password%'</span>;</span><br><span class="line">+--------------------------------------+-------+</span><br><span class="line">| Variable_name                        | Value |</span><br><span class="line">+--------------------------------------+-------+</span><br><span class="line">| validate_password_check_user_name    | OFF   |</span><br><span class="line">| validate_password_dictionary_file    |       |</span><br><span class="line">| validate_password_length             | <span class="number">4</span>     |</span><br><span class="line">| validate_password_mixed_case_count   | <span class="number">1</span>     |</span><br><span class="line">| validate_password_number_count       | <span class="number">1</span>     |</span><br><span class="line">| validate_password_policy             | LOW   |</span><br><span class="line">| validate_password_special_char_count | <span class="number">1</span>     |</span><br><span class="line">+--------------------------------------+-------+</span><br><span class="line"><span class="number">7</span> rows <span class="keyword">in</span> set (<span class="number">0.01</span> sec)</span><br></pre></td></tr></table></figure>
+
+<p>密码的长度是由validate_password_length决定的，而validate_password_length的计算公式是：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">validate_password_length = validate_password_number_count + validate_password_special_char_count + (<span class="number">2</span> * validate_password_mixed_case_count)</span><br></pre></td></tr></table></figure>
+
+
+
+<p>我的是已经修改过的，初始情况下第一个的值是ON，validate_password_length是8。可以通过如下命令修改：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">mysql&gt; set <span class="keyword">global</span> validate_password_policy=<span class="number">0</span>;</span><br><span class="line">mysql&gt; set <span class="keyword">global</span> validate_password_length=<span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+
+<p>  设置之后就是我上面查出来的那几个值了，此时密码就可以设置的很简单，例如1234之类的。到此数据库的密码设置就完成了。</p>
+<p>  但此时还有一个问题，就是因为安装了Yum Repository，以后每次yum操作都会自动更新，需要把这个卸载掉：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">[root@node1 ~]<span class="comment"># yum -y remove mysql57-community-release-el7-10.noarch</span></span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>MySQL</category>
+      </categories>
+      <tags>
+        <tag>MySQL</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>TCP三次握手四次挥手</title>
     <url>/2019/08/12/TCP%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B/</url>
     <content><![CDATA[<img src="/2019/08/12/TCP%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B/f58f6ad856c6802b636d20d8f5ba2c3e.png" class><h2 id="三次握手-建立TCP连接"><a href="#三次握手-建立TCP连接" class="headerlink" title="三次握手-建立TCP连接"></a>三次握手-建立TCP连接</h2><img src="/2019/08/12/TCP%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B/824317-20161211213831272-742191218.png" class><ol>
@@ -2186,6 +2505,40 @@
       </tags>
   </entry>
   <entry>
+    <title>关于MySQL</title>
+    <url>/2019/05/22/%E5%85%B3%E4%BA%8EMySQL/</url>
+    <content><![CDATA[<h2 id="什么是-MySQL？"><a href="#什么是-MySQL？" class="headerlink" title="什么是 MySQL？"></a>什么是 MySQL？</h2><ol>
+<li><strong>MySQL</strong> 是一个快速、多线程、多用户和强壮的SQL数据库服务器 </li>
+</ol>
+<h2 id="我们为什么使用MySQL"><a href="#我们为什么使用MySQL" class="headerlink" title="我们为什么使用MySQL"></a>我们为什么使用MySQL</h2><pre><code>1. 我们因为它开源免费，使用范围广泛，具有强大的索引和事务，能支持海量的数据</code></pre> <a id="more"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h2 id="MySQL中的幻读，什么是幻读"><a href="#MySQL中的幻读，什么是幻读" class="headerlink" title="MySQL中的幻读，什么是幻读"></a>MySQL中的幻读，什么是幻读</h2><ol>
+<li>幻读一词摘自MySQL的官方手册</li>
+<li>幻读出现于在开启事务</li>
+</ol>
+]]></content>
+      <categories>
+        <category>MySQL</category>
+      </categories>
+      <tags>
+        <tag>MySQL</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Django</title>
     <url>/2019/05/22/Django/</url>
     <content><![CDATA[<h2 id="如何使用ImageField上传图片"><a href="#如何使用ImageField上传图片" class="headerlink" title="如何使用ImageField上传图片"></a>如何使用ImageField上传图片</h2><figure class="highlight"><table><tr><td class="code"><pre><span class="line"><span class="comment">#models</span></span><br><span class="line">img = models.ImageField(verbose_name=<span class="string">'描述图片'</span>,upload_to=<span class="string">'media'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#settings</span></span><br><span class="line">MEDIA_URL = <span class="string">'/media/'</span></span><br><span class="line">MEDIA_ROOT = os.path.join(BASE_DIR,<span class="string">'media'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#记得form表单写enctype</span></span><br><span class="line">&lt;form action=<span class="string">""</span> method=<span class="string">"post"</span> enctype=<span class="string">"multipart/form-data"</span>&gt; </span><br><span class="line">&lt;/form&gt;</span><br></pre></td></tr></table></figure>
@@ -2254,40 +2607,6 @@
       </categories>
       <tags>
         <tag>Django</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>关于MySQL</title>
-    <url>/2019/05/22/%E5%85%B3%E4%BA%8EMySQL/</url>
-    <content><![CDATA[<h2 id="什么是-MySQL？"><a href="#什么是-MySQL？" class="headerlink" title="什么是 MySQL？"></a>什么是 MySQL？</h2><ol>
-<li><strong>MySQL</strong> 是一个快速、多线程、多用户和强壮的SQL数据库服务器 </li>
-</ol>
-<h2 id="我们为什么使用MySQL"><a href="#我们为什么使用MySQL" class="headerlink" title="我们为什么使用MySQL"></a>我们为什么使用MySQL</h2><pre><code>1. 我们因为它开源免费，使用范围广泛，具有强大的索引和事务，能支持海量的数据</code></pre> <a id="more"></a>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h2 id="MySQL中的幻读，什么是幻读"><a href="#MySQL中的幻读，什么是幻读" class="headerlink" title="MySQL中的幻读，什么是幻读"></a>MySQL中的幻读，什么是幻读</h2><ol>
-<li>幻读一词摘自MySQL的官方手册</li>
-<li>幻读出现于在开启事务</li>
-</ol>
-]]></content>
-      <categories>
-        <category>MySQL</category>
-      </categories>
-      <tags>
-        <tag>MySQL</tag>
       </tags>
   </entry>
   <entry>

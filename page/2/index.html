@@ -210,6 +210,83 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://obsessed.top/2020/03/03/Django-uWSGI-Nginx%E7%9A%84%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/20160228201627_f5vax.png">
+      <meta itemprop="name" content="Ares">
+      <meta itemprop="description" content="最重要的是，别放弃希望">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ares">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/03/03/Django-uWSGI-Nginx%E7%9A%84%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2/" class="post-title-link" itemprop="url">Django+uWSGI+Nginx的生产环境部署</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-03-03 16:08:29 / 修改时间：17:10:56" itemprop="dateCreated datePublished" datetime="2020-03-03T16:08:29+08:00">2020-03-03</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="1、Django-Uwsgi-Nginx-部署的作用"><a href="#1、Django-Uwsgi-Nginx-部署的作用" class="headerlink" title="1、Django + Uwsgi + Nginx 部署的作用"></a>1、Django + Uwsgi + Nginx 部署的作用</h2><p>   <strong>1、Django + Uwsgi + Nginx方案</strong></p><p> 　　　　　　<strong><img src="/2020/03/03/Django-uWSGI-Nginx%E7%9A%84%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2/DUN.png" class title="This is an test image"></strong> </p><p>　　1. web项目，使用nginx的目的是为了安全和负载均衡，配置了nginx做前端代理，uwsgi作后端代理的服务器。</p><p>　　2. 在处理来自Internet的请求时，要先经过nginx的处理，nginx把请求再交给uwsgi，经过uwsgi才能访问到项目本身。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/03/03/Django-uWSGI-Nginx%E7%9A%84%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://obsessed.top/2020/03/02/docker%E5%91%BD%E4%BB%A4/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -991,89 +1068,6 @@
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://obsessed.top/2020/02/22/%E5%9F%BA%E4%BA%8ERedis%E5%AE%9E%E7%8E%B0%E7%9A%84%E5%8D%95%E7%82%B9%E7%99%BB%E5%BD%95/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/20160228201627_f5vax.png">
-      <meta itemprop="name" content="Ares">
-      <meta itemprop="description" content="最重要的是，别放弃希望">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Ares">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/02/22/%E5%9F%BA%E4%BA%8ERedis%E5%AE%9E%E7%8E%B0%E7%9A%84%E5%8D%95%E7%82%B9%E7%99%BB%E5%BD%95/" class="post-title-link" itemprop="url">基于Redis实现的单点登录</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-02-22 17:31:12" itemprop="dateCreated datePublished" datetime="2020-02-22T17:31:12+08:00">2020-02-22</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-03-03 17:35:50" itemprop="dateModified" datetime="2020-03-03T17:35:50+08:00">2020-03-03</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Redis/" itemprop="url" rel="index">
-                    <span itemprop="name">Redis</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="传统的登录方式"><a href="#传统的登录方式" class="headerlink" title="传统的登录方式"></a>传统的登录方式</h3><p><strong><img src="/2020/02/22/%E5%9F%BA%E4%BA%8ERedis%E5%AE%9E%E7%8E%B0%E7%9A%84%E5%8D%95%E7%82%B9%E7%99%BB%E5%BD%95/20200219132402516.png" class title="传统登录"></strong> </p><p>大家可以看到最后的用户信息 是存储到 session 中的。</p><p>现在有一个致命的问题 服务器中的session不是共享的，如果我们的项目的量级很大需要分布式服务器，那么就需要用户高频率的操作登录功能。这对于用户体验来说是残忍的，也是致命的。</p><p>传统登录问题：</p><p>session默认是存储在当前服务器的内存中，如果是集群，那么只有登录那台机器的内存中才有这个session<br>比如说我在A机器登录，B机器是没有这个session存在的，所以需要重新验证<br>如何解决：</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/02/22/%E5%9F%BA%E4%BA%8ERedis%E5%AE%9E%E7%8E%B0%E7%9A%84%E5%8D%95%E7%82%B9%E7%99%BB%E5%BD%95/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
@@ -1124,7 +1118,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">34</span>
+          <span class="site-state-item-count">38</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
