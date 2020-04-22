@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <link rel="alternate" href="/atom.xml" title="Ares" type="application/atom+xml">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://obsessed.top').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.5.0',
+    exturl: false,
+    sidebar: {"position":"left","Manual define the sidebar width. If commented, will be default for":null,"Muse | Mist":320,"Pisces | Gemini":240,"width":200,"display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="所谓的无限极分类是啥？其实简单点说就是一个人类可以繁衍出多个后代，然后一个后代又可以分另外多个后代这样无限繁衍下去（可以想象神奇动物在哪里2里面莱斯特兰奇的家族族谱），就好象linux系统你可以新建一个文件夹，然后在这个文件夹里又可以建一些个文件夹，在文件夹底下还可以建一些文件夹一样，随后使用tree命令就可以查看文件夹目录层级。 那么这种层级结构也成为树结构在日常的开发需求里也是很常见的，比如美">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用Python3.7+Django2.0.4配合vue.js2.0的组件递归来实现无限级分类(递归层级结构)">
+<meta property="og:url" content="http://obsessed.top/2020/04/06/%E4%BD%BF%E7%94%A8Python3-7-Django2-0-4%E9%85%8D%E5%90%88vue-js2-0%E7%9A%84%E7%BB%84%E4%BB%B6%E9%80%92%E5%BD%92%E6%9D%A5%E5%AE%9E%E7%8E%B0%E6%97%A0%E9%99%90%E7%BA%A7%E5%88%86%E7%B1%BB-%E9%80%92%E5%BD%92%E5%B1%82%E7%BA%A7%E7%BB%93%E6%9E%84/index.html">
+<meta property="og:site_name" content="Ares">
+<meta property="og:description" content="所谓的无限极分类是啥？其实简单点说就是一个人类可以繁衍出多个后代，然后一个后代又可以分另外多个后代这样无限繁衍下去（可以想象神奇动物在哪里2里面莱斯特兰奇的家族族谱），就好象linux系统你可以新建一个文件夹，然后在这个文件夹里又可以建一些个文件夹，在文件夹底下还可以建一些文件夹一样，随后使用tree命令就可以查看文件夹目录层级。 那么这种层级结构也成为树结构在日常的开发需求里也是很常见的，比如美">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://obsessed.top/2020/04/06/%E4%BD%BF%E7%94%A8Python3-7-Django2-0-4%E9%85%8D%E5%90%88vue-js2-0%E7%9A%84%E7%BB%84%E4%BB%B6%E9%80%92%E5%BD%92%E6%9D%A5%E5%AE%9E%E7%8E%B0%E6%97%A0%E9%99%90%E7%BA%A7%E5%88%86%E7%B1%BB-%E9%80%92%E5%BD%92%E5%B1%82%E7%BA%A7%E7%BB%93%E6%9E%84/20200303114306_78562.png">
+<meta property="og:image" content="http://obsessed.top/2020/04/06/%E4%BD%BF%E7%94%A8Python3-7-Django2-0-4%E9%85%8D%E5%90%88vue-js2-0%E7%9A%84%E7%BB%84%E4%BB%B6%E9%80%92%E5%BD%92%E6%9D%A5%E5%AE%9E%E7%8E%B0%E6%97%A0%E9%99%90%E7%BA%A7%E5%88%86%E7%B1%BB-%E9%80%92%E5%BD%92%E5%B1%82%E7%BA%A7%E7%BB%93%E6%9E%84/20200303114400_23346.png">
+<meta property="og:image" content="http://obsessed.top/2020/04/06/%E4%BD%BF%E7%94%A8Python3-7-Django2-0-4%E9%85%8D%E5%90%88vue-js2-0%E7%9A%84%E7%BB%84%E4%BB%B6%E9%80%92%E5%BD%92%E6%9D%A5%E5%AE%9E%E7%8E%B0%E6%97%A0%E9%99%90%E7%BA%A7%E5%88%86%E7%B1%BB-%E9%80%92%E5%BD%92%E5%B1%82%E7%BA%A7%E7%BB%93%E6%9E%84/20200303114749_87796.png">
+<meta property="article:published_time" content="2020-04-06T08:43:04.000Z">
+<meta property="article:modified_time" content="2020-04-22T10:20:30.381Z">
+<meta property="article:author" content="Ares">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://obsessed.top/2020/04/06/%E4%BD%BF%E7%94%A8Python3-7-Django2-0-4%E9%85%8D%E5%90%88vue-js2-0%E7%9A%84%E7%BB%84%E4%BB%B6%E9%80%92%E5%BD%92%E6%9D%A5%E5%AE%9E%E7%8E%B0%E6%97%A0%E9%99%90%E7%BA%A7%E5%88%86%E7%B1%BB-%E9%80%92%E5%BD%92%E5%B1%82%E7%BA%A7%E7%BB%93%E6%9E%84/20200303114306_78562.png">
+
+<link rel="canonical" href="http://obsessed.top/2020/04/06/%E4%BD%BF%E7%94%A8Python3-7-Django2-0-4%E9%85%8D%E5%90%88vue-js2-0%E7%9A%84%E7%BB%84%E4%BB%B6%E9%80%92%E5%BD%92%E6%9D%A5%E5%AE%9E%E7%8E%B0%E6%97%A0%E9%99%90%E7%BA%A7%E5%88%86%E7%B1%BB-%E9%80%92%E5%BD%92%E5%B1%82%E7%BA%A7%E7%BB%93%E6%9E%84/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>使用Python3.7+Django2.0.4配合vue.js2.0的组件递归来实现无限级分类(递归层级结构) | Ares</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ares</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Above all, don't lose hope.</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://obsessed.top/2020/04/06/%E4%BD%BF%E7%94%A8Python3-7-Django2-0-4%E9%85%8D%E5%90%88vue-js2-0%E7%9A%84%E7%BB%84%E4%BB%B6%E9%80%92%E5%BD%92%E6%9D%A5%E5%AE%9E%E7%8E%B0%E6%97%A0%E9%99%90%E7%BA%A7%E5%88%86%E7%B1%BB-%E9%80%92%E5%BD%92%E5%B1%82%E7%BA%A7%E7%BB%93%E6%9E%84/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/20160228201627_f5vax.png">
+      <meta itemprop="name" content="Ares">
+      <meta itemprop="description" content="最重要的是，别放弃希望">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ares">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          使用Python3.7+Django2.0.4配合vue.js2.0的组件递归来实现无限级分类(递归层级结构)
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-04-06 16:43:04" itemprop="dateCreated datePublished" datetime="2020-04-06T16:43:04+08:00">2020-04-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-04-22 18:20:30" itemprop="dateModified" datetime="2020-04-22T18:20:30+08:00">2020-04-22</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <html><head></head><body></body></html><html><head></head><body><p>所谓的无限极分类是啥？其实简单点说就是一个人类可以繁衍出多个后代，然后一个后代又可以分另外多个后代这样无限繁衍下去（可以想象<a href="https://movie.douban.com/subject/26147417/" target="_blank" rel="noopener">神奇动物在哪里2</a>里面莱斯特兰奇的家族族谱），就好象linux系统你可以新建一个文件夹，然后在这个文件夹里又可以建一些个文件夹，在文件夹底下还可以建一些文件夹一样，随后使用tree命令就可以查看文件夹目录层级。</p>
+<p>那么这种层级结构也成为树结构在日常的开发需求里也是很常见的，比如美多商城系统的商品分类，课程的目录章节，以及以及论坛里的帖子回复等等，本次我们后台利用Django来写一个能够返回层级结构数据的接口，接口将该数据以json的形式返回前端，前端使用vue的组件递归来展示数据。</p>
+<p>首先，打开django项目中的models.py，新建一个类别的模型类，这里我们以最简单的parentid的形式来建立</p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Cate</span><span class="params">(models.Model)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">#主键 通过参数声明主键</span></span><br><span class="line">    id = models.AutoField(primary_key=<span class="literal">True</span>)</span><br><span class="line">    <span class="comment">#分类名称</span></span><br><span class="line">    name = models.CharField(max_length=<span class="number">500</span>)</span><br><span class="line">    <span class="comment">#父级id</span></span><br><span class="line">    pid = models.IntegerField()</span><br><span class="line"></span><br><span class="line">    <span class="comment">#表名</span></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Meta</span>:</span></span><br><span class="line">        db_table = <span class="string">'cate'</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>由于我们的项目基于drf框架，所以要增加一个序列器类，如果你的项目没有用drf，可以直接用json模块来进行序列化 </p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> rest_framework <span class="keyword">import</span> serializers</span><br><span class="line"><span class="keyword">from</span> myapp.models <span class="keyword">import</span> Cate</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CateSer</span><span class="params">(serializers.ModelSerializer)</span>:</span></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Meta</span>:</span></span><br><span class="line">        model = Cate</span><br><span class="line">        fields = <span class="string">"__all__"</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>由于django序列化出来的类不具备层级结构，所以我们提前写好一个用来递归的方法： </p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">xTree</span><span class="params">(datas)</span>:</span></span><br><span class="line">    lists=[]</span><br><span class="line">    tree={}</span><br><span class="line">    parent_id=<span class="string">''</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> datas:</span><br><span class="line">        item=i</span><br><span class="line">        tree[item[<span class="string">'id'</span>]]=item</span><br><span class="line">    root=<span class="literal">None</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> datas:</span><br><span class="line">        obj=i</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> obj[<span class="string">'pid'</span>]:</span><br><span class="line">            root=tree[obj[<span class="string">'id'</span>]]</span><br><span class="line">            lists.append(root)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            parent_id=obj[<span class="string">'pid'</span>]</span><br><span class="line">            <span class="keyword">if</span> <span class="string">'childlist'</span> <span class="keyword">not</span> <span class="keyword">in</span> tree[parent_id]:   </span><br><span class="line">                tree[parent_id][<span class="string">'childlist'</span>]=[]</span><br><span class="line">            tree[parent_id][<span class="string">'childlist'</span>].append(tree[obj[<span class="string">'id'</span>]])</span><br><span class="line">    <span class="keyword">return</span> lists</span><br></pre></td></tr></tbody></table></figure>
+
+<p>此时我们写一个视图接口，用来从数据库中读取数据 </p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyTree</span><span class="params">(APIView)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get</span><span class="params">(self,request)</span>:</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="comment">#获取订单列表</span></span><br><span class="line">        catelist = Cate.objects.filter()</span><br><span class="line">        <span class="comment">#序列化</span></span><br><span class="line">        catelist_ser = CateSer(catelist,many=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">        mylist= xTree(catelist_ser.data)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> Response(mylist)</span><br></pre></td></tr></tbody></table></figure>
+
+<p> 请在mysql库里存一些测试数据 </p>
+<img src="/2020/04/06/%E4%BD%BF%E7%94%A8Python3-7-Django2-0-4%E9%85%8D%E5%90%88vue-js2-0%E7%9A%84%E7%BB%84%E4%BB%B6%E9%80%92%E5%BD%92%E6%9D%A5%E5%AE%9E%E7%8E%B0%E6%97%A0%E9%99%90%E7%BA%A7%E5%88%86%E7%B1%BB-%E9%80%92%E5%BD%92%E5%B1%82%E7%BA%A7%E7%BB%93%E6%9E%84/20200303114306_78562.png" class>  
+
+<p> 测试一下接口，看看是否以json的形式返回了层级结构 </p>
+<img src="/2020/04/06/%E4%BD%BF%E7%94%A8Python3-7-Django2-0-4%E9%85%8D%E5%90%88vue-js2-0%E7%9A%84%E7%BB%84%E4%BB%B6%E9%80%92%E5%BD%92%E6%9D%A5%E5%AE%9E%E7%8E%B0%E6%97%A0%E9%99%90%E7%BA%A7%E5%88%86%E7%B1%BB-%E9%80%92%E5%BD%92%E5%B1%82%E7%BA%A7%E7%BB%93%E6%9E%84/20200303114400_23346.png" class>  
+
+<p>ok,接口没有问题，现在我们把目光投向前端，打开vue项目，新建一个Reply.vue组件</p>
+<p>所谓递归组件: 就是组件可以在它们自己的模板中调用自身，不过它们只能通过 name 选项来做这件事，例如给组件设置属性 name: ‘Reply’，然后在模板中就可以使用 Reply 调用自己进行递归调用了</p>
+<figure class="highlight html"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag"><<span class="name">template</span>></span></span><br><span class="line"></span><br><span class="line">    <span class="tag"><<span class="name">div</span>></span></span><br><span class="line"></span><br><span class="line">        <span class="tag"><<span class="name">li</span> ></span></span><br><span class="line">            <span class="tag"><<span class="name">div</span> <span class="attr">:class</span>=<span class="string">"[data.id==0 ? 'root': '', 'reply']"</span>></span>{{ data.name }}<span class="tag"></<span class="name">div</span>></span></span><br><span class="line">            </span><br><span class="line">            <span class="tag"><<span class="name">ul</span> <span class="attr">v-if</span>=<span class="string">"data.childlist && data.childlist.length>0"</span>></span></span><br><span class="line">                <span class="tag"><<span class="name">Reply</span> <span class="attr">v-for</span>=<span class="string">"child in data.childlist"</span> <span class="attr">:key</span>=<span class="string">"child.id"</span> <span class="attr">:data</span>=<span class="string">"child"</span>/></span></span><br><span class="line">            <span class="tag"></<span class="name">ul</span>></span></span><br><span class="line">        <span class="tag"></<span class="name">li</span>></span></span><br><span class="line"></span><br><span class="line">    <span class="tag"></<span class="name">div</span>></span></span><br><span class="line"><span class="tag"></<span class="name">template</span>></span></span><br><span class="line">    </span><br><span class="line"><span class="tag"><<span class="name">script</span>></span></span><br><span class="line"><span class="javascript">    <span class="keyword">export</span> <span class="keyword">default</span> {</span></span><br><span class="line"><span class="actionscript">        name: <span class="string">'Reply'</span>, <span class="comment">// 递归组件需要设置 name 属性，才能在模板中调用自己</span></span></span><br><span class="line"><span class="actionscript">        props:[<span class="string">'data'</span>],</span></span><br><span class="line">    };</span><br><span class="line"><span class="tag"></<span class="name">script</span>></span></span><br><span class="line">    </span><br><span class="line"><span class="tag"><<span class="name">style</span> ></span></span><br><span class="line"><span class="css">    <span class="selector-class">.reply</span> {</span></span><br><span class="line">        padding-left: 4px;</span><br><span class="line"><span class="css">        <span class="selector-tag">border-left</span>: 1<span class="selector-tag">px</span> <span class="selector-tag">solid</span> <span class="selector-id">#eee</span>;</span></span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    ul {</span><br><span class="line">            padding-left: 20px;</span><br><span class="line">            list-style: none;</span><br><span class="line">        }</span><br><span class="line"></span><br><span class="line"><span class="css">        <span class="selector-class">.root</span> { <span class="attribute">display</span>: none; }</span></span><br><span class="line"></span><br><span class="line"><span class="tag"></<span class="name">style</span>></span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>  然后在其他任意组件中调用该Reply.vue组件，传入刚刚写好的接口数据 </p>
+<figure class="highlight html"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag"><<span class="name">template</span>></span></span><br><span class="line">    <span class="tag"><<span class="name">div</span>></span></span><br><span class="line">                </span><br><span class="line">        <span class="tag"><<span class="name">Reply</span> <span class="attr">:data</span>=<span class="string">"data"</span> /></span></span><br><span class="line">    </span><br><span class="line">    <span class="tag"></<span class="name">div</span>></span></span><br><span class="line"><span class="tag"></<span class="name">template</span>></span></span><br><span class="line">       </span><br><span class="line"><span class="tag"><<span class="name">script</span>></span></span><br><span class="line">    </span><br><span class="line"><span class="javascript">    <span class="keyword">import</span> {config,formatXml} <span class="keyword">from</span> <span class="string">'../config.js'</span>;</span></span><br><span class="line"><span class="javascript">    <span class="keyword">import</span> mh_test <span class="keyword">from</span> <span class="string">'./mh_test.vue'</span>;</span></span><br><span class="line"><span class="javascript">    <span class="keyword">import</span> Reply <span class="keyword">from</span> <span class="string">'./Reply.vue'</span>;</span></span><br><span class="line"></span><br><span class="line"><span class="javascript">    <span class="keyword">import</span> md5 <span class="keyword">from</span> <span class="string">'js-md5'</span>;</span></span><br><span class="line"></span><br><span class="line">    </span><br><span class="line"><span class="javascript">    <span class="keyword">export</span> <span class="keyword">default</span> {</span></span><br><span class="line">        data () {</span><br><span class="line"><span class="actionscript">            <span class="keyword">return</span> {</span></span><br><span class="line">                data:{},</span><br><span class="line">                online: 0</span><br><span class="line">            }</span><br><span class="line">        },</span><br><span class="line">        components: {</span><br><span class="line"><span class="actionscript">            <span class="comment">//'mh_test':mh_test</span></span></span><br><span class="line">            Reply</span><br><span class="line">        },</span><br><span class="line"></span><br><span class="line"><span class="actionscript">        <span class="comment">//钩子方法</span></span></span><br><span class="line"><span class="actionscript">        mounted:<span class="function"><span class="keyword">function</span><span class="params">()</span></span>{</span></span><br><span class="line"></span><br><span class="line"><span class="actionscript">            <span class="keyword">this</span>.get_token();</span></span><br><span class="line">        },</span><br><span class="line"><span class="actionscript">        <span class="comment">//绑定事件</span></span></span><br><span class="line">        methods:{</span><br><span class="line"></span><br><span class="line">            get_token(){</span><br><span class="line"></span><br><span class="line"><span class="javascript">                <span class="keyword">this</span>.axios.get(<span class="string">'http://localhost:8000/mytree/'</span>).then(<span class="function">(<span class="params">result</span>) =></span>{</span></span><br><span class="line"><span class="javascript">                    <span class="built_in">console</span>.log(result);</span></span><br><span class="line"><span class="actionscript">                    <span class="keyword">var</span> mytree = {<span class="string">'id'</span>:<span class="number">0</span>,name:<span class="string">'123'</span>};</span></span><br><span class="line"><span class="actionscript">                    mytree[<span class="string">'childlist'</span>] = result.data;</span></span><br><span class="line"><span class="actionscript">                    <span class="keyword">this</span>.data = mytree;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="javascript">                    <span class="built_in">console</span>.log(<span class="keyword">this</span>.data);</span></span><br><span class="line"></span><br><span class="line">                });</span><br><span class="line"></span><br><span class="line">            },</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line"><span class="tag"></<span class="name">script</span>></span></span><br><span class="line"></span><br><span class="line"><span class="tag"><<span class="name">style</span>></span></span><br><span class="line"></span><br><span class="line"><span class="css">    <span class="selector-class">.on</span> {</span></span><br><span class="line"><span class="css">        <span class="selector-tag">background</span>: <span class="selector-id">#cdcbff</span>;</span></span><br><span class="line">    }</span><br><span class="line"><span class="css">    <span class="selector-class">.off</span> {</span></span><br><span class="line"><span class="css">        <span class="selector-tag">background</span>: <span class="selector-id">#fefdff</span>;</span></span><br><span class="line"></span><br><span class="line">    }</span><br><span class="line">    </span><br><span class="line"><span class="tag"></<span class="name">style</span>></span></span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p>最后请求页面，可以看到展示的效果： </p>
+<img src="/2020/04/06/%E4%BD%BF%E7%94%A8Python3-7-Django2-0-4%E9%85%8D%E5%90%88vue-js2-0%E7%9A%84%E7%BB%84%E4%BB%B6%E9%80%92%E5%BD%92%E6%9D%A5%E5%AE%9E%E7%8E%B0%E6%97%A0%E9%99%90%E7%BA%A7%E5%88%86%E7%B1%BB-%E9%80%92%E5%BD%92%E5%B1%82%E7%BA%A7%E7%BB%93%E6%9E%84/20200303114749_87796.png" class>  
+
+<p>当然了，vue组件也可以间接的调用自己实现递归，这涉及到组件之间的循环引用，这样比较麻烦，可读性也间接的降低了不少。 </p>
+</body></html>
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Ares
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://obsessed.top/2020/04/06/%E4%BD%BF%E7%94%A8Python3-7-Django2-0-4%E9%85%8D%E5%90%88vue-js2-0%E7%9A%84%E7%BB%84%E4%BB%B6%E9%80%92%E5%BD%92%E6%9D%A5%E5%AE%9E%E7%8E%B0%E6%97%A0%E9%99%90%E7%BA%A7%E5%88%86%E7%B1%BB-%E9%80%92%E5%BD%92%E5%B1%82%E7%BA%A7%E7%BB%93%E6%9E%84/" title="使用Python3.7+Django2.0.4配合vue.js2.0的组件递归来实现无限级分类(递归层级结构)">http://obsessed.top/2020/04/06/%E4%BD%BF%E7%94%A8Python3-7-Django2-0-4%E9%85%8D%E5%90%88vue-js2-0%E7%9A%84%E7%BB%84%E4%BB%B6%E9%80%92%E5%BD%92%E6%9D%A5%E5%AE%9E%E7%8E%B0%E6%97%A0%E9%99%90%E7%BA%A7%E5%88%86%E7%B1%BB-%E9%80%92%E5%BD%92%E5%B1%82%E7%BA%A7%E7%BB%93%E6%9E%84/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/null" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/04/02/%E4%BD%BF%E7%94%A8python3-7-Vue-js2-0-Django2-0-4%E5%BC%82%E6%AD%A5%E5%89%8D%E7%AB%AF%E9%80%9A%E8%BF%87api%E4%B8%8A%E4%BC%A0%E6%96%87%E4%BB%B6%E5%88%B0%E4%B8%83%E7%89%9B%E4%BA%91%E4%BA%91%E7%AB%AF%E5%AD%98%E5%82%A8/" rel="prev" title="使用python3.7+Vue.js2.0+Django2.0.4异步前端通过api上传文件到七牛云云端存储">
+      <i class="fa fa-chevron-left"></i> 使用python3.7+Vue.js2.0+Django2.0.4异步前端通过api上传文件到七牛云云端存储
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/04/22/python3-7-Django2-0-4%E9%85%8D%E5%90%88vue-js2-0%E5%AE%9E%E7%8E%B0%E5%8F%88%E6%8B%8D%E4%BA%91-upyun-com-%E5%AD%98%E5%82%A8%E7%9A%84%E5%BC%82%E6%AD%A5%E6%8B%96%E6%8B%BD%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E5%8A%9F%E8%83%BD/" rel="next" title="python3.7+Django2.0.4配合vue.js2.0实现又拍云(upyun.com)存储的异步拖拽文件上传功能">
+      python3.7+Django2.0.4配合vue.js2.0实现又拍云(upyun.com)存储的异步拖拽文件上传功能 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Ares"
+      src="/images/20160228201627_f5vax.png">
+  <p class="site-author-name" itemprop="name">Ares</p>
+  <div class="site-description" itemprop="description">最重要的是，别放弃希望</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">40</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/Aresea" title="GitHub → https:&#x2F;&#x2F;gitee.com&#x2F;Aresea" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/2441236144@qq.com" title="E-Mail → 2441236144@qq.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/null" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ares</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

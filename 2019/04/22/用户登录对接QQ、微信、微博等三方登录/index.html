@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <link rel="alternate" href="/atom.xml" title="Ares" type="application/atom+xml">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://obsessed.top').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.5.0',
+    exturl: false,
+    sidebar: {"position":"left","Manual define the sidebar width. If commented, will be default for":null,"Muse | Mist":320,"Pisces | Gemini":240,"width":200,"display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="获取第三方账号登录授权  申请第三方开发平台的账号 三家开放平台的申请地址：    微博开放平台 http:&#x2F;&#x2F;open.weibo.com    微信开放平台 https:&#x2F;&#x2F;open.weixin.qq.com   QQ互联平台 https:&#x2F;&#x2F;connect.qq.com   三方登录流程（以微博登录为例）开发文档：https:&#x2F;&#x2F;open.weibo.com&#x2F;wiki&#x2F;%E6%8E%88%">
+<meta property="og:type" content="article">
+<meta property="og:title" content="用户登录对接QQ、微信、微博等三方登录">
+<meta property="og:url" content="http://obsessed.top/2019/04/22/%E7%94%A8%E6%88%B7%E7%99%BB%E5%BD%95%E5%AF%B9%E6%8E%A5QQ%E3%80%81%E5%BE%AE%E4%BF%A1%E3%80%81%E5%BE%AE%E5%8D%9A%E7%AD%89%E4%B8%89%E6%96%B9%E7%99%BB%E5%BD%95/index.html">
+<meta property="og:site_name" content="Ares">
+<meta property="og:description" content="获取第三方账号登录授权  申请第三方开发平台的账号 三家开放平台的申请地址：    微博开放平台 http:&#x2F;&#x2F;open.weibo.com    微信开放平台 https:&#x2F;&#x2F;open.weixin.qq.com   QQ互联平台 https:&#x2F;&#x2F;connect.qq.com   三方登录流程（以微博登录为例）开发文档：https:&#x2F;&#x2F;open.weibo.com&#x2F;wiki&#x2F;%E6%8E%88%">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://obsessed.top/2019/04/22/%E7%94%A8%E6%88%B7%E7%99%BB%E5%BD%95%E5%AF%B9%E6%8E%A5QQ%E3%80%81%E5%BE%AE%E4%BF%A1%E3%80%81%E5%BE%AE%E5%8D%9A%E7%AD%89%E4%B8%89%E6%96%B9%E7%99%BB%E5%BD%95/nan.png">
+<meta property="og:image" content="http://obsessed.top/2019/04/22/%E7%94%A8%E6%88%B7%E7%99%BB%E5%BD%95%E5%AF%B9%E6%8E%A5QQ%E3%80%81%E5%BE%AE%E4%BF%A1%E3%80%81%E5%BE%AE%E5%8D%9A%E7%AD%89%E4%B8%89%E6%96%B9%E7%99%BB%E5%BD%95/150061410519672646.png">
+<meta property="og:image" content="http://obsessed.top/2019/04/22/%E7%94%A8%E6%88%B7%E7%99%BB%E5%BD%95%E5%AF%B9%E6%8E%A5QQ%E3%80%81%E5%BE%AE%E4%BF%A1%E3%80%81%E5%BE%AE%E5%8D%9A%E7%AD%89%E4%B8%89%E6%96%B9%E7%99%BB%E5%BD%95/150061415069006935.png">
+<meta property="article:published_time" content="2019-04-22T13:43:14.000Z">
+<meta property="article:modified_time" content="2020-04-22T07:19:33.553Z">
+<meta property="article:author" content="Ares">
+<meta property="article:tag" content="Web">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://obsessed.top/2019/04/22/%E7%94%A8%E6%88%B7%E7%99%BB%E5%BD%95%E5%AF%B9%E6%8E%A5QQ%E3%80%81%E5%BE%AE%E4%BF%A1%E3%80%81%E5%BE%AE%E5%8D%9A%E7%AD%89%E4%B8%89%E6%96%B9%E7%99%BB%E5%BD%95/nan.png">
+
+<link rel="canonical" href="http://obsessed.top/2019/04/22/%E7%94%A8%E6%88%B7%E7%99%BB%E5%BD%95%E5%AF%B9%E6%8E%A5QQ%E3%80%81%E5%BE%AE%E4%BF%A1%E3%80%81%E5%BE%AE%E5%8D%9A%E7%AD%89%E4%B8%89%E6%96%B9%E7%99%BB%E5%BD%95/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>用户登录对接QQ、微信、微博等三方登录 | Ares</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ares</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Above all, don't lose hope.</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://obsessed.top/2019/04/22/%E7%94%A8%E6%88%B7%E7%99%BB%E5%BD%95%E5%AF%B9%E6%8E%A5QQ%E3%80%81%E5%BE%AE%E4%BF%A1%E3%80%81%E5%BE%AE%E5%8D%9A%E7%AD%89%E4%B8%89%E6%96%B9%E7%99%BB%E5%BD%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/20160228201627_f5vax.png">
+      <meta itemprop="name" content="Ares">
+      <meta itemprop="description" content="最重要的是，别放弃希望">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ares">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          用户登录对接QQ、微信、微博等三方登录
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-04-22 21:43:14" itemprop="dateCreated datePublished" datetime="2019-04-22T21:43:14+08:00">2019-04-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-04-22 15:19:33" itemprop="dateModified" datetime="2020-04-22T15:19:33+08:00">2020-04-22</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Web/" itemprop="url" rel="index">
+                    <span itemprop="name">Web</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <html><head></head><body></body></html><html><head></head><body><h2 id="获取第三方账号登录授权"><a href="#获取第三方账号登录授权" class="headerlink" title="获取第三方账号登录授权"></a>获取第三方账号登录授权</h2><p><strong><img src="/2019/04/22/%E7%94%A8%E6%88%B7%E7%99%BB%E5%BD%95%E5%AF%B9%E6%8E%A5QQ%E3%80%81%E5%BE%AE%E4%BF%A1%E3%80%81%E5%BE%AE%E5%8D%9A%E7%AD%89%E4%B8%89%E6%96%B9%E7%99%BB%E5%BD%95/nan.png" class title="登录授权"></strong> </p>
+<p>申请第三方开发平台的账号</p>
+<p>三家开放平台的申请地址：</p>
+<table>
+<thead>
+<tr>
+<th>微博开放平台</th>
+<th><a href="http://open.weibo.com" target="_blank" rel="noopener">http://open.weibo.com</a></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>微信开放平台</td>
+<td><a href="https://open.weixin.qq.com" target="_blank" rel="noopener">https://open.weixin.qq.com</a></td>
+</tr>
+<tr>
+<td>QQ互联平台</td>
+<td><a href="https://connect.qq.com/" target="_blank" rel="noopener">https://connect.qq.com</a></td>
+</tr>
+</tbody></table>
+<h2 id="三方登录流程（以微博登录为例）"><a href="#三方登录流程（以微博登录为例）" class="headerlink" title="三方登录流程（以微博登录为例）"></a>三方登录流程（以微博登录为例）</h2><p>开发文档：<a href="https://open.weibo.com/wiki/%E6%8E%88%E6%9D%83%E6%9C%BA%E5%88%B6" target="_blank" rel="noopener">https://open.weibo.com/wiki/%E6%8E%88%E6%9D%83%E6%9C%BA%E5%88%B6</a> </p>
+<h3 id="1）前端获取认证code"><a href="#1）前端获取认证code" class="headerlink" title="1）前端获取认证code"></a>1）前端获取认证code</h3><figure class="highlight html"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1. 在Vue页面加载时动态发送请求获取微博授权url</span><br><span class="line">2. django收到请求的url后，通过微博应用ID(client_id)和回调地址(redirect_uri)动态生成授权url返回给Vue</span><br><span class="line">3. 当用户点击上面的url进行扫码，授权成功会跳转我们的回调界面并附加code参数</span><br><span class="line">4. Vue获取到微博返回的code后，会将code发送给django后端(上面的redirect_uri)</span><br></pre></td></tr></tbody></table></figure>
+
+<p>微博登录标识的地址如下： </p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://api.weibo.com/oauth2/authorize?client_id=YOUR_CLIENT_ID&response_type=code&redirect_uri=YOUR_REGISTERED_REDIRECT_URI</span><br></pre></td></tr></tbody></table></figure>
+
+<p>参数</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>必选</th>
+<th>类型及范围</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>client_id</td>
+<td>true</td>
+<td>string</td>
+<td>申请应用时分配的AppKey。</td>
+</tr>
+<tr>
+<td>redirect_uri</td>
+<td>true</td>
+<td>string</td>
+<td>授权回调地址，站外应用需与设置的回调地址一致，站内应用需填写canvas page的地址。</td>
+</tr>
+<tr>
+<td>response_type</td>
+<td>false</td>
+<td>string</td>
+<td>code</td>
+</tr>
+</tbody></table>
+<p> 返回值</p>
+<table>
+<thead>
+<tr>
+<th>返回值字段</th>
+<th>字段类型</th>
+<th>字段说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>code</td>
+<td>string</td>
+<td>用于第二步调用oauth2/access_token接口，获取授权后的access token。</td>
+</tr>
+<tr>
+<td>state</td>
+<td>string</td>
+<td>如果传递参数，会回传该参数。</td>
+</tr>
+</tbody></table>
+<h3 id="2）获取微博access-token"><a href="#2）获取微博access-token" class="headerlink" title="2）获取微博access_token"></a>2）获取微博access_token</h3><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">后端获取code后，结合client_id、client_secret、redirect_uri参数进行传递,获取微博access_token</span><br></pre></td></tr></tbody></table></figure>
+
+<p>请求地址：</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://api.weibo.com/oauth2/access_token?client_id=YOUR_CLIENT_ID&client_secret=YOUR_CLIENT_SECRET&grant_type=authorization_code&redirect_uri=YOUR_REGISTERED_REDIRECT_URI&code=CODE</span><br></pre></td></tr></tbody></table></figure>
+
+<p>请求方式：</p>
+<p>POST</p>
+<p>请求参数：</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>必选</th>
+<th>类型及范围</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>client_id</td>
+<td>true</td>
+<td>string</td>
+<td>申请应用时分配的AppKey。</td>
+</tr>
+<tr>
+<td>client_secret</td>
+<td>true</td>
+<td>string</td>
+<td>申请应用时分配的AppSecret。</td>
+</tr>
+<tr>
+<td>grant_type</td>
+<td>true</td>
+<td>string</td>
+<td>请求的类型，填写authorization_code</td>
+</tr>
+<tr>
+<td>code</td>
+<td>ture</td>
+<td>string</td>
+<td>调用authorize获得的code值。</td>
+</tr>
+<tr>
+<td>rediect_url</td>
+<td>ture</td>
+<td>string</td>
+<td>回调地址，需需与注册应用里的回调地址一致。</td>
+</tr>
+</tbody></table>
+<p>返回值</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">{</span><br><span class="line">    "access_token": "SlAV32hkKG",</span><br><span class="line">    "remind_in": 3600,</span><br><span class="line">    "expires_in": 3600,</span><br><span class="line">    "uid":1887188234</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<h3 id="3-获取微博用户基本信息并保存到数据库"><a href="#3-获取微博用户基本信息并保存到数据库" class="headerlink" title="3)获取微博用户基本信息并保存到数据库"></a>3)获取微博用户基本信息并保存到数据库</h3><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">使用获得的access_token调用获取用户基本信息的接口，获取用户第三方平台的基本信息</span><br><span class="line">用户基本信息保存到数据库，然后关联本地用户，然后将用户信息返回给前端</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="4）生成token给vue"><a href="#4）生成token给vue" class="headerlink" title="4）生成token给vue"></a>4）生成token给vue</h3><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">django后端借助微博认证成功后，可以使用JWT生成token，返回给Vue</span><br><span class="line">Vue将token存储到localStorage中，以便用户访问其他页面进行身份验证</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="5）也可以获取用户的全部信息"><a href="#5）也可以获取用户的全部信息" class="headerlink" title="5）也可以获取用户的全部信息"></a>5）也可以获取用户的全部信息</h3><p>获取用户信息API：</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://api.weibo.com/2/users/show.json</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p>请求参数:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>必选</th>
+<th>类型及范围</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>access_token</td>
+<td>true</td>
+<td>string</td>
+<td>采用OAuth授权方式为必填参数，OAuth授权后获得。</td>
+</tr>
+<tr>
+<td>uid</td>
+<td>false</td>
+<td>int64</td>
+<td>需要查询的用户ID。</td>
+</tr>
+<tr>
+<td>screen_name</td>
+<td>false</td>
+<td>string</td>
+<td>需要查询的用户昵称。</td>
+</tr>
+</tbody></table>
+<p> 参数uid与screen_name二者必选其一，且只能选其一；</p>
+<p>返回示例：</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">{</span><br><span class="line">  "id": 1404376560,</span><br><span class="line">    "screen_name": "zaku",</span><br><span class="line">    "name": "zaku",</span><br><span class="line">    "province": "11",</span><br><span class="line">    "city": "5",</span><br><span class="line">    "location": "北京 朝阳区",</span><br><span class="line">    "description": "人生五十年，乃如梦如幻；有生斯有死，壮士复何憾。",</span><br><span class="line">    "url": "http://blog.sina.com.cn/zaku",</span><br><span class="line">    "profile_image_url": "http://tp1.sinaimg.cn/1404376560/50/0/1",</span><br><span class="line">    "domain": "zaku",</span><br><span class="line">    "gender": "m",</span><br><span class="line">    "followers_count": 1204,</span><br><span class="line">    "friends_count": 447,</span><br><span class="line">    "statuses_count": 2908,</span><br><span class="line">    "favourites_count": 0,</span><br><span class="line">    "created_at": "Fri Aug 28 00:00:00 +0800 2009",</span><br><span class="line">    "following": false,</span><br><span class="line">    "allow_all_act_msg": false,</span><br><span class="line">    "geo_enabled": true,</span><br><span class="line">    "verified": false,</span><br><span class="line">    "status": {</span><br><span class="line">        "created_at": "Tue May 24 18:04:53 +0800 2011",</span><br><span class="line">        "id": 11142488790,</span><br><span class="line">        "text": "我的相机到了。",</span><br><span class="line">        "source": "<a href="http://weibo.com" target="_blank" rel="nofollow noopener">新浪微博</a>",</span><br><span class="line">        "favorited": false,</span><br><span class="line">        "truncated": false,</span><br><span class="line">        "in_reply_to_status_id": "",</span><br><span class="line">        "in_reply_to_user_id": "",</span><br><span class="line">        "in_reply_to_screen_name": "",</span><br><span class="line">        "geo": null,</span><br><span class="line">        "mid": "5610221544300749636",</span><br><span class="line">        "annotations": [],</span><br><span class="line">        "reposts_count": 5,</span><br><span class="line">        "comments_count": 8</span><br><span class="line">    },</span><br><span class="line">    "allow_all_comment": true,</span><br><span class="line">    "avatar_large": "http://tp1.sinaimg.cn/1404376560/180/0/1",</span><br><span class="line">    "verified_reason": "",</span><br><span class="line">    "follow_me": false,</span><br><span class="line">    "online_status": 0,</span><br><span class="line">    "bi_followers_count": 215</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">返回值：</span><br></pre></td></tr></tbody></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>返回值字段</th>
+<th>字段类型</th>
+<th>字段说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>int64</td>
+<td>用户UID</td>
+</tr>
+<tr>
+<td>idstr</td>
+<td>string</td>
+<td>字符串型的用户UID</td>
+</tr>
+<tr>
+<td>screen_name</td>
+<td>string</td>
+<td>用户昵称</td>
+</tr>
+<tr>
+<td>name</td>
+<td>string</td>
+<td>友好显示名称</td>
+</tr>
+<tr>
+<td>province</td>
+<td>int</td>
+<td>用户所在省级ID</td>
+</tr>
+<tr>
+<td>city</td>
+<td>int</td>
+<td>用户所在城市ID</td>
+</tr>
+<tr>
+<td>location</td>
+<td>string</td>
+<td>用户所在地</td>
+</tr>
+<tr>
+<td>description</td>
+<td>string</td>
+<td>用户个人描述</td>
+</tr>
+<tr>
+<td>url</td>
+<td>string</td>
+<td>用户博客地址</td>
+</tr>
+<tr>
+<td>profile_image_url</td>
+<td>string</td>
+<td>用户头像地址（中图），50×50像素</td>
+</tr>
+<tr>
+<td>profile_url</td>
+<td>string</td>
+<td>用户的微博统一URL地址</td>
+</tr>
+<tr>
+<td>domain</td>
+<td>string</td>
+<td>用户的个性化域名</td>
+</tr>
+<tr>
+<td>weihao</td>
+<td>string</td>
+<td>用户的微号</td>
+</tr>
+<tr>
+<td>gender</td>
+<td>string</td>
+<td>性别，m：男、f：女、n：未知</td>
+</tr>
+<tr>
+<td>followers_count</td>
+<td>int</td>
+<td>粉丝数</td>
+</tr>
+<tr>
+<td>friends_count</td>
+<td>int</td>
+<td>关注数</td>
+</tr>
+<tr>
+<td>statuses_count</td>
+<td>int</td>
+<td>微博数</td>
+</tr>
+<tr>
+<td>favourites_count</td>
+<td>int</td>
+<td>收藏数</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>string</td>
+<td>用户创建（注册）时间</td>
+</tr>
+<tr>
+<td>following</td>
+<td>boolean</td>
+<td>暂未支持</td>
+</tr>
+<tr>
+<td>allow_all_act_msg</td>
+<td>boolean</td>
+<td>是否允许所有人给我发私信，true：是，false：否</td>
+</tr>
+<tr>
+<td>geo_enabled</td>
+<td>boolean</td>
+<td>是否允许标识用户的地理位置，true：是，false：否</td>
+</tr>
+<tr>
+<td>verified</td>
+<td>boolean</td>
+<td>是否是微博认证用户，即加V用户，true：是，false：否</td>
+</tr>
+<tr>
+<td>verified_type</td>
+<td>int</td>
+<td>暂未支持</td>
+</tr>
+<tr>
+<td>remark</td>
+<td>string</td>
+<td>用户备注信息，只有在查询用户关系时才返回此字段</td>
+</tr>
+<tr>
+<td>status</td>
+<td>object</td>
+<td>用户的最近一条微博信息字段 <a href="http://open.weibo.com/wiki/%E5%B8%B8%E8%A7%81%E8%BF%94%E5%9B%9E%E5%AF%B9%E8%B1%A1%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84#.E5.BE.AE.E5.8D.9A.EF.BC.88status.EF.BC.89" target="_blank" rel="noopener">详细</a></td>
+</tr>
+<tr>
+<td>allow_all_comment</td>
+<td>boolean</td>
+<td>是否允许所有人对我的微博进行评论，true：是，false：否</td>
+</tr>
+<tr>
+<td>avatar_large</td>
+<td>string</td>
+<td>用户头像地址（大图），180×180像素</td>
+</tr>
+<tr>
+<td>avatar_hd</td>
+<td>string</td>
+<td>用户头像地址（高清），高清头像原图</td>
+</tr>
+<tr>
+<td>verified_reason</td>
+<td>string</td>
+<td>认证原因</td>
+</tr>
+<tr>
+<td>follow_me</td>
+<td>boolean</td>
+<td>该用户是否关注当前登录用户，true：是，false：否</td>
+</tr>
+<tr>
+<td>online_status</td>
+<td>int</td>
+<td>用户的在线状态，0：不在线、1：在线</td>
+</tr>
+<tr>
+<td>bi_followers_count</td>
+<td>int</td>
+<td>用户的互粉数</td>
+</tr>
+<tr>
+<td>lang</td>
+<td>string</td>
+<td>用户当前的语言版本，zh-cn：简体中文，zh-tw：繁体中文，en：英语</td>
+</tr>
+</tbody></table>
+<h2 id="其实像微信登陆、QQ登陆的原理都一样，都是："><a href="#其实像微信登陆、QQ登陆的原理都一样，都是：" class="headerlink" title="其实像微信登陆、QQ登陆的原理都一样，都是："></a>其实像微信登陆、QQ登陆的原理都一样，都是：</h2><p>1、获取用户授权，取得code</p>
+<p>2、将code发送到授权服务器获取Access Token</p>
+<p>3、通过Access Token调取API接口获取用户信息</p>
+<h2 id="第三方账号绑定流程"><a href="#第三方账号绑定流程" class="headerlink" title="第三方账号绑定流程"></a>第三方账号绑定流程</h2><h3 id="a-未登录"><a href="#a-未登录" class="headerlink" title="a)    未登录"></a>a)    未登录</h3><p><strong><img src="/2019/04/22/%E7%94%A8%E6%88%B7%E7%99%BB%E5%BD%95%E5%AF%B9%E6%8E%A5QQ%E3%80%81%E5%BE%AE%E4%BF%A1%E3%80%81%E5%BE%AE%E5%8D%9A%E7%AD%89%E4%B8%89%E6%96%B9%E7%99%BB%E5%BD%95/150061410519672646.png" class title="三方登录流程"></strong> </p>
+<p>用户在登录界面点击第三方账号，授权通过后，我们获得用户第三方账号的OpenID，由此判断用户的第三方账号之前是否绑定过，如果绑定过则直接登录成功。</p>
+<p>如果没有绑定过，则跳到账号绑定页面。账号绑定页面需要分成已有账号直接绑定，和没有账号，新注册账号进行绑定两种情况。</p>
+<p>当用户已有账号时，通过输入账号密码校验身份，校验通过后即可绑定成功/登录成功。</p>
+<p>当用户没有账号时，用户可通过注册新账号，注册成功后即可绑定成功/登录成功。</p>
+<h3 id="b-登录状态"><a href="#b-登录状态" class="headerlink" title="b)    登录状态"></a>b)    登录状态</h3><p>在个人账号中心里提供绑定管理的功能和界面，在用户已经登录的情况下，可以直接绑定第三方账号，只要获得授权通过，即可绑定成功。 </p>
+<h3 id="c-解绑流程"><a href="#c-解绑流程" class="headerlink" title="c)    解绑流程"></a>c)    解绑流程</h3><p><strong><img src="/2019/04/22/%E7%94%A8%E6%88%B7%E7%99%BB%E5%BD%95%E5%AF%B9%E6%8E%A5QQ%E3%80%81%E5%BE%AE%E4%BF%A1%E3%80%81%E5%BE%AE%E5%8D%9A%E7%AD%89%E4%B8%89%E6%96%B9%E7%99%BB%E5%BD%95/150061415069006935.png" class title="解绑流程"></strong> </p>
+<p>在个人账号中心>绑定管理中，可以对已经绑定的第三方账号进行解绑操作。在这里需要注意，由于用户长期使用第三方账号登录，实际上是由第三方账号承担了提交账号和保护账号安全的工作，因此在解绑第三方账号时，我们需要提醒用户，解绑以后只能通过本平台账号密码方式来登录。最好是提示用户记住当前账号 </p>
+</body></html>
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Ares
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://obsessed.top/2019/04/22/%E7%94%A8%E6%88%B7%E7%99%BB%E5%BD%95%E5%AF%B9%E6%8E%A5QQ%E3%80%81%E5%BE%AE%E4%BF%A1%E3%80%81%E5%BE%AE%E5%8D%9A%E7%AD%89%E4%B8%89%E6%96%B9%E7%99%BB%E5%BD%95/" title="用户登录对接QQ、微信、微博等三方登录">http://obsessed.top/2019/04/22/%E7%94%A8%E6%88%B7%E7%99%BB%E5%BD%95%E5%AF%B9%E6%8E%A5QQ%E3%80%81%E5%BE%AE%E4%BF%A1%E3%80%81%E5%BE%AE%E5%8D%9A%E7%AD%89%E4%B8%89%E6%96%B9%E7%99%BB%E5%BD%95/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/null" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Web/" rel="tag"># Web</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/04/22/python%E5%AF%B9%E6%8E%A5%E6%94%AF%E4%BB%98%E5%AE%9D/" rel="prev" title="python对接支付宝">
+      <i class="fa fa-chevron-left"></i> python对接支付宝
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/05/01/Nginx%E6%98%AF%E4%BB%80%E4%B9%88/" rel="next" title="nginx是什么?">
+      nginx是什么? <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#获取第三方账号登录授权"><span class="nav-text">获取第三方账号登录授权</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三方登录流程（以微博登录为例）"><span class="nav-text">三方登录流程（以微博登录为例）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1）前端获取认证code"><span class="nav-text">1）前端获取认证code</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2）获取微博access-token"><span class="nav-text">2）获取微博access_token</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-获取微博用户基本信息并保存到数据库"><span class="nav-text">3)获取微博用户基本信息并保存到数据库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4）生成token给vue"><span class="nav-text">4）生成token给vue</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5）也可以获取用户的全部信息"><span class="nav-text">5）也可以获取用户的全部信息</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其实像微信登陆、QQ登陆的原理都一样，都是："><span class="nav-text">其实像微信登陆、QQ登陆的原理都一样，都是：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第三方账号绑定流程"><span class="nav-text">第三方账号绑定流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#a-未登录"><span class="nav-text">a)    未登录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#b-登录状态"><span class="nav-text">b)    登录状态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#c-解绑流程"><span class="nav-text">c)    解绑流程</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Ares"
+      src="/images/20160228201627_f5vax.png">
+  <p class="site-author-name" itemprop="name">Ares</p>
+  <div class="site-description" itemprop="description">最重要的是，别放弃希望</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">40</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/Aresea" title="GitHub → https:&#x2F;&#x2F;gitee.com&#x2F;Aresea" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/2441236144@qq.com" title="E-Mail → 2441236144@qq.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/null" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ares</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <link rel="alternate" href="/atom.xml" title="Ares" type="application/atom+xml">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://obsessed.top').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.5.0',
+    exturl: false,
+    sidebar: {"position":"left","Manual define the sidebar width. If commented, will be default for":null,"Muse | Mist":320,"Pisces | Gemini":240,"width":200,"display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="docker-compose简介Docker-Compose项目是Docker官方的开源项目，负责实现对Docker容器集群的快速编排。 Docker-Compose将所管理的容器分为三层，分别是工程（project），服务（service）以及容器（container）。 Docker-Compose运行目录下的所有文件（docker-compose.yml，extends文件或环境变量文件等）">
+<meta property="og:type" content="article">
+<meta property="og:title" content="docker-compose">
+<meta property="og:url" content="http://obsessed.top/2020/01/05/docker-compose/index.html">
+<meta property="og:site_name" content="Ares">
+<meta property="og:description" content="docker-compose简介Docker-Compose项目是Docker官方的开源项目，负责实现对Docker容器集群的快速编排。 Docker-Compose将所管理的容器分为三层，分别是工程（project），服务（service）以及容器（container）。 Docker-Compose运行目录下的所有文件（docker-compose.yml，extends文件或环境变量文件等）">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-01-05T06:18:36.000Z">
+<meta property="article:modified_time" content="2020-04-22T08:41:23.296Z">
+<meta property="article:author" content="Ares">
+<meta property="article:tag" content="docker">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://obsessed.top/2020/01/05/docker-compose/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>docker-compose | Ares</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ares</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Above all, don't lose hope.</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://obsessed.top/2020/01/05/docker-compose/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/20160228201627_f5vax.png">
+      <meta itemprop="name" content="Ares">
+      <meta itemprop="description" content="最重要的是，别放弃希望">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ares">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          docker-compose
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-01-05 14:18:36" itemprop="dateCreated datePublished" datetime="2020-01-05T14:18:36+08:00">2020-01-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-04-22 16:41:23" itemprop="dateModified" datetime="2020-04-22T16:41:23+08:00">2020-04-22</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <html><head></head><body></body></html><html><head></head><body><h2 id="docker-compose简介"><a href="#docker-compose简介" class="headerlink" title="docker-compose简介"></a>docker-compose简介</h2><p>Docker-Compose项目是Docker官方的开源项目，负责实现对Docker容器集群的快速编排。</p>
+<p>Docker-Compose将所管理的容器分为三层，分别是工程（project），服务（service）以及容器（container）。</p>
+<p>Docker-Compose运行目录下的所有文件（docker-compose.yml，extends文件或环境变量文件等）组成一个工程，若无特殊指定工程名即为当前目录名。一个工程当中可包含多个服务，每个服务中定义了容器运行的镜像，参数，依赖。一个服务当中可包括多个容器实例，Docker-Compose并没有解决负载均衡的问题，因此需要借助其它工具实现服务发现及负载均衡。</p>
+<p>Docker-Compose的工程配置文件默认为docker-compose.yml，可通过环境变量COMPOSE_FILE或-f参数自定义配置文件，其定义了多个有依赖关系的服务及每个服务运行的容器。</p>
+<p>使用一个Dockerfile模板文件，可以让用户很方便的定义一个单独的应用容器。在工作中，经常会碰到需要多个容器相互配合来完成某项任务的情况。例如要实现一个Web项目，除了Web服务容器本身，往往还需要再加上后端的数据库服务容器，甚至还包括负载均衡容器等。</p>
+<p>Compose允许用户通过一个单独的docker-compose.yml模板文件（YAML 格式）来定义一组相关联的应用容器为一个项目（project）。</p>
+<p>Docker-Compose项目由Python编写，调用Docker服务提供的API来对容器进行管理。因此，只要所操作的平台支持Docker API，就可以在其上利用Compose来进行编排管理。</p>
+<p><strong>总结：</strong></p>
+<ul>
+<li>Compose是一个定义和管理多容器的工具，使用Python语言编写</li>
+<li>使用Compose配置文件描述多个容器应用的架构，比如使用什么镜像、数据卷、网络、映射端口等</li>
+<li>然后一条命令管理所有服务，比如启动、停止、重启等</li>
+</ul>
+<h2 id="docker-compose作用"><a href="#docker-compose作用" class="headerlink" title="docker compose作用"></a>docker compose作用</h2><ul>
+<li>使用 compose，我们可以通过 YAML 文件声明式的定义应用程序的各个服务，并由单个命令完成应用的创建和启动。 </li>
+</ul>
+<h2 id="ocker与docker-compose对比"><a href="#ocker与docker-compose对比" class="headerlink" title="ocker与docker-compose对比"></a>ocker与docker-compose对比</h2><ul>
+<li><p>docker是自动化构建镜像，并启动镜像。 docker compose是自动化编排容器。</p>
+</li>
+<li><p>docker是基于Dockerfile得到images,启动的时候是一个单独的container</p>
+</li>
+<li><p>docker-compose是基于docker-compose.yml,通常启动的时候是一个服务，这个服务通常由多个container共同组成，并且端口，配置等由docker-compose定义好。</p>
+</li>
+<li><p>两者都需要安装，但是要使用docker-compose，必须已经安装docker</p>
+</li>
+</ul>
+<h2 id="安装docker-compose"><a href="#安装docker-compose" class="headerlink" title="安装docker-compose"></a>安装docker-compose</h2><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@linux-node4 ~]<span class="comment"># curl -L https://github.com/docker/compose/releases/download/1.15.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose</span></span><br><span class="line">[root@linux-node4 ~]<span class="comment"># chmod +x /usr/local/bin/docker-compose</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">or</span></span><br><span class="line"></span><br><span class="line">pip install docker-compose</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<h2 id="docker-compose配置文件解析"><a href="#docker-compose配置文件解析" class="headerlink" title="docker-compose配置文件解析"></a>docker-compose配置文件解析</h2><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line">version: <span class="string">'3'</span>                       <span class="comment"># cocker compose版本号</span></span><br><span class="line"></span><br><span class="line">services:                          <span class="comment"># 顶级配置文件(名称自己写)</span></span><br><span class="line">  mysql:                           <span class="comment"># 服务名: 容器建通信、管理容器（mysql这个容器取的名字，也是自己写的）</span></span><br><span class="line">    image: mysql:<span class="number">5.7</span>               <span class="comment"># 引入官方mysql镜像（可以大家自己的hub仓库，中大型公司都会自己搭建docker hub仓库）</span></span><br><span class="line">    volumes:</span><br><span class="line">      - ./mysql:/var/lib/mysql         <span class="comment"># 把当前文件夹下的 ./mysql文件夹挂载到docker容器 /var/lib/mysql 路径下</span></span><br><span class="line">    expose:</span><br><span class="line">      - <span class="string">"3306"</span>                        <span class="comment"># 将当前容器的端口3306端口暴露给link到本容器的容器</span></span><br><span class="line">    restart: always                   <span class="comment"># 宿主机重启自动拉起这个docker容器</span></span><br><span class="line">    environment:</span><br><span class="line">      - MYSQL_ROOT_PASSWORD=root             <span class="comment"># mysql服务器root密码root</span></span><br><span class="line">      - MYSQL_DATABASE=djangodocker          <span class="comment"># 创建数据库 djangodocker</span></span><br><span class="line">      - MYSQL_USER=django                    <span class="comment"># 创建一个用户 django</span></span><br><span class="line">      - MYSQL_PASSWORD=django                <span class="comment"># 用户密码为django</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">- 单独部署一个nginx</span><br><span class="line">  - 安装nginx服务</span><br><span class="line">  - 配置nginx.conf</span><br><span class="line">  - 配置 /etc/nginx/conf.d/*.conf</span><br><span class="line">  - 访问端口</span><br><span class="line"></span><br><span class="line">  nginx:</span><br><span class="line">    image: nginx:alpine</span><br><span class="line">    volumes:</span><br><span class="line">      - ./nginx/nginx.conf:/etc/nginx/nginx.conf</span><br><span class="line">      - ./nginx/conf:/etc/nginx/conf.d</span><br><span class="line">      - ./web/staticfiles:/django_static</span><br><span class="line">    ports:</span><br><span class="line">      - <span class="string">"80:80"</span>                             <span class="comment"># 绑定容器的80端口到主机的80端口</span></span><br><span class="line">    depends_on:</span><br><span class="line">      - web                                 <span class="comment"># 必须先启动web容器然才能启动nginx容器</span></span><br><span class="line"></span><br><span class="line">  redis:</span><br><span class="line">    image: redis:alpine</span><br><span class="line">    expose:</span><br><span class="line">      - <span class="string">"6379"</span></span><br><span class="line">    restart: always</span><br><span class="line"></span><br><span class="line">  web:</span><br><span class="line">    build: .</span><br><span class="line">    <span class="comment"># command: python manage.py runserver 0:8000</span></span><br><span class="line">    <span class="comment"># ports:</span></span><br><span class="line">    <span class="comment">#   - "8000:8000"</span></span><br><span class="line">    command: uwsgi --ini uwsgi.ini             <span class="comment"># 启动uwsgi命令</span></span><br><span class="line">    working_dir: /code/web                     <span class="comment"># 项目工作路径</span></span><br><span class="line">    volumes:</span><br><span class="line">      - .:/code                                <span class="comment"># 将当前文件夹下所有文件挂载到容器的 /code 文件夹</span></span><br><span class="line">    expose:</span><br><span class="line">      - <span class="string">"8000"</span></span><br><span class="line">    depends_on:                                <span class="comment"># 必须mysql和reids容器启动后才能启动web容器</span></span><br><span class="line">      - mysql</span><br><span class="line">      - redis</span><br><span class="line"></span><br><span class="line">  celery:</span><br><span class="line">    build: .</span><br><span class="line">    command: celery -A web worker -l info</span><br><span class="line">    working_dir: /code/web</span><br><span class="line">    volumes:</span><br><span class="line">      - .:/code</span><br><span class="line">    depends_on:</span><br><span class="line">      - mysql</span><br><span class="line">      - redis</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+
+
+
+
+<h2 id="Docker-Compose常用命令"><a href="#Docker-Compose常用命令" class="headerlink" title="Docker-Compose常用命令"></a>Docker-Compose常用命令</h2><p> <strong>1、Docker-Compose命令格式</strong> </p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">docker-compose [-f <arg>...] [options] [COMMAND] [ARGS...]</span><br><span class="line">命令选项如下：</span><br><span class="line">-f，–file FILE指定Compose模板文件，默认为docker-compose.yml，可以多次指定。</span><br><span class="line">-p，–project-name NAME指定项目名称，默认将使用所在目录名称作为项目名。</span><br><span class="line">-x-network-driver 使用Docker的可拔插网络后端特性（需要Docker <span class="number">1.9</span>+版本）</span><br><span class="line">-x-network-driver DRIVER指定网络后端的驱动，默认为bridge（需要Docker <span class="number">1.9</span>+版本）</span><br><span class="line">-verbose输出更多调试信息</span><br><span class="line">-v，–version打印版本并退出</span><br></pre></td></tr></tbody></table></figure>
+
+<p><strong>2、docker-compose up</strong> </p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">docker-compose up [options] [--scale SERVICE=NUM...] [SERVICE...]</span><br><span class="line">选项包括：</span><br><span class="line">-d 在后台运行服务容器</span><br><span class="line">–no-color 不使用颜色来区分不同的服务的控制输出</span><br><span class="line">–no-deps 不启动服务所链接的容器</span><br><span class="line">–force-recreate 强制重新创建容器，不能与–no-recreate同时使用</span><br><span class="line">–no-recreate 如果容器已经存在，则不重新创建，不能与–force-recreate同时使用</span><br><span class="line">–no-build 不自动构建缺失的服务镜像</span><br><span class="line">–build 在启动容器前构建服务镜像</span><br><span class="line">–abort-on-container-exit 停止所有容器，如果任何一个容器被停止，不能与-d同时使用</span><br><span class="line">-t, –timeout TIMEOUT 停止容器时候的超时（默认为<span class="number">10</span>秒）</span><br><span class="line">–remove-orphans 删除服务中没有在compose文件中定义的容器</span><br><span class="line">–scale SERVICE=NUM 设置服务运行容器的个数，将覆盖在compose中通过scale指定的参数</span><br><span class="line">docker-compose up	启动所有服务</span><br><span class="line">docker-compose up -d	在后台所有启动服务</span><br><span class="line">-f 指定使用的Compose模板文件，默认为docker-compose.yml，可以多次指定。</span><br><span class="line">docker-compose -f docker-compose.yml up -d</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p><strong>3、docker-compose</strong></p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">docker-compose ps 			<span class="comment">#列出项目中目前的所有容器</span></span><br><span class="line"></span><br><span class="line">docker-compose stop			<span class="comment">#停止正在运行的容器，可以通过docker-compose start 再次启动</span></span><br><span class="line"></span><br><span class="line">docker-compose -h			<span class="comment">#查看帮助</span></span><br><span class="line"></span><br><span class="line">docker-compose down			<span class="comment">#停用移除所有容器以及网络相关</span></span><br><span class="line"></span><br><span class="line">docker-compose logs			<span class="comment">#查看服务容器的输出</span></span><br><span class="line"></span><br><span class="line">docker-compose build			<span class="comment">#构建（重新构建）项目中的服务容器</span></span><br><span class="line"></span><br><span class="line">docker-compose pull			<span class="comment">#拉取服务依赖的镜像</span></span><br><span class="line"></span><br><span class="line">docker-compose restart			<span class="comment">#重启项目中的服务</span></span><br><span class="line"></span><br><span class="line">docker-compose rm			<span class="comment">#删除所有（停止状态的）服务容器。推荐先执行docker-compose stop命令来停止容器</span></span><br><span class="line"></span><br><span class="line">docker-compose rm -f			<span class="comment">#强制直接删除，包括非停止状态的容器</span></span><br><span class="line"></span><br><span class="line">docker-compose rm -v			<span class="comment">#删除容器所挂载的数据卷</span></span><br><span class="line"></span><br><span class="line">docker-compose start			<span class="comment">#启动已经存在的服务容器</span></span><br><span class="line"></span><br><span class="line">docker-compose pause			<span class="comment">#暂停一个服务容器</span></span><br><span class="line"></span><br><span class="line">docker-compose stop			<span class="comment">#显示各个容器运行的进程情况</span></span><br><span class="line"></span><br><span class="line">docker-compose unpause			<span class="comment">#恢复处于暂停状态中的服务</span></span><br><span class="line"></span><br><span class="line">docker-compose version			<span class="comment">#打印版本信息</span></span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<figure class="highlight"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">原文链接：https://blog.csdn.net/hanguofei/article/details/103016549</span><br></pre></td></tr></tbody></table></figure>
+
+</body></html>
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Ares
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://obsessed.top/2020/01/05/docker-compose/" title="docker-compose">http://obsessed.top/2020/01/05/docker-compose/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/null" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/docker/" rel="tag"># docker</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/01/02/docker%E5%91%BD%E4%BB%A4/" rel="prev" title="docker命令">
+      <i class="fa fa-chevron-left"></i> docker命令
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/01/08/Dockerfile/" rel="next" title="Dockerfile">
+      Dockerfile <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#docker-compose简介"><span class="nav-text">docker-compose简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#docker-compose作用"><span class="nav-text">docker compose作用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ocker与docker-compose对比"><span class="nav-text">ocker与docker-compose对比</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装docker-compose"><span class="nav-text">安装docker-compose</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#docker-compose配置文件解析"><span class="nav-text">docker-compose配置文件解析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Docker-Compose常用命令"><span class="nav-text">Docker-Compose常用命令</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Ares"
+      src="/images/20160228201627_f5vax.png">
+  <p class="site-author-name" itemprop="name">Ares</p>
+  <div class="site-description" itemprop="description">最重要的是，别放弃希望</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">40</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/Aresea" title="GitHub → https:&#x2F;&#x2F;gitee.com&#x2F;Aresea" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/2441236144@qq.com" title="E-Mail → 2441236144@qq.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/null" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ares</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

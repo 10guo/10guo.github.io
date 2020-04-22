@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <link rel="alternate" href="/atom.xml" title="Ares" type="application/atom+xml">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://obsessed.top').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.5.0',
+    exturl: false,
+    sidebar: {"position":"left","Manual define the sidebar width. If commented, will be default for":null,"Muse | Mist":320,"Pisces | Gemini":240,"width":200,"display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="导入机制探究Python 提供了 import 语句来实现类库的引用，当我们执行一行 from package import module as mymodule 命令时，Python解释器会查找package 这个包的module模块，并将该模块作为 mymodule 引入到当前的工作空间。所以import语句主要是做了二件事：   查找相应的module 加载module到local name">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python导入机制">
+<meta property="og:url" content="http://obsessed.top/2018/04/02/Python%E5%AF%BC%E5%85%A5%E6%9C%BA%E5%88%B6/index.html">
+<meta property="og:site_name" content="Ares">
+<meta property="og:description" content="导入机制探究Python 提供了 import 语句来实现类库的引用，当我们执行一行 from package import module as mymodule 命令时，Python解释器会查找package 这个包的module模块，并将该模块作为 mymodule 引入到当前的工作空间。所以import语句主要是做了二件事：   查找相应的module 加载module到local name">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-04-02T05:51:08.000Z">
+<meta property="article:modified_time" content="2020-04-22T06:53:50.207Z">
+<meta property="article:author" content="Ares">
+<meta property="article:tag" content="Python">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://obsessed.top/2018/04/02/Python%E5%AF%BC%E5%85%A5%E6%9C%BA%E5%88%B6/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Python导入机制 | Ares</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ares</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Above all, don't lose hope.</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://obsessed.top/2018/04/02/Python%E5%AF%BC%E5%85%A5%E6%9C%BA%E5%88%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/20160228201627_f5vax.png">
+      <meta itemprop="name" content="Ares">
+      <meta itemprop="description" content="最重要的是，别放弃希望">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ares">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Python导入机制
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-04-02 13:51:08" itemprop="dateCreated datePublished" datetime="2018-04-02T13:51:08+08:00">2018-04-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-04-22 14:53:50" itemprop="dateModified" datetime="2020-04-22T14:53:50+08:00">2020-04-22</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Python/" itemprop="url" rel="index">
+                    <span itemprop="name">Python</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <html><head></head><body></body></html><html><head></head><body><h2 id="导入机制探究"><a href="#导入机制探究" class="headerlink" title="导入机制探究"></a>导入机制探究</h2><p>Python 提供了 import 语句来实现类库的引用，当我们执行一行 <code>from package import module as mymodule</code> 命令时，Python解释器会查找package 这个包的module模块，并将该模块作为 mymodule 引入到当前的工作空间。所以import语句主要是做了二件事： </p>
+<ol>
+<li>查找相应的module</li>
+<li>加载module到local namespace</li>
+</ol>
+<p>在import的第一个阶段，主要是完成了查找要引入模块的功能。查找时首先检查 sys.modules (保存了之前import的类库的缓存），如果module没有被找到，则按照下面的搜索路径查找模块： </p>
+<ol>
+<li>.py 所在文件的目录</li>
+<li>PYTHONPATH 中的目录</li>
+<li>python安装目录，UNIX下，默认路径一般为/usr/local/lib/python/</li>
+<li>3.x 中.pth 文件内容、</li>
+</ol>
+<p>其大致过程可以简化为： </p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">import</span><span class="params">(module_name)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> module_name <span class="keyword">in</span> sys.modules:</span><br><span class="line">        <span class="keyword">return</span> sys.modules[module_name]</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        module_path = find(module_name)</span><br><span class="line"> </span><br><span class="line">        <span class="keyword">if</span> module_path:</span><br><span class="line">            module = load(module_path)</span><br><span class="line">            sys.modules[module_name] = module</span><br><span class="line">            <span class="keyword">return</span> module</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">raise</span> ImportError</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="模块导入错误"><a href="#模块导入错误" class="headerlink" title="模块导入错误"></a>模块导入错误</h2><p>在导入模块方面，可能会出现下面的情况： </p>
+<ul>
+<li>循环导入（circular imports）</li>
+<li>覆盖导入（Shadowed imports）</li>
+</ul>
+<h3 id="循环导入"><a href="#循环导入" class="headerlink" title="循环导入"></a>循环导入</h3><p>如果你创建两个模块，二者相互导入对方，那么有可能会出现<code>循环导入</code>。例如创建 a.py如下：</p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> b</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">a_test</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">print</span> <span class="string">"in a_test"</span></span><br><span class="line">    <span class="keyword">print</span> b.x</span><br><span class="line"> </span><br><span class="line">a_test()</span><br></pre></td></tr></tbody></table></figure>
+
+<p>然后在同个文件夹中创建另一个模块，将其命名为b.py </p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> a</span><br><span class="line">x = <span class="number">1</span></span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">b_test</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">print</span> <span class="string">'In test_b'</span></span><br><span class="line">    a.a_test()</span><br><span class="line"> </span><br><span class="line">b_test()</span><br></pre></td></tr></tbody></table></figure>
+
+<p>当我们导入 a 模块时，会引发AttributeError，这是因为导入a时，在开始时导入 b 模块，而 b 模块调用 b_test 时需要a的 a_test，这时候 a 模块的 a_test 并没有成功加载。</p>
+<p>注意不是所有的互相导入都会引发 AttributeError，<a href="https://docs.python.org/2/faq/programming.html#what-are-the-best-practices-for-using-import-in-a-module" target="_blank" rel="noopener">官方文档</a>这样说：</p>
+<blockquote>
+<p>Circular imports are fine where both modules use the “import ” form of import. They fail when the 2nd module wants to grab a name out of the first (“from module import name”) and the import is at the top level. That’s because names in the 1st are not yet available, because the first module is busy importing the 2nd.</p>
+</blockquote>
+<p>继续以上面的两个模块为例，如果将 a.py 和 b.py 改为下面代码，就不会出现循环导入的错误：</p>
+<p>a.py</p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">a_test</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">import</span> b</span><br><span class="line">    <span class="keyword">print</span> <span class="string">"in a_test"</span></span><br><span class="line">    <span class="keyword">print</span> b.x</span><br><span class="line">a_test()</span><br></pre></td></tr></tbody></table></figure>
+
+<p>b.py</p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">x = <span class="number">1</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">b_test</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">import</span> a</span><br><span class="line">    <span class="keyword">print</span> <span class="string">'In test_b'</span></span><br><span class="line">    a.a_test()</span><br><span class="line">b_test()</span><br></pre></td></tr></tbody></table></figure>
+
+<p>这样的话，先导入 a，再导入 b 的结果如下：</p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">>>> </span><span class="keyword">import</span> a</span><br><span class="line">In test_b</span><br><span class="line"><span class="keyword">in</span> a_test</span><br><span class="line"><span class="number">1</span></span><br><span class="line"><span class="keyword">in</span> a_test</span><br><span class="line"><span class="number">1</span></span><br><span class="line"><span class="meta">>>> </span><span class="keyword">import</span> b</span><br><span class="line">>>></span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="覆盖导入"><a href="#覆盖导入" class="headerlink" title="覆盖导入"></a>覆盖导入</h3><p>当创建的模块与标准库中的模块同名时，如果导入这个模块，就会出现覆盖导入。举个例子，创建一个名叫math.py的文件，在其中写入如下代码：</p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> math</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">square_root</span><span class="params">(number)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> math.sqrt(number)</span><br></pre></td></tr></tbody></table></figure>
+
+<p>运行这个文件，你会得到以下信息（traceback）：AttributeError: module ‘math’ has no attribute ‘sqrt’。这是因为运行这个文件的时候，Python解释器首先在当前运行脚本所处的的文件夹中查找名叫math的模块。在这个例子中，解释器找到了我们正在执行的模块，试图导入它。但是我们的模块中并没有叫sqrt的函数或属性，所以就抛出了AttributeError。</p>
+<h2 id="模块与包"><a href="#模块与包" class="headerlink" title="模块与包"></a>模块与包</h2><p>在了解 import 之前，有两个概念必须提一下： </p>
+<ul>
+<li>模块: 一个 <code>.py</code> 文件就是一个模块（module）</li>
+<li>包: <code>__init__.py</code> 文件所在目录就是包（package）</li>
+</ul>
+<p>当然，这只是极简版的概念。实际上包是一种特殊的模块，而任何定义了 <code>__path__</code> 属性的模块都被当做包。只不过，咱们日常使用中并不需要知道这些。 </p>
+<h2 id="两种形式的-import"><a href="#两种形式的-import" class="headerlink" title="两种形式的 import"></a>两种形式的 import</h2><p><code>import</code> 有两种形式： </p>
+<ul>
+<li><code>import ...</code></li>
+<li><code>from ... import ...</code></li>
+</ul>
+<p>两者有着很细微的区别，先看几行代码。 </p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> string <span class="keyword">import</span> ascii_lowercase</span><br><span class="line"><span class="keyword">import</span> string</span><br><span class="line"><span class="keyword">import</span> string.ascii_lowercase</span><br></pre></td></tr></tbody></table></figure>
+
+<p>运行后发现最后一行代码报错：<code>ImportError: No module named ascii_lowercase</code>，意思是：“找不到叫 ascii_lowercase 的模块”。第 1 行和第 3 行的区别只在于有没有 <code>from</code>，翻翻<a href="https://docs.python.org/2/reference/simple_stmts.html#import" target="_blank" rel="noopener">语法定义</a>发现有这样的规则： </p>
+<ul>
+<li><code>import ...</code> 后面只能是模块或包</li>
+<li><code>from ... import ...</code> 中，<code>from</code> 后面只能是模块或包，<code>import</code> 后面可以是任何变量</li>
+</ul>
+<p>可以简单的记成：第一个空只能填模块或包，第二个空填啥都行。 </p>
+<h2 id="相对-import-与-绝对-import"><a href="#相对-import-与-绝对-import" class="headerlink" title="相对 import 与 绝对 import"></a>相对 import 与 绝对 import</h2><h3 id="相对-import"><a href="#相对-import" class="headerlink" title="相对 import"></a>相对 import</h3><p>当项目规模变大，代码复杂度上升的时候，我们通常会把一个一个的 <code>.py</code> 文件组织成一个包，让项目结构更加清晰。这时候 import 又会出现一些问题，比如：一个典型包的目录结构是这样的： </p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">string/</span><br><span class="line">├── __init__.py</span><br><span class="line">├── find.py</span><br><span class="line">└── foo.py</span><br></pre></td></tr></tbody></table></figure>
+
+<p>如果 <code>string/foo.py</code> 的代码如下 ：</p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># string/foo.py</span></span><br><span class="line"><span class="keyword">from</span> string <span class="keyword">import</span> find</span><br><span class="line">print(find)</span><br></pre></td></tr></tbody></table></figure>
+
+<p>那么 <code>python string/foo.py</code> 的运行结果会是下面的哪一个呢？ </p>
+<ul>
+<li><code><module 'string.find' from 'string/find.py'></code></li>
+<li><code><function find at 0x123456789></code></li>
+</ul>
+<h3 id="绝对-import"><a href="#绝对-import" class="headerlink" title="绝对 import"></a>绝对 import</h3><p>绝对 import 和相对 import 很好区分，因为从行为上来看，绝对 import 会通过搜索 <code>sys.path</code> 来查找模块；另一方面，除了相对 import 就只剩绝对 import 了嘛 :) 也就是说： </p>
+<ul>
+<li>所有的 <code>import ...</code> 都是绝对 import</li>
+<li>所有的 <code>from XXX import ...</code> 都是绝对 import</li>
+</ul>
+<p>不过，第 2 点只对 2.7 及其以上的版本（包括 3.x）成立喔！如果是 2.7 以下的版本，得使用</p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> absolute_import</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="两者的差异"><a href="#两者的差异" class="headerlink" title="两者的差异"></a>两者的差异</h3><p>首先，绝对 import 是 Python 默认的 import 方式，其原因有两点： </p>
+<ul>
+<li>绝对 import 比相对 import 使用更频繁</li>
+<li>绝对 import 能实现相对 import 的所有功能</li>
+</ul>
+<p>其次，两者搜索模块的方式不一样： </p>
+<ul>
+<li>对于相对 import，通过查看 <code>__name__</code> 变量，在「包层级」（package hierarchy）中搜索</li>
+<li>对于绝对 import，当不处于包层级中时，搜索 <code>sys.path</code></li>
+</ul>
+</body></html>
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Ares
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://obsessed.top/2018/04/02/Python%E5%AF%BC%E5%85%A5%E6%9C%BA%E5%88%B6/" title="Python导入机制">http://obsessed.top/2018/04/02/Python%E5%AF%BC%E5%85%A5%E6%9C%BA%E5%88%B6/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/null" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Python/" rel="tag"># Python</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/03/20/python2%E4%B8%8Epython3%E7%9A%84%E5%8C%BA%E5%88%AB/" rel="prev" title="python2与python3的区别">
+      <i class="fa fa-chevron-left"></i> python2与python3的区别
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/04/08/Django/" rel="next" title="Django">
+      Django <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#导入机制探究"><span class="nav-text">导入机制探究</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模块导入错误"><span class="nav-text">模块导入错误</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#循环导入"><span class="nav-text">循环导入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#覆盖导入"><span class="nav-text">覆盖导入</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模块与包"><span class="nav-text">模块与包</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#两种形式的-import"><span class="nav-text">两种形式的 import</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#相对-import-与-绝对-import"><span class="nav-text">相对 import 与 绝对 import</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#相对-import"><span class="nav-text">相对 import</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#绝对-import"><span class="nav-text">绝对 import</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#两者的差异"><span class="nav-text">两者的差异</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Ares"
+      src="/images/20160228201627_f5vax.png">
+  <p class="site-author-name" itemprop="name">Ares</p>
+  <div class="site-description" itemprop="description">最重要的是，别放弃希望</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">40</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/Aresea" title="GitHub → https:&#x2F;&#x2F;gitee.com&#x2F;Aresea" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/2441236144@qq.com" title="E-Mail → 2441236144@qq.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/null" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ares</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

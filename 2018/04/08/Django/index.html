@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <link rel="alternate" href="/atom.xml" title="Ares" type="application/atom+xml">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://obsessed.top').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.5.0',
+    exturl: false,
+    sidebar: {"position":"left","Manual define the sidebar width. If commented, will be default for":null,"Muse | Mist":320,"Pisces | Gemini":240,"width":200,"display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="如何使用ImageField上传图片12345678910#modelsimg &#x3D; models.ImageField(verbose_name&#x3D;&#39;描述图片&#39;,upload_to&#x3D;&#39;media&#39;)#settingsMEDIA_URL &#x3D; &#39;&#x2F;media&#x2F;&#39;MEDIA_ROOT &#x3D; os.path.join(BASE_DIR,&#39;media&#39;)#记得form表单写enctype&lt;form act">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Django">
+<meta property="og:url" content="http://obsessed.top/2018/04/08/Django/index.html">
+<meta property="og:site_name" content="Ares">
+<meta property="og:description" content="如何使用ImageField上传图片12345678910#modelsimg &#x3D; models.ImageField(verbose_name&#x3D;&#39;描述图片&#39;,upload_to&#x3D;&#39;media&#39;)#settingsMEDIA_URL &#x3D; &#39;&#x2F;media&#x2F;&#39;MEDIA_ROOT &#x3D; os.path.join(BASE_DIR,&#39;media&#39;)#记得form表单写enctype&lt;form act">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-04-08T09:21:22.000Z">
+<meta property="article:modified_time" content="2020-04-22T06:54:20.098Z">
+<meta property="article:author" content="Ares">
+<meta property="article:tag" content="Django">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://obsessed.top/2018/04/08/Django/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Django | Ares</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ares</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Above all, don't lose hope.</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://obsessed.top/2018/04/08/Django/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/20160228201627_f5vax.png">
+      <meta itemprop="name" content="Ares">
+      <meta itemprop="description" content="最重要的是，别放弃希望">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ares">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Django
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-04-08 17:21:22" itemprop="dateCreated datePublished" datetime="2018-04-08T17:21:22+08:00">2018-04-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-04-22 14:54:20" itemprop="dateModified" datetime="2020-04-22T14:54:20+08:00">2020-04-22</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Django/" itemprop="url" rel="index">
+                    <span itemprop="name">Django</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="如何使用ImageField上传图片"><a href="#如何使用ImageField上传图片" class="headerlink" title="如何使用ImageField上传图片"></a>如何使用ImageField上传图片</h2><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#models</span></span><br><span class="line">img = models.ImageField(verbose_name=<span class="string">'描述图片'</span>,upload_to=<span class="string">'media'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#settings</span></span><br><span class="line">MEDIA_URL = <span class="string">'/media/'</span></span><br><span class="line">MEDIA_ROOT = os.path.join(BASE_DIR,<span class="string">'media'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#记得form表单写enctype</span></span><br><span class="line">&lt;form action=<span class="string">""</span> method=<span class="string">"post"</span> enctype=<span class="string">"multipart/form-data"</span>&gt; </span><br><span class="line">&lt;/form&gt;</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+
+
+<h2 id="配置跨域"><a href="#配置跨域" class="headerlink" title="配置跨域"></a>配置跨域</h2><h3 id="第一步"><a href="#第一步" class="headerlink" title="第一步"></a>第一步</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">MIDDLEWARE = [</span><br><span class="line">    <span class="string">'django.middleware.security.SecurityMiddleware'</span>,</span><br><span class="line">    <span class="string">'django.contrib.sessions.middleware.SessionMiddleware'</span>,</span><br><span class="line">    <span class="string">'corsheaders.middleware.CorsMiddleware'</span>,</span><br><span class="line">    </span><br><span class="line">    <span class="string">'django.middleware.common.CommonMiddleware'</span>,</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 'django.middleware.csrf.CsrfViewMiddleware',</span></span><br><span class="line">    <span class="string">'django.contrib.auth.middleware.AuthenticationMiddleware'</span>,</span><br><span class="line">    <span class="string">'django.contrib.messages.middleware.MessageMiddleware'</span>,</span><br><span class="line">    <span class="string">'django.middleware.clickjacking.XFrameOptionsMiddleware'</span>,</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<h3 id="第二步"><a href="#第二步" class="headerlink" title="第二步"></a>第二步</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CORS_ORIGIN_ALLOW_ALL = <span class="literal">True</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<h2 id="Django-配置MySQL数据库"><a href="#Django-配置MySQL数据库" class="headerlink" title="Django 配置MySQL数据库"></a>Django 配置MySQL数据库</h2><h3 id="在settings-py中配置"><a href="#在settings-py中配置" class="headerlink" title="在settings.py中配置"></a>在settings.py中配置</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">import pymysql　　　　　　　　　　　# 配置MySQL</span><br><span class="line">pymysql.install_as_MySQLdb()</span><br><span class="line">DATABASES &#x3D; &#123;</span><br><span class="line">    &#39;default&#39;: &#123;</span><br><span class="line">        &#39;ENGINE&#39;: &#39;django.db.backends.mysql&#39;,   # 数据库引擎</span><br><span class="line">        &#39;NAME&#39;: &#39;django&#39;,         # 你要存储数据的库名，事先要创建之</span><br><span class="line">        &#39;USER&#39;: &#39;root&#39;,         # 数据库用户名</span><br><span class="line">        &#39;PASSWORD&#39;: &#39;&#39;,     # 密码</span><br><span class="line">        &#39;HOST&#39;: &#39;localhost&#39;,    # 主机</span><br><span class="line">        &#39;PORT&#39;: &#39;3306&#39;,         # 数据库使用的端口</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="数据库结构迁移"><a href="#数据库结构迁移" class="headerlink" title="数据库结构迁移"></a>数据库结构迁移</h3><p>Python3不支持MySQLdb，可用pymysql代替。</p>
+<p>1.首先，在Python虚拟环境下安装pymysql：pip install pymysql。</p>
+<p>2.然后，在项目文件夹下的<em>init</em>.py（实际上也可以添加到settings.py中，如上。）添加如下代码即可。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pymysql</span><br><span class="line">pymysql.install_as_MySQLdb()</span><br></pre></td></tr></table></figure>
+
+<p>3.再者，在Terminal中执行数据库迁移命令：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">python manage.py makemigrations</span><br><span class="line">python manage.py migrate</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+<h2 id="密码加密"><a href="#密码加密" class="headerlink" title="密码加密"></a>密码加密</h2><h4 id="md5加密"><a href="#md5加密" class="headerlink" title="md5加密"></a>md5加密</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">form hashlib <span class="keyword">import</span> md5</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_md5</span><span class="params">(str_)</span>:</span></span><br><span class="line">    m = md5()</span><br><span class="line">    m.update(str_)</span><br><span class="line">    <span class="keyword">return</span> m.hexdigest()</span><br></pre></td></tr></table></figure>
+
+<h4 id="使用实例"><a href="#使用实例" class="headerlink" title="使用实例"></a>使用实例</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">password = get_md5(str(password).encode())</span><br></pre></td></tr></table></figure>
+
+<h4 id="hexdigest和digest的区别"><a href="#hexdigest和digest的区别" class="headerlink" title="hexdigest和digest的区别"></a>hexdigest和digest的区别</h4><p>hexdigest生成十六进制的md5值,digest生成二进制的md5值</p>
+<h3 id="django自带的hashers"><a href="#django自带的hashers" class="headerlink" title="django自带的hashers"></a>django自带的hashers</h3><h4 id="引入模块"><a href="#引入模块" class="headerlink" title="引入模块"></a>引入模块</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.contrib.auth.hashers <span class="keyword">import</span> make_password,check_password</span><br></pre></td></tr></table></figure>
+
+<p>每次加密生成的密码都不一样，所有需要使用check_password来进行解密</p>
+<h4 id="加密and解密"><a href="#加密and解密" class="headerlink" title="加密and解密"></a>加密and解密</h4><p>加密              make_password(password)</p>
+<p>解密           check_password(密文,明文)</p>
+<h2 id="django连接MySQL数据库"><a href="#django连接MySQL数据库" class="headerlink" title="django连接MySQL数据库"></a>django连接MySQL数据库</h2><h4 id="在settings-py中配置-1"><a href="#在settings-py中配置-1" class="headerlink" title="在settings.py中配置"></a>在settings.py中配置</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">DATABASES = &#123;</span><br><span class="line">    <span class="string">'default'</span>: &#123;</span><br><span class="line">        <span class="string">'ENGINE'</span>: <span class="string">'django.db.backends.mysql'</span>,</span><br><span class="line">        <span class="string">'NAME'</span>:<span class="string">'库名'</span>,</span><br><span class="line">        <span class="string">'USER'</span>:<span class="string">'root'</span>,			<span class="comment">#数据库用户名</span></span><br><span class="line">    	<span class="string">'PASSWORD'</span>:<span class="string">''</span>,		    <span class="comment">#密码</span></span><br><span class="line">        <span class="string">'HOST'</span>:<span class="string">'localhost'</span>,      <span class="comment">#主机</span></span><br><span class="line">        <span class="string">'PORT'</span>:<span class="string">'3306'</span>			<span class="comment">#数据库使用的端口号</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="在项目文件夹下的init-py添加如下代码"><a href="#在项目文件夹下的init-py添加如下代码" class="headerlink" title="在项目文件夹下的init.py添加如下代码"></a>在项目文件夹下的init.py添加如下代码</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pymysql</span><br><span class="line">pymysql.install_as_MySQLdb()</span><br></pre></td></tr></table></figure>
+
+<h4 id="把从SQLite中把数据导入到MySQL中"><a href="#把从SQLite中把数据导入到MySQL中" class="headerlink" title="把从SQLite中把数据导入到MySQL中"></a>把从SQLite中把数据导入到MySQL中</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#当Django数据库配置为SQLite3时</span></span><br><span class="line"><span class="comment">#在cmd输入：</span></span><br><span class="line">python manage.py dumpdata &gt; data.json</span><br><span class="line"></span><br><span class="line"><span class="comment">#MySQL导入数据</span></span><br><span class="line"><span class="comment">#当Django数据库配置为MySQL时，迁移出表格</span></span><br><span class="line"><span class="comment">#在cmd输入：</span></span><br><span class="line">python manage.py loaddate data.json</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="反解析"><a href="#反解析" class="headerlink" title="反解析"></a>反解析</h2><h3 id="1-定义："><a href="#1-定义：" class="headerlink" title="1.定义："></a>1.定义：</h3><p>随着功能的增加会出现更多的视图，可能之前配置的正则表达式不够准确，于是就要修改正则表达式，但是正则表达式一旦修改了，之前所有对应的超链接都要修改，真是一件麻烦的事情，而且可能还会漏掉一些超链接忘记修改，有办法让链接根据正则表达式动态生成吗？ 就是用反向解析的办法。</p>
+<h3 id="2-应用范围："><a href="#2-应用范围：" class="headerlink" title="2.应用范围："></a>2.应用范围：</h3><p>• 模板中的超链接</p>
+<p>• 视图中的重定向</p>
+<h3 id="3-使用"><a href="#3-使用" class="headerlink" title="3.使用"></a>3.使用</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">url.py中配制</span><br><span class="line">app_name &#x3D; &#39;shop&#39;</span><br><span class="line"></span><br><span class="line">re_path(&#39;detail&#x2F;(\d)$&#39;,views.details,name&#x3D;&#39;detail&#39;)</span><br><span class="line">template中使用</span><br><span class="line">&lt;a href&#x3D;&quot;&#123;% url &#39;shop:detail&#39; 3 %&#125;&quot;&gt;list&lt;&#x2F;a&gt;</span><br><span class="line"></span><br><span class="line">Views中使用</span><br><span class="line">from django.urls import reverse</span><br><span class="line">return HttpResponseRedirect(reverse(&quot;shop:detail&quot;,args&#x3D;[pk],kwargs&#x3D;&#123;&#39;body&#39;:&quot;email body&quot;&#125;))</span><br></pre></td></tr></table></figure>
+
+
+
+
+<h2 id="如何将从数据库中查询出来的数据转换为json数据发送到前台"><a href="#如何将从数据库中查询出来的数据转换为json数据发送到前台" class="headerlink" title="如何将从数据库中查询出来的数据转换为json数据发送到前台"></a>如何将从数据库中查询出来的数据转换为json数据发送到前台</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#通过对表values查询对结果集进行list转换也是json类型</span></span><br><span class="line">json_ = &#123;&#125;</span><br><span class="line">data = models.Goods.objects.values()</span><br><span class="line">json_data = list(data)</span><br><span class="line"><span class="keyword">return</span> Response(&#123;   </span><br><span class="line">            <span class="string">'data'</span>:json_data</span><br><span class="line">        &#125;)</span><br></pre></td></tr></table></figure>
+
+
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Ares
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://obsessed.top/2018/04/08/Django/" title="Django">http://obsessed.top/2018/04/08/Django/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/null" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Django/" rel="tag"># Django</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/04/02/Python%E5%AF%BC%E5%85%A5%E6%9C%BA%E5%88%B6/" rel="prev" title="Python导入机制">
+      <i class="fa fa-chevron-left"></i> Python导入机制
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/04/10/Paginator%E5%88%86%E9%A1%B5%E5%99%A8/" rel="next" title="Paginator分页器">
+      Paginator分页器 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#如何使用ImageField上传图片"><span class="nav-text">如何使用ImageField上传图片</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置跨域"><span class="nav-text">配置跨域</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#第一步"><span class="nav-text">第一步</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第二步"><span class="nav-text">第二步</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Django-配置MySQL数据库"><span class="nav-text">Django 配置MySQL数据库</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#在settings-py中配置"><span class="nav-text">在settings.py中配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据库结构迁移"><span class="nav-text">数据库结构迁移</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#密码加密"><span class="nav-text">密码加密</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#md5加密"><span class="nav-text">md5加密</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#使用实例"><span class="nav-text">使用实例</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#hexdigest和digest的区别"><span class="nav-text">hexdigest和digest的区别</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#django自带的hashers"><span class="nav-text">django自带的hashers</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#引入模块"><span class="nav-text">引入模块</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#加密and解密"><span class="nav-text">加密and解密</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#django连接MySQL数据库"><span class="nav-text">django连接MySQL数据库</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#在settings-py中配置-1"><span class="nav-text">在settings.py中配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#在项目文件夹下的init-py添加如下代码"><span class="nav-text">在项目文件夹下的init.py添加如下代码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#把从SQLite中把数据导入到MySQL中"><span class="nav-text">把从SQLite中把数据导入到MySQL中</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#反解析"><span class="nav-text">反解析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-定义："><span class="nav-text">1.定义：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-应用范围："><span class="nav-text">2.应用范围：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-使用"><span class="nav-text">3.使用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如何将从数据库中查询出来的数据转换为json数据发送到前台"><span class="nav-text">如何将从数据库中查询出来的数据转换为json数据发送到前台</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Ares"
+      src="/images/20160228201627_f5vax.png">
+  <p class="site-author-name" itemprop="name">Ares</p>
+  <div class="site-description" itemprop="description">最重要的是，别放弃希望</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">40</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/Aresea" title="GitHub → https:&#x2F;&#x2F;gitee.com&#x2F;Aresea" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/2441236144@qq.com" title="E-Mail → 2441236144@qq.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/null" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ares</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
