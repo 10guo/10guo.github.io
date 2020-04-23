@@ -47,17 +47,17 @@
   };
 </script>
 
-  <meta name="description" content="关于Dockerfile　　在Docker中创建镜像最常用的方式，就是使用Dockerfile。Dockerfile是一个Docker镜像的描述文件，我们可以理解成火箭发射的A、B、C、D…的步骤。Dockerfile其内部包含了一条条的指令，每一条指令构建一层，因此每一条指令的内容，就是描述该层应当如何构建。      一个Dockerfile的实例如下： 1234567891011121314">
+  <meta name="description" content="关于Dockerfile　　在Docker中创建镜像最常用的方式，就是使用Dockerfile。Dockerfile是一个Docker镜像的描述文件，我们可以理解成火箭发射的A、B、C、D…的步骤。Dockerfile其内部包含了一条条的指令，每一条指令构建一层，因此每一条指令的内容，就是描述该层应当如何构建。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Dockerfile">
 <meta property="og:url" content="http://obsessed.top/2020/01/08/Dockerfile/index.html">
 <meta property="og:site_name" content="Ares">
-<meta property="og:description" content="关于Dockerfile　　在Docker中创建镜像最常用的方式，就是使用Dockerfile。Dockerfile是一个Docker镜像的描述文件，我们可以理解成火箭发射的A、B、C、D…的步骤。Dockerfile其内部包含了一条条的指令，每一条指令构建一层，因此每一条指令的内容，就是描述该层应当如何构建。      一个Dockerfile的实例如下： 1234567891011121314">
+<meta property="og:description" content="关于Dockerfile　　在Docker中创建镜像最常用的方式，就是使用Dockerfile。Dockerfile是一个Docker镜像的描述文件，我们可以理解成火箭发射的A、B、C、D…的步骤。Dockerfile其内部包含了一条条的指令，每一条指令构建一层，因此每一条指令的内容，就是描述该层应当如何构建。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://obsessed.top/2020/01/08/Dockerfile/image1.png">
 <meta property="og:image" content="http://obsessed.top/2020/01/08/Dockerfile/image2.png">
 <meta property="article:published_time" content="2020-01-08T09:51:42.000Z">
-<meta property="article:modified_time" content="2020-04-22T08:41:32.516Z">
+<meta property="article:modified_time" content="2020-04-23T09:20:09.478Z">
 <meta property="article:author" content="Ares">
 <meta property="article:tag" content="docker">
 <meta name="twitter:card" content="summary">
@@ -247,7 +247,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-04-22 16:41:32" itemprop="dateModified" datetime="2020-04-22T16:41:32+08:00">2020-04-22</time>
+                <time title="修改时间：2020-04-23 17:20:09" itemprop="dateModified" datetime="2020-04-23T17:20:09+08:00">2020-04-23</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -272,11 +272,13 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <html><head></head><body></body></html><html><head></head><body><h2 id="关于Dockerfile"><a href="#关于Dockerfile" class="headerlink" title="关于Dockerfile"></a>关于Dockerfile</h2><p>　　在Docker中创建镜像最常用的方式，就是使用Dockerfile。Dockerfile是一个Docker镜像的描述文件，我们可以理解成火箭发射的A、B、C、D…的步骤。Dockerfile其内部<strong>包含了一条条的指令</strong>，<strong>每一条指令构建一层，因此每一条指令的内容，就是描述该层应当如何构建</strong>。 </p>
-<img src="/2020/01/08/Dockerfile/image1.png" class title="docker">  
+        <h2 id="关于Dockerfile"><a href="#关于Dockerfile" class="headerlink" title="关于Dockerfile"></a>关于Dockerfile</h2><p>　　在Docker中创建镜像最常用的方式，就是使用Dockerfile。Dockerfile是一个Docker镜像的描述文件，我们可以理解成火箭发射的A、B、C、D…的步骤。Dockerfile其内部<strong>包含了一条条的指令</strong>，<strong>每一条指令构建一层，因此每一条指令的内容，就是描述该层应当如何构建</strong>。 </p>
+<a id="more"></a>
+
+<img src="/2020/01/08/Dockerfile/image1.png" class="" title="docker">  
 
 <p><strong>一个Dockerfile的实例如下：</strong></p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#基于python3.6的镜像</span></span><br><span class="line">FROM python:<span class="number">3.6</span></span><br><span class="line">    </span><br><span class="line"><span class="comment">#维护人的信息</span></span><br><span class="line">MAINTAINER zhangsan</span><br><span class="line"></span><br><span class="line"><span class="comment">#执行的命令</span></span><br><span class="line">RUN  mkdir /code</span><br><span class="line"></span><br><span class="line"><span class="comment">#设置当前工作目录</span></span><br><span class="line">WORKDIR /code</span><br><span class="line"></span><br><span class="line"><span class="comment">#copy文件</span></span><br><span class="line">ADD . /code/</span><br><span class="line"></span><br><span class="line"><span class="comment">#执行的命令</span></span><br><span class="line">RUN pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple</span><br><span class="line"></span><br><span class="line"><span class="comment">#开启8000端口</span></span><br><span class="line">EXPOSE <span class="number">8000</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#当启动容器时执行的脚本文件</span></span><br><span class="line">CMD [<span class="string">"python"</span>, <span class="string">"manage.py"</span>, <span class="string">"runserver"</span>, <span class="string">"0:8000"</span>]</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#基于python3.6的镜像</span></span><br><span class="line">FROM python:<span class="number">3.6</span></span><br><span class="line">    </span><br><span class="line"><span class="comment">#维护人的信息</span></span><br><span class="line">MAINTAINER zhangsan</span><br><span class="line"></span><br><span class="line"><span class="comment">#执行的命令</span></span><br><span class="line">RUN  mkdir /code</span><br><span class="line"></span><br><span class="line"><span class="comment">#设置当前工作目录</span></span><br><span class="line">WORKDIR /code</span><br><span class="line"></span><br><span class="line"><span class="comment">#copy文件</span></span><br><span class="line">ADD . /code/</span><br><span class="line"></span><br><span class="line"><span class="comment">#执行的命令</span></span><br><span class="line">RUN pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple</span><br><span class="line"></span><br><span class="line"><span class="comment">#开启8000端口</span></span><br><span class="line">EXPOSE <span class="number">8000</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#当启动容器时执行的脚本文件</span></span><br><span class="line">CMD [<span class="string">"python"</span>, <span class="string">"manage.py"</span>, <span class="string">"runserver"</span>, <span class="string">"0:8000"</span>]</span><br></pre></td></tr></table></figure>
 
 <p><strong>由上可知，Dockerfile结构大致分为四个部分：</strong> </p>
 <ol>
@@ -285,19 +287,19 @@
 <li>镜像操作命令</li>
 <li>容器启动时执行指令</li>
 </ol>
-<img src="/2020/01/08/Dockerfile/image2.png" class title="Dockerfile">  
+<img src="/2020/01/08/Dockerfile/image2.png" class="" title="Dockerfile">  
 
 <hr>
 <h2 id="Dockerfile案例"><a href="#Dockerfile案例" class="headerlink" title="Dockerfile案例"></a>Dockerfile案例</h2><p><strong>初始化一个django项目并用docker启动</strong> </p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]<span class="comment"># django-admin startproject demo</span></span><br><span class="line">[root@node1 demo]<span class="comment"># cd demo</span></span><br><span class="line">[root@node1 demo]<span class="comment"># python3 manage.py runserver 0.0.0.0:8000                  # 测试项目是否可以启动</span></span><br><span class="line"></span><br><span class="line">[root@node1 demo]<span class="comment"># vim Dockerfile                                            # dockerfile内容如下,路径放到django项目根路径</span></span><br><span class="line">[root@node1 demo]<span class="comment"># vim requirements.txt                                      # django需要安装的包，路径放到django项目根路径</span></span><br><span class="line">[root@node1 demo]<span class="comment"># docker build -t dj_demo:v1 -f Dockerfile . </span></span><br><span class="line">[root@node1 demo]<span class="comment"># docker run -d -p 192.168.56.11:8000:8000 dj_demo:v1</span></span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]<span class="comment"># django-admin startproject demo</span></span><br><span class="line">[root@node1 demo]<span class="comment"># cd demo</span></span><br><span class="line">[root@node1 demo]<span class="comment"># python3 manage.py runserver 0.0.0.0:8000                  # 测试项目是否可以启动</span></span><br><span class="line"></span><br><span class="line">[root@node1 demo]<span class="comment"># vim Dockerfile                                            # dockerfile内容如下,路径放到django项目根路径</span></span><br><span class="line">[root@node1 demo]<span class="comment"># vim requirements.txt                                      # django需要安装的包，路径放到django项目根路径</span></span><br><span class="line">[root@node1 demo]<span class="comment"># docker build -t dj_demo:v1 -f Dockerfile . </span></span><br><span class="line">[root@node1 demo]<span class="comment"># docker run -d -p 192.168.56.11:8000:8000 dj_demo:v1</span></span><br></pre></td></tr></table></figure>
 
 <p><strong>Dockerfile</strong></p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">FROM python:<span class="number">3.6</span></span><br><span class="line">MAINTAINER zhangsan</span><br><span class="line">RUN  mkdir /code</span><br><span class="line">WORKDIR /code</span><br><span class="line">ADD . /code/</span><br><span class="line">RUN pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple</span><br><span class="line">EXPOSE <span class="number">8000</span></span><br><span class="line">CMD [<span class="string">"python"</span>, <span class="string">"manage.py"</span>, <span class="string">"runserver"</span>, <span class="string">"0:8000"</span>]</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">FROM python:<span class="number">3.6</span></span><br><span class="line">MAINTAINER zhangsan</span><br><span class="line">RUN  mkdir /code</span><br><span class="line">WORKDIR /code</span><br><span class="line">ADD . /code/</span><br><span class="line">RUN pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple</span><br><span class="line">EXPOSE <span class="number">8000</span></span><br><span class="line">CMD [<span class="string">"python"</span>, <span class="string">"manage.py"</span>, <span class="string">"runserver"</span>, <span class="string">"0:8000"</span>]</span><br></pre></td></tr></table></figure>
 
 <p><strong>requirements.txt</strong></p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Django==<span class="number">2.0</span><span class="number">.4</span></span><br><span class="line">mysqlclient==<span class="number">1.4</span><span class="number">.6</span></span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Django==<span class="number">2.0</span><span class="number">.4</span></span><br><span class="line">mysqlclient==<span class="number">1.4</span><span class="number">.6</span></span><br></pre></td></tr></table></figure>
 
-</body></html>
+
     </div>
 
     

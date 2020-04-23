@@ -242,7 +242,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-04-22 14:54:57" itemprop="dateModified" datetime="2020-04-22T14:54:57+08:00">2020-04-22</time>
+                <time title="修改时间：2020-04-23 17:28:13" itemprop="dateModified" datetime="2020-04-23T17:28:13+08:00">2020-04-23</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -267,26 +267,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <html><head></head><body></body></html><html><head></head><body><h2 id="MySQL数据库死锁的产生原因及解决办法"><a href="#MySQL数据库死锁的产生原因及解决办法" class="headerlink" title="MySQL数据库死锁的产生原因及解决办法"></a>MySQL数据库死锁的产生原因及解决办法</h2><p>在数据库中有两种基本的锁类型：排它锁（Exclusive Locks，即X锁）和共享锁（Share Locks，即S锁）。当数据对象被加上排它锁时，其他的事务不能对它读取和修改。加了共享锁的数据对象可以被其他事务读取，但不能修改。数据库利用这两 种基本的锁类型来对数据库的事务进行并发控制。 </p>
-<h4 id="死锁的第一种情况"><a href="#死锁的第一种情况" class="headerlink" title="死锁的第一种情况"></a><strong>死锁的第一种情况</strong></h4><p>一个用户A 访问表A(锁住了表A),然后又访问表B；另一个用户B 访问表B(锁住了表B)，然后企图访问表A；这时用户A由于用户B已经锁住表B，它必须等待用户B释放表B才能继续，同样用户B要等用户A释放表A才能继续，这就死锁就产生了。</p>
-<h4 id="死锁的第二种情况"><a href="#死锁的第二种情况" class="headerlink" title="死锁的第二种情况"></a><strong>死锁的第二种情况</strong></h4><p>用户A查询一条纪录，然后修改该条纪录；这时用户B修改该条纪录，这时用户A的事务里锁的性质由查询的共享锁企图上升到独占锁，而用户B里的独占锁由于A 有共享锁存在所以必须等A释放掉共享锁，而A由于B的独占锁而无法上升的独占锁也就不可能释放共享锁，于是出现了死锁。这种死锁比较隐蔽，但在稍大点的项 目中经常发生。如在某项目中，页面上的按钮点击后，没有使按钮立刻失效，使得用户会多次快速点击同一按钮，这样同一段代码对数据库同一条记录进行多次操 作，很容易就出现这种死锁的情况。</p>
-<h4 id="解决方法："><a href="#解决方法：" class="headerlink" title="解决方法："></a>解决方法：</h4><p>1、对于按钮等控件，点击后使其立刻失效，不让用户重复点击，避免同时对同一条记录操作。 </p>
-<p>2.使用乐观锁进行控制。 乐观锁认为数据一般不会发生变化，因此不会加锁，但是在更新数据时会对数据进行比较，若数据没有变化，则进行更新，否则不进行更新 </p>
-<p>3、使用悲观锁进行控制 。如果采用悲观锁机制，也就意味着整个操作过程中，数据库记录始终处于加锁状态，如果面对成百上千个并发，这样的情况将导致灾难性的后果。所以，采用悲观锁进行控制时一定要考虑清楚 </p>
-<h3 id="如何实现乐观锁"><a href="#如何实现乐观锁" class="headerlink" title="如何实现乐观锁"></a>如何实现乐观锁</h3><h4 id="方式1：版本号机制"><a href="#方式1：版本号机制" class="headerlink" title="方式1：版本号机制"></a>方式1：版本号机制</h4><p>给表增加一个 <code>version</code> 版本号字段，具体流程如下：</p>
-<ul>
-<li>读取数据时，将数据的版本号数据一同读出；</li>
-<li>数据每次发生更新时，将版本号加 1；</li>
-<li>提交数据时，将当前版本号与之前读出的版本号进行对比。若相同，则更新；否则，更新失败。</li>
-</ul>
-<h4 id="方式2：记录时间戳"><a href="#方式2：记录时间戳" class="headerlink" title="方式2：记录时间戳"></a>方式2：记录时间戳</h4><p>原理与方式一相同，给表增加一个记录操作的时间戳字段，当发生数据更新时，将当前时间戳与更新前获取的时间戳进行对比，若相同，则允许更新，且同时更新操作时间戳字段，否则更新失败。</p>
-<h4 id="优缺点"><a href="#优缺点" class="headerlink" title="优缺点"></a>优缺点</h4><h5 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h5><ul>
-<li>不会发生任何锁和死锁</li>
-<li>可增加吞吐量</li>
-<li>避免了长事务中的数据库加锁开销</li>
-</ul>
-<h5 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h5><p>对于写多的场景并不适用，因为当写操作非常频繁时，更新失败的几率就越大，上层逻辑进行retry的次数也会增多，从而降低了系统的性能。</p>
-</body></html>
+          <h2 id="MySQL数据库死锁的产生原因及解决办法"><a href="#MySQL数据库死锁的产生原因及解决办法" class="headerlink" title="MySQL数据库死锁的产生原因及解决办法"></a>MySQL数据库死锁的产生原因及解决办法</h2><p>在数据库中有两种基本的锁类型：排它锁（Exclusive Locks，即X锁）和共享锁（Share Locks，即S锁）。当数据对象被加上排它锁时，其他的事务不能对它读取和修改。加了共享锁的数据对象可以被其他事务读取，但不能修改。数据库利用这两 种基本的锁类型来对数据库的事务进行并发控制。 </p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2018/05/26/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E6%AD%BB%E9%94%81/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -336,7 +325,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-04-22 15:23:30" itemprop="dateModified" datetime="2020-04-22T15:23:30+08:00">2020-04-22</time>
+                <time title="修改时间：2020-04-23 17:28:33" itemprop="dateModified" datetime="2020-04-23T17:28:33+08:00">2020-04-23</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -361,7 +350,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <html><head></head><body></body></html><html><head></head><body><h2 id="一、什么是RESTful"><a href="#一、什么是RESTful" class="headerlink" title="一、什么是RESTful"></a>一、什么是RESTful</h2><p>RESTful不是一种技术，而是一种接口规范，主要规范包括：1.请求方式、2.状态码、3、url规范、4、传参规范</p>
+          <h2 id="一、什么是RESTful"><a href="#一、什么是RESTful" class="headerlink" title="一、什么是RESTful"></a>一、什么是RESTful</h2><p>RESTful不是一种技术，而是一种接口规范，主要规范包括：1.请求方式、2.状态码、3、url规范、4、传参规范</p>
 <ul>
 <li>请求方式method<ul>
 <li>GET      ：从服务器取出资源（一项或多项）</li>
@@ -371,52 +360,16 @@
 <li>DELETE ：从服务器删除资源</li>
 </ul>
 </li>
-<li><strong>状态码</strong></li>
 </ul>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">'''1. 2XX请求成功'''</span></span><br><span class="line"><span class="comment"># 200 请求成功，一般用于GET与POST请求</span></span><br><span class="line"><span class="comment"># 201 Created - [POST/PUT/PATCH]：用户新建或修改数据成功。</span></span><br><span class="line"><span class="comment"># 202 Accepted - [*]：表示一个请求已经进入后台排队（异步任务）</span></span><br><span class="line"><span class="comment"># 204 NO CONTENT - [DELETE]：用户删除数据成功。</span></span><br><span class="line"><span class="string">'''2. 3XX重定向'''</span></span><br><span class="line"><span class="comment"># 301 NO CONTENT - 永久重定向</span></span><br><span class="line"><span class="comment"># 302 NO CONTENT - 临时重定向</span></span><br><span class="line"><span class="string">'''3. 4XX客户端错误'''</span></span><br><span class="line"><span class="comment"># 400 INVALID REQUEST - [POST/PUT/PATCH]：用户发出的请求有错误。</span></span><br><span class="line"><span class="comment"># 401 Unauthorized - [*]：表示用户没有权限（令牌、用户名、密码错误）。</span></span><br><span class="line"><span class="comment"># 403 Forbidden - [*] 表示用户得到授权（与401错误相对），但是访问是被禁止的。</span></span><br><span class="line"><span class="comment"># 404 NOT FOUND - [*]：用户发出的请求针对的是不存在的记录。</span></span><br><span class="line"><span class="comment"># 406 Not Acceptable - [GET]：用户请求的格式不可得（比如用户请求JSON格式，但是只有XML格式）。</span></span><br><span class="line"><span class="comment"># 410 Gone -[GET]：用户请求的资源被永久删除，且不会再得到的。</span></span><br><span class="line"><span class="comment"># 422 Unprocesable entity - [POST/PUT/PATCH] 当创建一个对象时，发生一个验证错误。</span></span><br><span class="line"><span class="string">'''4. 5XX服务端错误'''</span></span><br><span class="line"><span class="comment"># 500 INTERNAL SERVER ERROR - [*]：服务器内部错误，无法完成请求</span></span><br><span class="line"><span class="comment"># 501 Not Implemented     服务器不支持请求的功能，无法完成请求</span></span><br></pre></td></tr></tbody></table></figure>
-
-<ul>
-<li>面向资源编程： 路径，视网络上任何东西都是资源，均使用名词表示（可复数）<ul>
-<li>所有请求实际操作的都是数据库中的表，每一个表当做一个资源</li>
-<li>资源是一个名称，所以RESTful规范中URL只能有名称或名词的复数形式</li>
-</ul>
-</li>
-</ul>
-<h2 id="二、django的DRF"><a href="#二、django的DRF" class="headerlink" title="二、django的DRF"></a>二、django的DRF</h2><h3 id="1、认证和权限"><a href="#1、认证和权限" class="headerlink" title="1、认证和权限"></a>1、认证和权限</h3><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserInfoViewSet</span><span class="params">(APIView)</span>:</span></span><br><span class="line">    authentication_classes = [authentication.IsAuthenticated,]  <span class="comment"># 用户认证模块</span></span><br><span class="line">    permission_classes = (authentication.IsOwnerOrReadOnly,)    <span class="comment"># 用户授权模块</span></span><br></pre></td></tr></tbody></table></figure>
-
-<p>urls.py：</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.contrib <span class="keyword">import</span> admin</span><br><span class="line"><span class="keyword">from</span> django.urls <span class="keyword">import</span> path,re_path,include</span><br><span class="line"></span><br><span class="line">urlpatterns = [</span><br><span class="line">    path(<span class="string">'admin/'</span>, admin.site.urls),</span><br><span class="line">    re_path(<span class="string">r'users/'</span>,include((<span class="string">'users.urls'</span>, <span class="string">'users'</span>), namespace=<span class="string">'users'</span>))</span><br><span class="line">]</span><br></pre></td></tr></tbody></table></figure>
-
-<p>users/urls.py：</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.urls <span class="keyword">import</span> path,re_path,include</span><br><span class="line"><span class="keyword">from</span> users <span class="keyword">import</span> views</span><br><span class="line"></span><br><span class="line">urlpatterns = [</span><br><span class="line">    re_path(<span class="string">r'info'</span>, views.UserInfoViewSet.as_view(), name=<span class="string">'user'</span>),</span><br><span class="line">]</span><br></pre></td></tr></tbody></table></figure>
-
-<p>users/views.py：</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> rest_framework.views <span class="keyword">import</span> APIView</span><br><span class="line"><span class="keyword">from</span> django.http <span class="keyword">import</span> JsonResponse</span><br><span class="line"><span class="keyword">from</span> common.auth <span class="keyword">import</span> authentication</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserInfoViewSet</span><span class="params">(APIView)</span>:</span></span><br><span class="line">    authentication_classes = [authentication.IsAuthenticated,]</span><br><span class="line">    permission_classes = (authentication.IsOwnerOrReadOnly,)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        super(UserInfoViewSet, self).__init__()</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get</span><span class="params">(self, request, *args, **kwargs)</span>:</span></span><br><span class="line">        result = {</span><br><span class="line">            <span class="string">'status'</span>: <span class="literal">True</span>,</span><br><span class="line">            <span class="string">'data'</span>: <span class="string">'response data'</span></span><br><span class="line">        }</span><br><span class="line">        <span class="keyword">return</span> JsonResponse(result, status=<span class="number">200</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">post</span><span class="params">(self, request, *args, **kwargs)</span>:</span></span><br><span class="line">        result = {</span><br><span class="line">            <span class="string">'status'</span>: <span class="literal">True</span>,</span><br><span class="line">            <span class="string">'data'</span>: <span class="string">'response data'</span></span><br><span class="line">        }</span><br><span class="line">        <span class="keyword">return</span> JsonResponse(result, status=<span class="number">200</span>)</span><br></pre></td></tr></tbody></table></figure>
-
-<p>comm\auth\authentiication.py：</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> rest_framework <span class="keyword">import</span> authentication</span><br><span class="line"><span class="keyword">from</span> rest_framework <span class="keyword">import</span> exceptions</span><br><span class="line"><span class="keyword">from</span> rest_framework <span class="keyword">import</span> permissions</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">IsOwnerOrReadOnly</span><span class="params">(permissions.BasePermission)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">has_permission</span><span class="params">(self, request, view)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> <span class="literal">False</span>:  <span class="comment"># 这里暂且不进行权限验证</span></span><br><span class="line">            <span class="keyword">raise</span> exceptions.ParseError(<span class="string">'您没有操作的权限'</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">IsAuthenticated</span><span class="params">(authentication.BaseAuthentication)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">authenticate</span><span class="params">(self, request)</span>:</span></span><br><span class="line">        auth = request.META.get(<span class="string">'HTTP_AUTHORIZATION'</span>, <span class="literal">None</span>)  <span class="comment"># 获取 header中的 Authorization</span></span><br><span class="line">        <span class="keyword">if</span> auth <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">            <span class="keyword">raise</span> exceptions.NotAuthenticated()</span><br><span class="line"></span><br><span class="line">        <span class="string">'''这里应该是验证token是否合法逻辑'''</span></span><br><span class="line">        <span class="comment"># token = Token.objects.filter(key=auth)</span></span><br><span class="line">        <span class="comment"># try:</span></span><br><span class="line">        <span class="comment">#     request.user = token[0].user</span></span><br><span class="line">        <span class="comment"># except IndexError:</span></span><br><span class="line">        <span class="comment">#     raise exceptions.NotAuthenticated('Invalid input Authenticated')</span></span><br><span class="line">        <span class="keyword">return</span> (request, <span class="literal">None</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">authenticate_header</span><span class="params">(self, request)</span>:</span></span><br><span class="line">        msg = <span class="string">'Invalid token.Please get token first'</span></span><br><span class="line">        <span class="keyword">return</span> exceptions.NotAuthenticated(msg)</span><br></pre></td></tr></tbody></table></figure>
-
-
-
-<h3 id="2、序列化"><a href="#2、序列化" class="headerlink" title="2、序列化"></a>2、序列化</h3><p>users/model.py：</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.db <span class="keyword">import</span> models</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserInfo</span><span class="params">(models.Model)</span>:</span></span><br><span class="line">    name = models.CharField(max_length=<span class="number">64</span>,unique=<span class="literal">True</span>)</span><br><span class="line">    ut = models.ForeignKey(to=<span class="string">'UserType'</span>, on_delete=models.CASCADE)</span><br><span class="line">    gp = models.ManyToManyField(to=<span class="string">'UserGroup'</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__str__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self.name</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserType</span><span class="params">(models.Model)</span>:</span></span><br><span class="line">    type_name = models.CharField(max_length=<span class="number">64</span>,unique=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__str__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self.type_name</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserGroup</span><span class="params">(models.Model)</span>:</span></span><br><span class="line">    group = models.CharField(max_length=<span class="number">64</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__str__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self.group</span><br></pre></td></tr></tbody></table></figure>
-
-<p>users/serializers.py：</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> rest_framework <span class="keyword">import</span> serializers</span><br><span class="line"><span class="keyword">from</span> users.models <span class="keyword">import</span> UserInfo</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserInfoSerializer</span><span class="params">(serializers.Serializer)</span>:</span></span><br><span class="line">    name = serializers.CharField(min_length=<span class="number">3</span>,max_length=<span class="number">20</span>)                <span class="comment"># 显示普通字段</span></span><br><span class="line">    ut_id = serializers.IntegerField(write_only=<span class="literal">True</span>)                      <span class="comment"># 外键约束，关联字段要定义</span></span><br><span class="line">    ut = serializers.CharField(source=<span class="string">'ut.type_name'</span>,required=<span class="literal">False</span>)      <span class="comment"># 显示一对多字段名称</span></span><br><span class="line">    gp = serializers.SerializerMethodField(read_only=<span class="literal">True</span>)                 <span class="comment"># 自定义显示（显示多对多）</span></span><br><span class="line">    xxx = serializers.CharField(source=<span class="string">'name'</span>,required=<span class="literal">False</span>)              <span class="comment"># 也可以自定义显示字段名称</span></span><br><span class="line"></span><br><span class="line">    <span class="string">'''PrimaryKeyRelatedField和StringRelatedField：可以用对 一对多 和 多对多 关联对象序列化'''</span></span><br><span class="line">    <span class="comment"># gp = serializers.PrimaryKeyRelatedField(read_only=True, many=True)</span></span><br><span class="line">    <span class="comment"># gp = serializers.StringRelatedField(read_only=True,many=True)</span></span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Meta</span>:</span></span><br><span class="line">        model = UserInfo</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 自定义显示 多对多 字段</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_gp</span><span class="params">(self,row)</span>:</span></span><br><span class="line">        <span class="string">'''row: 传过来的正是 UserInfo表的对象'''</span></span><br><span class="line">        gp_obj_list = row.gp.all().values(<span class="string">'id'</span>,<span class="string">'group'</span>)  <span class="comment"># 获取用户所有组</span></span><br><span class="line">        <span class="keyword">return</span> gp_obj_list</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 定义创建语法</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">create</span><span class="params">(self, validated_data)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> UserInfo.objects.create(**validated_data)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 定义更新方法</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">update</span><span class="params">(self, instance, validated_data)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> validated_data.get(<span class="string">'name'</span>):</span><br><span class="line">            instance.name = validated_data[<span class="string">'name'</span>]</span><br><span class="line">        <span class="keyword">if</span> validated_data.get(<span class="string">'ut_id'</span>):</span><br><span class="line">            instance.ut_id = validated_data[<span class="string">'ut_id'</span>]</span><br><span class="line">        instance.save()</span><br><span class="line">        <span class="keyword">return</span> instance</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 定义单一字段验证的方法</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">validate_name</span><span class="params">(self, value)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> value == <span class="string">'root'</span>:</span><br><span class="line">            <span class="keyword">raise</span> serializers.ValidationError(<span class="string">'不能创建root管理员账号'</span>)</span><br><span class="line">        <span class="keyword">return</span> value</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 定义多字段验证方法</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">validate</span><span class="params">(self, attrs)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> attrs[<span class="string">'name'</span>] == <span class="string">'admin'</span>:</span><br><span class="line">            <span class="keyword">raise</span> serializers.ValidationError(<span class="string">'不能创建admin用户'</span>)</span><br><span class="line">        <span class="keyword">return</span> attrs</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 一对多序列化（反向查找）</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserTypeSerializer</span><span class="params">(serializers.Serializer)</span>:</span></span><br><span class="line">    type_name = serializers.CharField()</span><br><span class="line">    <span class="comment"># 法1一对多关联对象序列化：此字段将被序列化为关联对象的主键</span></span><br><span class="line">    userinfo_set = serializers.PrimaryKeyRelatedField(read_only=<span class="literal">True</span>, many=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 法2一对多关联对象序列化：此字段将被序列化为关联对象的字符串表示方式（即__str__方法的返回值）</span></span><br><span class="line">    <span class="comment"># userinfo_set = serializers.StringRelatedField(read_only=True,many=True)</span></span><br><span class="line">    <span class="comment"># 法3一对多关联对象序列化：使用关联对象的序列化器</span></span><br><span class="line">    <span class="comment"># userinfo_set = UserInfoSerializer(many=True)</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 多对多序列化（反向）</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserGroupSerializer</span><span class="params">(serializers.Serializer)</span>:</span></span><br><span class="line">    group = serializers.CharField()</span><br><span class="line">    <span class="comment"># 法1一对多关联对象序列化：此字段将被序列化为关联对象的主键</span></span><br><span class="line">    <span class="comment"># userinfo_set = serializers.PrimaryKeyRelatedField(read_only=True, many=True)</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 法2一对多关联对象序列化：此字段将被序列化为关联对象的字符串表示方式（即__str__方法的返回值）</span></span><br><span class="line">    <span class="comment"># userinfo_set = serializers.StringRelatedField(read_only=True,many=True)</span></span><br><span class="line">    <span class="comment"># 法3一对多关联对象序列化：使用关联对象的序列化器</span></span><br><span class="line">    <span class="comment"># userinfo_set = UserInfoSerializer(many=True)</span></span><br></pre></td></tr></tbody></table></figure>
-
-<p><strong>序列化（正向查找）</strong> </p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> rest_framework <span class="keyword">import</span> serializers</span><br><span class="line"><span class="keyword">from</span> users.models <span class="keyword">import</span> UserInfo</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserInfoSerializer</span><span class="params">(serializers.Serializer)</span>:</span></span><br><span class="line">    name = serializers.CharField(min_length=<span class="number">3</span>,max_length=<span class="number">20</span>)               <span class="comment"># 显示普通字段</span></span><br><span class="line">    ut = serializers.CharField(source=<span class="string">'ut.type_name'</span>,required=<span class="literal">False</span>)       <span class="comment"># 显示一对多字段名称</span></span><br><span class="line">    gp = serializers.SerializerMethodField(read_only=<span class="literal">True</span>)                 <span class="comment"># 自定义显示（显示多对多）</span></span><br><span class="line">    xxx = serializers.CharField(source=<span class="string">'name'</span>,required=<span class="literal">False</span>)              <span class="comment"># 也可以自定义显示字段名称</span></span><br><span class="line">    ut_id = serializers.IntegerField(write_only=<span class="literal">True</span>)                      <span class="comment"># 一对多关联字段定义(外键约束)</span></span><br><span class="line"></span><br><span class="line">    <span class="string">'''PrimaryKeyRelatedField和StringRelatedField：可以用对 一对多 和 多对多 关联对象序列化'''</span></span><br><span class="line">    <span class="comment"># gp = serializers.PrimaryKeyRelatedField(read_only=True, many=True)</span></span><br><span class="line">    <span class="comment"># gp = serializers.StringRelatedField(read_only=True,many=True)</span></span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Meta</span>:</span></span><br><span class="line">        model = UserInfo</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 自定义显示 多对多 字段</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_gp</span><span class="params">(self,row)</span>:</span></span><br><span class="line">        <span class="string">'''row: 传过来的正是 UserInfo表的对象'''</span></span><br><span class="line">        gp_obj_list = row.gp.all().values(<span class="string">'id'</span>,<span class="string">'group'</span>)  <span class="comment"># 获取用户所有组</span></span><br><span class="line">        <span class="keyword">return</span> gp_obj_list</span><br></pre></td></tr></tbody></table></figure>
-
-<p><strong>序列化（反向查找）</strong> </p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserTypeSerializer</span><span class="params">(serializers.Serializer)</span>:</span></span><br><span class="line">    type_name = serializers.CharField()</span><br><span class="line">    <span class="comment"># 法1一对多关联对象序列化：此字段将被序列化为关联对象的主键</span></span><br><span class="line">    userinfo_set = serializers.PrimaryKeyRelatedField(read_only=<span class="literal">True</span>, many=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 法2一对多关联对象序列化：此字段将被序列化为关联对象的字符串表示方式（即__str__方法的返回值）</span></span><br><span class="line">    <span class="comment"># userinfo_set = serializers.StringRelatedField(read_only=True,many=True)</span></span><br><span class="line">    <span class="comment"># 法3一对多关联对象序列化：使用关联对象的序列化器</span></span><br><span class="line">    <span class="comment"># userinfo_set = UserInfoSerializer(many=True)</span></span><br></pre></td></tr></tbody></table></figure>
-
-<p><strong>视图函数中使用序列化</strong> </p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserInfoViewSet</span><span class="params">(APIView)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get</span><span class="params">(self, request, *args, **kwargs)</span>:</span></span><br><span class="line">        <span class="comment"># 一对多、多对多查询都是一样的语法</span></span><br><span class="line">        obj = users_model.UserInfo.objects.all()</span><br><span class="line">        ser = serializers.UserInfoSerializer(instance=obj,many=<span class="literal">True</span>)  <span class="comment"># 关联数据多条</span></span><br><span class="line">        <span class="comment"># ser = serializers.UserInfoSerializer(instance=obj[0])       # 关联数据一条</span></span><br><span class="line">        <span class="keyword">return</span> Response(ser.data, status=<span class="number">200</span>)</span><br></pre></td></tr></tbody></table></figure>
-
-<p><strong>使用反序列化保存数据</strong> </p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">'''创建用户'''</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">post</span><span class="params">(self,request)</span>:</span></span><br><span class="line">    ser = serializers.UserInfoSerializer(data=request.data)</span><br><span class="line">    <span class="keyword">if</span> ser.is_valid():</span><br><span class="line">        ser.save()</span><br><span class="line">        <span class="keyword">return</span> Response(data=ser.data, status=<span class="number">201</span>)</span><br><span class="line">    <span class="keyword">return</span> Response(data=ser.errors,status=<span class="number">400</span>)</span><br></pre></td></tr></tbody></table></figure>
-
-<h3 id="3、版本号"><a href="#3、版本号" class="headerlink" title="3、版本号"></a>3、版本号</h3><h3 id="4、限流"><a href="#4、限流" class="headerlink" title="4、限流"></a>4、限流</h3></body></html>
+<p>​
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2018/04/24/DRF%E6%A1%86%E6%9E%B6%E6%8F%90%E4%BE%9B%E6%A0%87%E5%87%86RESTfulAPI%E6%8E%A5%E5%8F%A3/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -466,7 +419,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-04-22 15:07:14" itemprop="dateModified" datetime="2020-04-22T15:07:14+08:00">2020-04-22</time>
+                <time title="修改时间：2020-04-23 17:28:54" itemprop="dateModified" datetime="2020-04-23T17:28:54+08:00">2020-04-23</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -491,21 +444,19 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <html><head></head><body></body></html><html><head></head><body><h2 id="一、RBAC概述"><a href="#一、RBAC概述" class="headerlink" title="一、RBAC概述"></a>一、RBAC概述</h2><p>RBAC(Role-Based Access Control,基于角色的访问控制)，通过角色绑定权限，然后给用户划分角色。</p>
+          <h2 id="一、RBAC概述"><a href="#一、RBAC概述" class="headerlink" title="一、RBAC概述"></a>一、RBAC概述</h2><p>RBAC(Role-Based Access Control,基于角色的访问控制)，通过角色绑定权限，然后给用户划分角色。</p>
 <p>从企业的角度来说，基本上是按照角色来划分职能。比如，CEO，具有公司全局的权限；部门经理，具有部门全局的权限；部门主管，具有部门部分的权限；普通员工，具有部门一小部分权限。</p>
 <p>不同的角色，能够获取的资源是不一样的，所以RBAC就是按照这个思维为公司建设权限系统。</p>
 <p>角色的引入，让权限管理非常灵活。</p>
 <p>例如：某个员工要离职了，替换他的是一个新员工，这时你需要一一的告诉该新员工他应该做什么，他不能做什么，当工作项非常多的时候，这将是非常繁琐的过程，且非常容易出错。如果你把这个职位定义为某个角色，且为这个角色分配固定的权限，不管来多少新人，不管什么职位，只要他对号入座，权限自然就根据角色分配好。当新员工升职后，比如升职成主管或经理，你这时只是角色变换，权限自动分配给他。</p>
-<h2 id="二、流程图"><a href="#二、流程图" class="headerlink" title="二、流程图"></a>二、流程图</h2><p><strong><img src="/2018/04/22/%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86%E6%9C%BA%E5%88%B6/462684-20190129231355786-1268233138.png" class title="This is an test image"></strong> </p>
-<p>1、人员属于某个角色，首先给他分配角色，例如：总监、经理、主管、助理等；</p>
-<p>2、人员赋予角色后，则给他分配权限，不同的角色，规定有不同的权限。比如：总监级别，能够增删改查，无所不能；而经理级别，只能增改查，如果需要删除，则需要总监审批；主管只有增加和查看，修改需要向经理申请，让经理审批。</p>
-<p>3、不同的权限，实际上是对应数据库中的某张表，也就是Django中的某个model。</p>
-<h2 id="三、实现过程"><a href="#三、实现过程" class="headerlink" title="三、实现过程"></a>三、实现过程</h2><p><strong><img src="/2018/04/22/%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86%E6%9C%BA%E5%88%B6/462684-20190129231837693-35611593.png" class title="This is an test image"></strong> </p>
-<p>1、人员登录后，先验证用户是否OK；</p>
-<p>2、验证用户OK后，则根据人员属于什么角色，进行权限获取，并写入session中；</p>
-<p>3、用户登录成功，进入index页面，则根据用户session中的权限，展示不同的页面，正所谓：千人千面；</p>
-<p>4、用户根据不同的页面，进行不同的操作。</p>
-</body></html>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2018/04/22/%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86%E6%9C%BA%E5%88%B6/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -721,7 +672,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-04-22 14:53:50" itemprop="dateModified" datetime="2020-04-22T14:53:50+08:00">2020-04-22</time>
+                <time title="修改时间：2020-04-23 17:29:20" itemprop="dateModified" datetime="2020-04-23T17:29:20+08:00">2020-04-23</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -746,101 +697,19 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <html><head></head><body></body></html><html><head></head><body><h2 id="导入机制探究"><a href="#导入机制探究" class="headerlink" title="导入机制探究"></a>导入机制探究</h2><p>Python 提供了 import 语句来实现类库的引用，当我们执行一行 <code>from package import module as mymodule</code> 命令时，Python解释器会查找package 这个包的module模块，并将该模块作为 mymodule 引入到当前的工作空间。所以import语句主要是做了二件事： </p>
+          <h2 id="导入机制探究"><a href="#导入机制探究" class="headerlink" title="导入机制探究"></a>导入机制探究</h2><p>Python 提供了 import 语句来实现类库的引用，当我们执行一行 <code>from package import module as mymodule</code> 命令时，Python解释器会查找package 这个包的module模块，并将该模块作为 mymodule 引入到当前的工作空间。所以import语句主要是做了二件事： </p>
 <ol>
 <li>查找相应的module</li>
 <li>加载module到local namespace</li>
 </ol>
-<p>在import的第一个阶段，主要是完成了查找要引入模块的功能。查找时首先检查 sys.modules (保存了之前import的类库的缓存），如果module没有被找到，则按照下面的搜索路径查找模块： </p>
-<ol>
-<li>.py 所在文件的目录</li>
-<li>PYTHONPATH 中的目录</li>
-<li>python安装目录，UNIX下，默认路径一般为/usr/local/lib/python/</li>
-<li>3.x 中.pth 文件内容、</li>
-</ol>
-<p>其大致过程可以简化为： </p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">import</span><span class="params">(module_name)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> module_name <span class="keyword">in</span> sys.modules:</span><br><span class="line">        <span class="keyword">return</span> sys.modules[module_name]</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        module_path = find(module_name)</span><br><span class="line"> </span><br><span class="line">        <span class="keyword">if</span> module_path:</span><br><span class="line">            module = load(module_path)</span><br><span class="line">            sys.modules[module_name] = module</span><br><span class="line">            <span class="keyword">return</span> module</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">raise</span> ImportError</span><br></pre></td></tr></tbody></table></figure>
-
-<h2 id="模块导入错误"><a href="#模块导入错误" class="headerlink" title="模块导入错误"></a>模块导入错误</h2><p>在导入模块方面，可能会出现下面的情况： </p>
-<ul>
-<li>循环导入（circular imports）</li>
-<li>覆盖导入（Shadowed imports）</li>
-</ul>
-<h3 id="循环导入"><a href="#循环导入" class="headerlink" title="循环导入"></a>循环导入</h3><p>如果你创建两个模块，二者相互导入对方，那么有可能会出现<code>循环导入</code>。例如创建 a.py如下：</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> b</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">a_test</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">print</span> <span class="string">"in a_test"</span></span><br><span class="line">    <span class="keyword">print</span> b.x</span><br><span class="line"> </span><br><span class="line">a_test()</span><br></pre></td></tr></tbody></table></figure>
-
-<p>然后在同个文件夹中创建另一个模块，将其命名为b.py </p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> a</span><br><span class="line">x = <span class="number">1</span></span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">b_test</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">print</span> <span class="string">'In test_b'</span></span><br><span class="line">    a.a_test()</span><br><span class="line"> </span><br><span class="line">b_test()</span><br></pre></td></tr></tbody></table></figure>
-
-<p>当我们导入 a 模块时，会引发AttributeError，这是因为导入a时，在开始时导入 b 模块，而 b 模块调用 b_test 时需要a的 a_test，这时候 a 模块的 a_test 并没有成功加载。</p>
-<p>注意不是所有的互相导入都会引发 AttributeError，<a href="https://docs.python.org/2/faq/programming.html#what-are-the-best-practices-for-using-import-in-a-module" target="_blank" rel="noopener">官方文档</a>这样说：</p>
-<blockquote>
-<p>Circular imports are fine where both modules use the “import ” form of import. They fail when the 2nd module wants to grab a name out of the first (“from module import name”) and the import is at the top level. That’s because names in the 1st are not yet available, because the first module is busy importing the 2nd.</p>
-</blockquote>
-<p>继续以上面的两个模块为例，如果将 a.py 和 b.py 改为下面代码，就不会出现循环导入的错误：</p>
-<p>a.py</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">a_test</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">import</span> b</span><br><span class="line">    <span class="keyword">print</span> <span class="string">"in a_test"</span></span><br><span class="line">    <span class="keyword">print</span> b.x</span><br><span class="line">a_test()</span><br></pre></td></tr></tbody></table></figure>
-
-<p>b.py</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">x = <span class="number">1</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">b_test</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">import</span> a</span><br><span class="line">    <span class="keyword">print</span> <span class="string">'In test_b'</span></span><br><span class="line">    a.a_test()</span><br><span class="line">b_test()</span><br></pre></td></tr></tbody></table></figure>
-
-<p>这样的话，先导入 a，再导入 b 的结果如下：</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">>>> </span><span class="keyword">import</span> a</span><br><span class="line">In test_b</span><br><span class="line"><span class="keyword">in</span> a_test</span><br><span class="line"><span class="number">1</span></span><br><span class="line"><span class="keyword">in</span> a_test</span><br><span class="line"><span class="number">1</span></span><br><span class="line"><span class="meta">>>> </span><span class="keyword">import</span> b</span><br><span class="line">>>></span><br></pre></td></tr></tbody></table></figure>
-
-<h3 id="覆盖导入"><a href="#覆盖导入" class="headerlink" title="覆盖导入"></a>覆盖导入</h3><p>当创建的模块与标准库中的模块同名时，如果导入这个模块，就会出现覆盖导入。举个例子，创建一个名叫math.py的文件，在其中写入如下代码：</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> math</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">square_root</span><span class="params">(number)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> math.sqrt(number)</span><br></pre></td></tr></tbody></table></figure>
-
-<p>运行这个文件，你会得到以下信息（traceback）：AttributeError: module ‘math’ has no attribute ‘sqrt’。这是因为运行这个文件的时候，Python解释器首先在当前运行脚本所处的的文件夹中查找名叫math的模块。在这个例子中，解释器找到了我们正在执行的模块，试图导入它。但是我们的模块中并没有叫sqrt的函数或属性，所以就抛出了AttributeError。</p>
-<h2 id="模块与包"><a href="#模块与包" class="headerlink" title="模块与包"></a>模块与包</h2><p>在了解 import 之前，有两个概念必须提一下： </p>
-<ul>
-<li>模块: 一个 <code>.py</code> 文件就是一个模块（module）</li>
-<li>包: <code>__init__.py</code> 文件所在目录就是包（package）</li>
-</ul>
-<p>当然，这只是极简版的概念。实际上包是一种特殊的模块，而任何定义了 <code>__path__</code> 属性的模块都被当做包。只不过，咱们日常使用中并不需要知道这些。 </p>
-<h2 id="两种形式的-import"><a href="#两种形式的-import" class="headerlink" title="两种形式的 import"></a>两种形式的 import</h2><p><code>import</code> 有两种形式： </p>
-<ul>
-<li><code>import ...</code></li>
-<li><code>from ... import ...</code></li>
-</ul>
-<p>两者有着很细微的区别，先看几行代码。 </p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> string <span class="keyword">import</span> ascii_lowercase</span><br><span class="line"><span class="keyword">import</span> string</span><br><span class="line"><span class="keyword">import</span> string.ascii_lowercase</span><br></pre></td></tr></tbody></table></figure>
-
-<p>运行后发现最后一行代码报错：<code>ImportError: No module named ascii_lowercase</code>，意思是：“找不到叫 ascii_lowercase 的模块”。第 1 行和第 3 行的区别只在于有没有 <code>from</code>，翻翻<a href="https://docs.python.org/2/reference/simple_stmts.html#import" target="_blank" rel="noopener">语法定义</a>发现有这样的规则： </p>
-<ul>
-<li><code>import ...</code> 后面只能是模块或包</li>
-<li><code>from ... import ...</code> 中，<code>from</code> 后面只能是模块或包，<code>import</code> 后面可以是任何变量</li>
-</ul>
-<p>可以简单的记成：第一个空只能填模块或包，第二个空填啥都行。 </p>
-<h2 id="相对-import-与-绝对-import"><a href="#相对-import-与-绝对-import" class="headerlink" title="相对 import 与 绝对 import"></a>相对 import 与 绝对 import</h2><h3 id="相对-import"><a href="#相对-import" class="headerlink" title="相对 import"></a>相对 import</h3><p>当项目规模变大，代码复杂度上升的时候，我们通常会把一个一个的 <code>.py</code> 文件组织成一个包，让项目结构更加清晰。这时候 import 又会出现一些问题，比如：一个典型包的目录结构是这样的： </p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">string/</span><br><span class="line">├── __init__.py</span><br><span class="line">├── find.py</span><br><span class="line">└── foo.py</span><br></pre></td></tr></tbody></table></figure>
-
-<p>如果 <code>string/foo.py</code> 的代码如下 ：</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># string/foo.py</span></span><br><span class="line"><span class="keyword">from</span> string <span class="keyword">import</span> find</span><br><span class="line">print(find)</span><br></pre></td></tr></tbody></table></figure>
-
-<p>那么 <code>python string/foo.py</code> 的运行结果会是下面的哪一个呢？ </p>
-<ul>
-<li><code><module 'string.find' from 'string/find.py'></code></li>
-<li><code><function find at 0x123456789></code></li>
-</ul>
-<h3 id="绝对-import"><a href="#绝对-import" class="headerlink" title="绝对 import"></a>绝对 import</h3><p>绝对 import 和相对 import 很好区分，因为从行为上来看，绝对 import 会通过搜索 <code>sys.path</code> 来查找模块；另一方面，除了相对 import 就只剩绝对 import 了嘛 :) 也就是说： </p>
-<ul>
-<li>所有的 <code>import ...</code> 都是绝对 import</li>
-<li>所有的 <code>from XXX import ...</code> 都是绝对 import</li>
-</ul>
-<p>不过，第 2 点只对 2.7 及其以上的版本（包括 3.x）成立喔！如果是 2.7 以下的版本，得使用</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> absolute_import</span><br></pre></td></tr></tbody></table></figure>
-
-<h3 id="两者的差异"><a href="#两者的差异" class="headerlink" title="两者的差异"></a>两者的差异</h3><p>首先，绝对 import 是 Python 默认的 import 方式，其原因有两点： </p>
-<ul>
-<li>绝对 import 比相对 import 使用更频繁</li>
-<li>绝对 import 能实现相对 import 的所有功能</li>
-</ul>
-<p>其次，两者搜索模块的方式不一样： </p>
-<ul>
-<li>对于相对 import，通过查看 <code>__name__</code> 变量，在「包层级」（package hierarchy）中搜索</li>
-<li>对于绝对 import，当不处于包层级中时，搜索 <code>sys.path</code></li>
-</ul>
-</body></html>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2018/04/02/Python%E5%AF%BC%E5%85%A5%E6%9C%BA%E5%88%B6/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -890,7 +759,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-04-22 15:04:34" itemprop="dateModified" datetime="2020-04-22T15:04:34+08:00">2020-04-22</time>
+                <time title="修改时间：2020-04-23 17:29:40" itemprop="dateModified" datetime="2020-04-23T17:29:40+08:00">2020-04-23</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -915,139 +784,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <html><head></head><body></body></html><html><head></head><body><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://c.runoob.com/compile/<span class="number">6</span>			<span class="comment">#在线编译器支持python2和python3</span></span><br></pre></td></tr></tbody></table></figure>
-
-
-
-<h2 id="1、python解释器默认编码"><a href="#1、python解释器默认编码" class="headerlink" title="1、python解释器默认编码"></a>1、python解释器默认编码</h2><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#python2</span></span><br><span class="line"><span class="meta">>>> </span>sys.getdefaultencoding()</span><br><span class="line"><span class="string">'ascii'</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#python3</span></span><br><span class="line"><span class="meta">>>> </span>sys.getdefaultencoding()</span><br><span class="line"><span class="string">'utf-8'</span></span><br></pre></td></tr></tbody></table></figure>
-
-<p>在Python 2中，如果代码中包含非英文字符，需要在代码文件的最开始声明编码，如下</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br></pre></td></tr></tbody></table></figure>
-
-<p>在Python 3中，默认的字符串就是Unicode，就省去了这个麻烦，下面的代码在Python 3可以正常地运行</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">a = <span class="string">"你好"</span></span><br><span class="line">print(a)</span><br></pre></td></tr></tbody></table></figure>
-
-<ul>
-<li>python2 解释器默认编码：ascii</li>
-<li>python3 解释器默认编码：utf-8</li>
-</ul>
-<h2 id="2、input函数"><a href="#2、input函数" class="headerlink" title="2、input函数"></a>2、input函数</h2><p>在python2中input是将用户输入的内容作为<strong>表达式</strong>来对待</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">content = input(<span class="string">"请输入您的内容："</span>)</span><br><span class="line">print(content)</span><br></pre></td></tr></tbody></table></figure>
-
-<p>输出</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">请输入您的内容: <span class="number">100</span>+<span class="number">200</span></span><br><span class="line"><span class="number">300</span></span><br></pre></td></tr></tbody></table></figure>
-
-
-
-<p>在python3中input是将用户输入的内容作为<strong>字符串</strong>来对待</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">content = input(<span class="string">"请输入您的内容："</span>)</span><br><span class="line">print(content)</span><br></pre></td></tr></tbody></table></figure>
-
-<p>输出</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">请输入您的内容: <span class="number">100</span>+<span class="number">200</span></span><br><span class="line"><span class="number">100</span>+<span class="number">200</span></span><br></pre></td></tr></tbody></table></figure>
-
-<p>如果要想使<strong>python2</strong>去实现<strong>python3</strong>的功能，也就是说在python2中通过<strong>input</strong>输入也实现统一作为“字符串”的话，那么就不能使用<strong>input</strong>了，而应该去使用<strong>raw_input</strong>。 但是在python3中没有<strong>raw_input</strong>函数</p>
-<h2 id="3、print函数"><a href="#3、print函数" class="headerlink" title="3、print函数"></a>3、print函数</h2><p>Python 2中print是<strong>语句</strong>（statement），Python 3中print则变成了<strong>函数</strong>。在Python 3中调用print需要加上括号，不加括号会报SyntaxError </p>
-<p><strong>Python 2</strong></p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">print</span> <span class="string">"hello world"</span></span><br></pre></td></tr></tbody></table></figure>
-
-<p>输出</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hello world</span><br></pre></td></tr></tbody></table></figure>
-
-<p><strong>Python 3</strong></p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">print(<span class="string">"hello world"</span>)</span><br></pre></td></tr></tbody></table></figure>
-
-<p>输出</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hello world</span><br></pre></td></tr></tbody></table></figure>
-
-<p>python3</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">print</span> <span class="string">"hello world"</span></span><br></pre></td></tr></tbody></table></figure>
-
-<p>输出</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"> File <span class="string">"<stdin>"</span>, line <span class="number">1</span></span><br><span class="line">    <span class="keyword">print</span> <span class="string">"hello world"</span></span><br><span class="line">                      ^</span><br><span class="line">SyntaxError: Missing parentheses <span class="keyword">in</span> call to <span class="string">'print'</span></span><br></pre></td></tr></tbody></table></figure>
-
-
-
-<h2 id="4、整数相除"><a href="#4、整数相除" class="headerlink" title="4、整数相除"></a>4、整数相除</h2><p>在Python 2中，3/2的结果是整数，在Python 3中，结果则是浮点数 </p>
-<p>Python 2</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">print</span> <span class="string">'3 / 2 ='</span>, <span class="number">3</span> / <span class="number">2</span></span><br><span class="line"><span class="keyword">print</span> <span class="string">'3 / 2.0 ='</span>, <span class="number">3</span> / <span class="number">2.0</span></span><br></pre></td></tr></tbody></table></figure>
-
-<p>输出</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">3</span> / <span class="number">2</span> = <span class="number">1</span></span><br><span class="line"><span class="number">3</span> / <span class="number">2.0</span> = <span class="number">1.5</span></span><br></pre></td></tr></tbody></table></figure>
-
-<p>Python 3</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">print(<span class="string">'3 / 2 ='</span>, <span class="number">3</span> / <span class="number">2</span>)</span><br><span class="line">print(<span class="string">'3 / 2.0 ='</span>, <span class="number">3</span> / <span class="number">2.0</span>)</span><br></pre></td></tr></tbody></table></figure>
-
-<p>输出</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">3</span> / <span class="number">2</span> = <span class="number">1.5</span></span><br><span class="line"><span class="number">3</span> / <span class="number">2.0</span> = <span class="number">1.5</span></span><br></pre></td></tr></tbody></table></figure>
-
-
-
-<h2 id="5、异常处理"><a href="#5、异常处理" class="headerlink" title="5、异常处理"></a>5、异常处理</h2><p>Python 2中捕获异常一般用下面的语法</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    <span class="number">1</span>/<span class="number">0</span> </span><br><span class="line"><span class="keyword">except</span> ZeroDivisionError, e:</span><br><span class="line">    <span class="keyword">print</span> str(e)</span><br></pre></td></tr></tbody></table></figure>
-
-<p>或者</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    <span class="number">1</span>/<span class="number">0</span> </span><br><span class="line"><span class="keyword">except</span> ZeroDivisionError <span class="keyword">as</span> e:</span><br><span class="line">    <span class="keyword">print</span> str(e)</span><br></pre></td></tr></tbody></table></figure>
-
-<p><strong>Python 3中不再支持前一种语法，必须使用as关键字。</strong></p>
-<h2 id="6、range-xrange"><a href="#6、range-xrange" class="headerlink" title="6、range / xrange"></a>6、range / xrange</h2><ul>
-<li>python2：<ul>
-<li>xrange：不会在内存中立即创建，而是在循环时，边循环边创建</li>
-<li>range：在内存立即把所有的值创建</li>
-</ul>
-</li>
-<li>python3： <ul>
-<li>只有range，相当于python2中的xrange</li>
-<li>range：不会在内存中立即创建，而是在循环时，边循环边创建</li>
-</ul>
-</li>
-</ul>
-<h2 id="7、包的定义"><a href="#7、包的定义" class="headerlink" title="7、包的定义"></a>7、包的定义</h2><ul>
-<li>python2：文件夹中必须有<code>__init__.py</code>文件</li>
-</ul>
-<ul>
-<li>python3：不需要有<code>__init__.py</code>文件</li>
-</ul>
-<h2 id="8、map-函数"><a href="#8、map-函数" class="headerlink" title="8、map 函数"></a>8、map 函数</h2><p>python2</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">f</span><span class="params">(x)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> x*x</span><br><span class="line">print(map(f, [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>]))</span><br></pre></td></tr></tbody></table></figure>
-
-<p>输出</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[<span class="number">1</span>, <span class="number">4</span>, <span class="number">9</span>, <span class="number">16</span>, <span class="number">25</span>, <span class="number">36</span>, <span class="number">49</span>, <span class="number">64</span>, <span class="number">81</span>]</span><br></pre></td></tr></tbody></table></figure>
-
-<p>python3</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">f</span><span class="params">(x)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> x*x</span><br><span class="line">print(map(f, [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>]))</span><br></pre></td></tr></tbody></table></figure>
-
-<p>输出</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><map object at <span class="number">0x7f39cebe1f60</span>></span><br></pre></td></tr></tbody></table></figure>
-
-<ul>
-<li>python2：返回列表，直接创建值，可以通过索引取值</li>
-<li>python3：返回迭代器，不直接创建值，通过循环，边循环边创建</li>
-</ul>
-<h2 id="9、class类"><a href="#9、class类" class="headerlink" title="9、class类"></a>9、class类</h2><p>在<strong>Python2</strong>中，<strong>基类object</strong>书写与否 会对结果造成很大的影响，这个知识点涉及到<strong>新式类、经典类</strong>的问题 </p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">在Python <span class="number">3.</span>x中取消了经典类，默认都是新式类，并且不必显式的继承object，也就是说：</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span><span class="params">(object)</span>:</span><span class="keyword">pass</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span><span class="params">()</span>:</span><span class="keyword">pass</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span>:</span><span class="keyword">pass</span></span><br><span class="line">三种写法并无区别，推荐第一种</span><br></pre></td></tr></tbody></table></figure>
-
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">但是在Python2.x中，默认都是经典类，只有显式继承了object才是新式类，即：</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span><span class="params">(object)</span>:</span><span class="keyword">pass</span> 新式类写法</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span><span class="params">()</span>:</span><span class="keyword">pass</span> 经典类写法</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span>:</span><span class="keyword">pass</span> 经典类写法</span><br></pre></td></tr></tbody></table></figure>
-
-<img src="/2018/03/20/python2%E4%B8%8Epython3%E7%9A%84%E5%8C%BA%E5%88%AB/image-20200310084245988.png" class>  
-
-<p>上代码：</p>
-<p>python2中的深度优先 </p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">D</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">talk</span><span class="params">(self)</span>:</span></span><br><span class="line">        print(<span class="string">'D'</span>)</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">B</span><span class="params">(D)</span>:</span></span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line">    <span class="comment"># def talk(self):</span></span><br><span class="line">    <span class="comment">#     print('B')</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">C</span><span class="params">(D)</span>:</span></span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">talk</span><span class="params">(self)</span>:</span></span><br><span class="line">        print(<span class="string">'C'</span>)</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span><span class="params">(B,C)</span>:</span></span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">a = A()</span><br><span class="line">a.talk()</span><br></pre></td></tr></tbody></table></figure>
-
-<p>输出</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">D</span><br></pre></td></tr></tbody></table></figure>
-
-<p>python2中广度优先和python3</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">D</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">talk</span><span class="params">(self)</span>:</span></span><br><span class="line">        print(<span class="string">'D'</span>)</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">B</span><span class="params">(D)</span>:</span></span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line">    <span class="comment"># def talk(self):</span></span><br><span class="line">    <span class="comment">#     print('B')</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">C</span><span class="params">(D)</span>:</span></span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">talk</span><span class="params">(self)</span>:</span></span><br><span class="line">        print(<span class="string">'C'</span>)</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span><span class="params">(B,C)</span>:</span></span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">a = A()</span><br><span class="line">a.talk()</span><br></pre></td></tr></tbody></table></figure>
-
-<p>输出</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">C</span><br></pre></td></tr></tbody></table></figure>
-
-
-
-
-
-</body></html>
+          <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://c.runoob.com/compile/<span class="number">6</span>			<span class="comment">#在线编译器支持python2和python3</span></span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2018/03/20/python2%E4%B8%8Epython3%E7%9A%84%E5%8C%BA%E5%88%AB/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1097,7 +842,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-04-22 15:05:32" itemprop="dateModified" datetime="2020-04-22T15:05:32+08:00">2020-04-22</time>
+                <time title="修改时间：2020-04-23 17:30:01" itemprop="dateModified" datetime="2020-04-23T17:30:01+08:00">2020-04-23</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1122,120 +867,21 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <html><head></head><body></body></html><html><head></head><body><h2 id="与is的区别"><a href="#与is的区别" class="headerlink" title="==与is的区别"></a>==与is的区别</h2><p>在Python中一切都是对象。</p>
+          <h2 id="与is的区别"><a href="#与is的区别" class="headerlink" title="==与is的区别"></a>==与is的区别</h2><p>在Python中一切都是对象。</p>
 <p>Python中对象包含的三个基本要素，分别是：</p>
 <ol>
 <li>id(身份标识)</li>
 <li>type(数据类型)</li>
 <li>value(值)</li>
 </ol>
-<p>对象之间比较是否相等可以用 == ，也可以用 is 。 </p>
-<p>is 比较的是两个对象的id值是否相等，也就是比较两个对象是否为同一个实例对象，是否指向同一个内存地址。</p>
-<p>== 比较的是两个对象的内容是否相等，默认会调用对象的 <strong>eq</strong> 方法。</p>
-<p>== 是python标准操作符中的比较操作符，用来比较判断两个对象的值是否相等。</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">>>> </span>a = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]</span><br><span class="line"><span class="meta">>>> </span>b = a</span><br><span class="line"><span class="meta">>>> </span>b <span class="keyword">is</span> a </span><br><span class="line"><span class="literal">True</span></span><br><span class="line"><span class="meta">>>> </span>b == a</span><br><span class="line"><span class="literal">True</span></span><br><span class="line"><span class="meta">>>> </span>b = a[:]</span><br><span class="line"><span class="meta">>>> </span>b <span class="keyword">is</span> a</span><br><span class="line"><span class="literal">False</span></span><br><span class="line"><span class="meta">>>> </span>b == a</span><br><span class="line"><span class="literal">True</span></span><br></pre></td></tr></tbody></table></figure>
-
-
-
-
-
-<h2 id="深浅拷贝"><a href="#深浅拷贝" class="headerlink" title="深浅拷贝"></a>深浅拷贝</h2><p><strong>浅拷贝</strong></p>
-<p>浅拷贝是对于一个对象的顶层拷贝，通俗的理解是：拷贝了引用，并没有拷贝内容 </p>
-<p><strong>深拷贝</strong></p>
-<p>拷贝会完全复制原变量相关的所有数据，在内存中生成一套完全一样的内容，我们对这两个变量中任意一个修改都不会影响其他变量 </p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> copy</span><br><span class="line">sourceList = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,[<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>]]</span><br><span class="line">copyList = copy.copy(sourceList)</span><br><span class="line">deepcopyList = copy.deepcopy(sourceList)</span><br><span class="line"></span><br><span class="line">sourceList[<span class="number">3</span>][<span class="number">0</span>]=<span class="number">100</span></span><br><span class="line"></span><br><span class="line">print(sourceList)           <span class="comment"># [1, 2, 3, [100, 5, 6]]</span></span><br><span class="line">print(copyList)             <span class="comment"># [1, 2, 3, [100, 5, 6]]</span></span><br><span class="line">print(deepcopyList)         <span class="comment"># [1, 2, 3, [4, 5, 6]]</span></span><br></pre></td></tr></tbody></table></figure>
-
-
-
-<h2 id="Python垃圾回收机制"><a href="#Python垃圾回收机制" class="headerlink" title="Python垃圾回收机制"></a>Python垃圾回收机制</h2><h3 id="1、引用计数"><a href="#1、引用计数" class="headerlink" title="1、引用计数"></a><strong>1、引用计数</strong></h3><p><strong>1、原理</strong></p>
-<ul>
-<li>当一个对象的引用被创建或者复制时，对象的引用计数加1；当一个对象的引用被销毁时，对象的引用计数减1</li>
-<li>当对象的引用计数减少为0时，就意味着对象已经再没有被使用了，可以将其内存释放掉</li>
-</ul>
-<p><strong>2、优点</strong></p>
-<ul>
-<li>引用计数有一个很大的优点，即实时性，任何内存，一旦没有指向它的引用，就会被立即回收，而其他的垃圾收集技术必须在某种特殊条件下才能进行无效内存的回收</li>
-</ul>
-<p><strong>3、缺点</strong></p>
-<ul>
-<li>引用计数机制所带来的维护引用计数的额外操作与Python运行中所进行的内存分配和释放，引用赋值的次数是成正比的（维护引用计数消耗资源） </li>
-<li>同时，因为对象之间相互引用，每个对象的引用都不会为0，所以这些对象所占用的内存始终都不会被释放掉 </li>
-</ul>
-<h3 id="2、标记—清除"><a href="#2、标记—清除" class="headerlink" title="2、标记—清除"></a>2、标记—清除</h3><p><strong>1、说明</strong></p>
-<ul>
-<li>它分为两个阶段：第一阶段是标记阶段，GC会把所有的活动对象打上标记，第二阶段是把那些没有标记的对象非活动对象进行回收</li>
-<li>对象之间通过引用（指针）连在一起，构成一个有向图 </li>
-<li>从根对象（root object）出发，沿着有向边遍历对象，可达的（reachable）对象标记为活动对象，不可达的对象就是要被清除的非活动对象。根对象就是全局变量、调用栈、寄存器。</li>
-</ul>
-<p><strong>2、缺点</strong></p>
-<ul>
-<li>标记清除算法作为Python的辅助垃圾收集技术，主要处理的是一些容器对象，比如list、dict、tuple等。因为对于字符串、数值对象是不可能造成循环引用问题。</li>
-<li>清除非活动的对象前它必须顺序扫描整个堆内存，哪怕只剩下小部分活动对象也要扫描所有对象。</li>
-</ul>
-<h3 id="3、分代回收"><a href="#3、分代回收" class="headerlink" title="3、分代回收"></a>3、分代回收</h3><ul>
-<li>分代回收是建立在标记清除技术基础之上的，是一种以空间换时间的操作方式</li>
-<li>Python将内存分为了3“代”，分别为年轻代（第0代）、中年代（第1代）、老年代（第2代）</li>
-<li>他们对应的是3个链表，它们的垃圾收集频率与对象的存活时间的增大而减小</li>
-<li>新创建的对象都会分配在年轻代，年轻代链表的总数达到上限时，Python垃圾收集机制就会被触发</li>
-<li>把那些可以被回收的对象回收掉，而那些不会回收的对象就会被移到中年代去，依此类推</li>
-<li>老年代中的对象是存活时间最久的对象，甚至是存活于整个系统的生命周期内</li>
-</ul>
-<h2 id="with上下文管理机制"><a href="#with上下文管理机制" class="headerlink" title="with上下文管理机制"></a>with上下文管理机制</h2><h3 id="什么是with语句"><a href="#什么是with语句" class="headerlink" title="什么是with语句"></a>什么是with语句</h3><ol>
-<li>with是一种上下文管理协议，目的在于从流程图中把 try,except 和finally 关键字和资源分配释放相关代码统统去掉，简化try….except….finlally的处理流程</li>
-<li>所以使用with处理的对象必须有enter()和exit()这两个方法<ul>
-<li>with通过enter方法初始化（enter方法在语句体执行之前进入运行）</li>
-<li>然后在exit中做善后以及处理异常（exit()方法在语句体执行完毕退出后运行）</li>
-</ul>
-</li>
-</ol>
-<h3 id="with"><a href="#with" class="headerlink" title="with"></a>with</h3><ul>
-<li>with 语句适用于对资源进行访问的场合，确保不管使用过程中是否发生异常都会执行必要的“清理”操作，释放资源 </li>
-<li>比如文件使用后自动关闭、线程中锁的自动获取和释放等。</li>
-</ul>
-<h3 id="with处理文件操作的实例"><a href="#with处理文件操作的实例" class="headerlink" title="with处理文件操作的实例"></a>with处理文件操作的实例</h3><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> open(<span class="string">'/etc/passwd'</span>) <span class="keyword">as</span> f:</span><br><span class="line">    <span class="keyword">for</span> line <span class="keyword">in</span> f:</span><br><span class="line">        print(line)</span><br><span class="line">  <span class="comment"># 这段代码的作用：打开一个文件，如果一切正常，把文件对象赋值给f，然后用迭代器遍历文件中每一行，当完成时，关闭文件；</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># 而无论在这段代码的任何地方，如果发生异常，此时文件仍会被关闭。</span></span><br></pre></td></tr></tbody></table></figure>
-
-<h2 id="高阶函数"><a href="#高阶函数" class="headerlink" title="高阶函数"></a>高阶函数</h2><h3 id="map函数"><a href="#map函数" class="headerlink" title="map函数"></a>map函数</h3><p>将第一个参数 function 依次作用在参数可迭代对象中的每一个元素上，在python3中返回包含每次 function 函数返回值的新迭代器 </p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">map(function,iterable)</span><br></pre></td></tr></tbody></table></figure>
-
-<p>实例：</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">f</span><span class="params">(x)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> x*x</span><br><span class="line">r = map(f, [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>])</span><br><span class="line">print(list(r))</span><br><span class="line">运行结果：</span><br><span class="line">[<span class="number">1</span>, <span class="number">4</span>, <span class="number">9</span>, <span class="number">16</span>, <span class="number">25</span>, <span class="number">36</span>, <span class="number">49</span>, <span class="number">64</span>, <span class="number">81</span>]</span><br></pre></td></tr></tbody></table></figure>
-
-
-
-<h3 id="filter函数"><a href="#filter函数" class="headerlink" title="filter函数"></a>filter函数</h3><p>filter()接收一个函数function 和一个list，这个function 的作用是对list的每个元素进行判断，返回True或False，filter()根据判断结果自动过滤掉不符合条件的元素，返回由符合条件元素组成的新list。 </p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">filter(function, iterable)</span><br></pre></td></tr></tbody></table></figure>
-
-<p>实例：</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">is_contain_s</span><span class="params">(s)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> <span class="string">'E'</span> <span class="keyword">in</span> s:</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">    </span><br><span class="line">result = filter(is_contain_s, [<span class="string">'sTEst'</span>, <span class="string">'abc'</span>, <span class="string">'str'</span>, <span class="string">' '</span>, <span class="string">'END'</span>])</span><br><span class="line">print(list(result))</span><br><span class="line"></span><br><span class="line">运行结果：</span><br><span class="line">[<span class="string">'sTEst'</span>, <span class="string">'END'</span>]</span><br></pre></td></tr></tbody></table></figure>
-
-
-
-
-
-<h3 id="reduce函数"><a href="#reduce函数" class="headerlink" title="reduce函数"></a>reduce函数</h3><p>reduce()函数也接收一个函数function, 和一个list。但reduce()传入的函数必须接收两个参数，reduce()对list的每个元素反复调用函数function, 并返回最终结果值。 </p>
-<p>在Python3里，reduce()函数已经被从全局名字空间里移除了，它现在被放置在fucntools模块里， 要使用的话要 先引入</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> functools <span class="keyword">import</span> reduce </span><br><span class="line">reduce(function, iterable)</span><br></pre></td></tr></tbody></table></figure>
-
-
-
-<p>实例：</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">f</span><span class="params">(x, y)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> x + y</span><br><span class="line"></span><br><span class="line">result = reduce(f, [<span class="number">1</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">7</span>, <span class="number">9</span>])</span><br><span class="line">print(result)</span><br><span class="line">运行结果：</span><br><span class="line"><span class="number">25</span></span><br></pre></td></tr></tbody></table></figure>
-
-
-
-<h3 id="sorted函数"><a href="#sorted函数" class="headerlink" title="sorted函数"></a>sorted函数</h3><p>对所有可迭代的对象进行排序操作 </p>
-<p>对于list也可以使用<code>list.sort()</code>方法，这个方法会修改原始的 list（返回值为None）。通常这个方法不如<code>sorted()</code>方便-如果你不需要原始的 list，<code>list.sort()</code>方法效率会稍微高一些。 </p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sorted(iterable, key=<span class="literal">None</span>, reverse=<span class="literal">False</span>)</span><br></pre></td></tr></tbody></table></figure>
-
-<ul>
-<li>iterable – 可迭代对象</li>
-<li>key – 主要是用来进行比较的元素，只有一个参数，具体的函数的参数就是取自于可迭代对象中，指定可迭代对象中的一个元素来进行排序</li>
-<li>reverse – 排序规则，reverse = True 降序 ， reverse = False 升序（默认）</li>
-</ul>
-<p>实例：</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">>>>example_list = [<span class="number">5</span>, <span class="number">0</span>, <span class="number">6</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">7</span>, <span class="number">3</span>, <span class="number">4</span>]</span><br><span class="line"><span class="meta">>>> </span>sorted(example_list, reverse=<span class="literal">True</span>)</span><br><span class="line">[<span class="number">7</span>, <span class="number">6</span>, <span class="number">5</span>, <span class="number">4</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">1</span>, <span class="number">0</span>]</span><br></pre></td></tr></tbody></table></figure>
-
-</body></html>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2018/03/19/python%E5%9F%BA%E7%A1%80/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1285,7 +931,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-04-22 14:56:42" itemprop="dateModified" datetime="2020-04-22T14:56:42+08:00">2020-04-22</time>
+                <time title="修改时间：2020-04-23 17:30:16" itemprop="dateModified" datetime="2020-04-23T17:30:16+08:00">2020-04-23</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1310,71 +956,18 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <html><head></head><body></body></html><html><head></head><body><h2 id="1-准备虚拟环境"><a href="#1-准备虚拟环境" class="headerlink" title="1.  准备虚拟环境"></a>1.  准备虚拟环境</h2><ol>
+          <h2 id="1-准备虚拟环境"><a href="#1-准备虚拟环境" class="headerlink" title="1.  准备虚拟环境"></a>1.  准备虚拟环境</h2><ol>
 <li>在VMware中创建一个中创建一个CentOS 64位的操作系统</li>
 <li>在配置时使用系统自动分配的IP</li>
 </ol>
-<h2 id="2-配置"><a href="#2-配置" class="headerlink" title="2.  配置"></a>2.  配置</h2><ol>
-<li><h3 id="配置网卡"><a href="#配置网卡" class="headerlink" title="配置网卡"></a><strong>配置网卡</strong></h3><p>​    vi /etc/sysconfig/network-scripts/ifcfg-eth0 </p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">BOOTPROTO=static <span class="comment">#dhcp改为static（修改）</span></span><br><span class="line">ONBOOT=yes <span class="comment">#开机启用本配置，一般在最后一行（修改）</span></span><br><span class="line"> </span><br><span class="line">IPADDR=<span class="number">192.168</span><span class="number">.179</span><span class="number">.111</span> <span class="comment">#静态IP（增加）</span></span><br><span class="line">GATEWAY=<span class="number">192.168</span><span class="number">.179</span><span class="number">.2</span> <span class="comment">#默认网关，虚拟机安装的话，通常是2，也就是VMnet8的网关设置（增加）</span></span><br><span class="line">NETMASK=<span class="number">255.255</span><span class="number">.255</span><span class="number">.0</span> <span class="comment">#子网掩码（增加）</span></span><br><span class="line">DNS1=<span class="number">192.168</span><span class="number">.179</span><span class="number">.2</span> <span class="comment">#DNS 配置，虚拟机安装的话，DNS就网关就行，多个DNS网址的话再增加（增加）</span></span><br></pre></td></tr></tbody></table></figure>
-</li>
-<li><h3 id="重启网卡"><a href="#重启网卡" class="headerlink" title="重启网卡"></a>重启网卡</h3><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">service network restart</span><br></pre></td></tr></tbody></table></figure>
-</li>
-<li><h3 id="随便找个域名ping一下测试DNS是否OK"><a href="#随便找个域名ping一下测试DNS是否OK" class="headerlink" title="随便找个域名ping一下测试DNS是否OK"></a>随便找个域名ping一下测试DNS是否OK</h3><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ping baidu.com</span><br></pre></td></tr></tbody></table></figure>
-</li>
-<li><h3 id="设置主机名"><a href="#设置主机名" class="headerlink" title="设置主机名"></a><strong>设置主机名</strong></h3><p>vi /etc/hostname</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">linux-node1.example.com				<span class="comment">#为主机名</span></span><br></pre></td></tr></tbody></table></figure>
-</li>
-<li><h3 id="设置主机名解析"><a href="#设置主机名解析" class="headerlink" title="设置主机名解析"></a>设置主机名解析</h3><p>vi /etc/hosts </p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">192.168</span><span class="number">.56</span><span class="number">.11</span> linux-node1 linux-node1.example.com</span><br><span class="line"></span><br><span class="line"><span class="number">192.168</span><span class="number">.56</span><span class="number">.12</span> linux-node2 linux-node2.example.com</span><br></pre></td></tr></tbody></table></figure>
-</li>
-<li><h3 id="安装最新epel-yum源"><a href="#安装最新epel-yum源" class="headerlink" title="安装最新epel yum源"></a><strong>安装最新epel yum源</strong></h3><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 此地址中有各种源（https://opsx.alibaba.com/mirror）</span></span><br><span class="line">rpm -ivh https://mirrors.aliyun.com/epel/epel-release-latest<span class="number">-7.</span>noarch.rpm</span><br></pre></td></tr></tbody></table></figure>
-</li>
-<li><h3 id="yum安装-一些基础包"><a href="#yum安装-一些基础包" class="headerlink" title="yum安装 一些基础包"></a><strong>yum安装 一些基础包</strong></h3><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum -y install net-tools vim lrzsz tree screen lsof tcpdump nc mtr nmap</span><br></pre></td></tr></tbody></table></figure>
-</li>
-<li><h3 id="关闭selinux"><a href="#关闭selinux" class="headerlink" title="关闭selinux"></a><strong>关闭selinux</strong></h3><p>vim /etc/selinux/config </p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELINUX=disabled</span><br></pre></td></tr></tbody></table></figure>
-</li>
-<li><h3 id="重启系统"><a href="#重启系统" class="headerlink" title="重启系统"></a><strong>重启系统</strong></h3><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum update -y && reboot          <span class="comment"># 升级所有包同时也升级软件和系统内核, 并重启</span></span><br></pre></td></tr></tbody></table></figure>
-</li>
-<li><h3 id="确认是否一些服务是否已按计划关闭"><a href="#确认是否一些服务是否已按计划关闭" class="headerlink" title="确认是否一些服务是否已按计划关闭"></a><strong>确认是否一些服务是否已按计划关闭</strong></h3><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">getenforce          <span class="comment"># selinux是否关闭</span></span><br><span class="line"></span><br><span class="line">firewall-cmd --state         <span class="comment"># 防火墙是否关闭</span></span><br></pre></td></tr></tbody></table></figure>
-</li>
-<li><h3 id="附带关于CentOS7防火墙的命令"><a href="#附带关于CentOS7防火墙的命令" class="headerlink" title="附带关于CentOS7防火墙的命令"></a>附带关于CentOS7防火墙的命令</h3><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">1. 使用命令：firewall-cmd --state     			查看防火墙状态</span><br><span class="line">		running			#代表开启</span><br><span class="line">2. 使用命令：systemctl stop firewalld.service	 	关闭运行的防火墙</span><br><span class="line">		not running		#代表关闭</span><br><span class="line">3. 注意  前面的方法，一旦重启操作系统，防火墙就自动开启了</span><br><span class="line"></span><br><span class="line">4. 输入命令：systemctl disable firewalld.service		禁止防火墙服务器自动启动</span><br></pre></td></tr></tbody></table></figure>
-
-</li>
-</ol>
-<h2 id="3-克隆一台虚拟机"><a href="#3-克隆一台虚拟机" class="headerlink" title="3.  克隆一台虚拟机"></a>3.  克隆一台虚拟机</h2><p>   <strong>注：</strong>克隆虚拟机必须要先关闭（shutdown） </p>
-<ol>
-<li><h3 id="右键-‘管理’-—–-gt-‘克隆’"><a href="#右键-‘管理’-—–-gt-‘克隆’" class="headerlink" title="右键    ‘管理’    —–>    ‘克隆’"></a>右键    ‘管理’    —–>    ‘克隆’</h3></li>
-<li><h3 id="选择从那个状态克隆"><a href="#选择从那个状态克隆" class="headerlink" title="选择从那个状态克隆"></a>选择从那个状态克隆</h3></li>
-<li><h3 id="克隆状态-创建完整克隆"><a href="#克隆状态-创建完整克隆" class="headerlink" title="克隆状态(创建完整克隆)"></a>克隆状态(创建完整克隆)</h3></li>
-<li><h3 id="搜索"><a href="#搜索" class="headerlink" title="搜索"></a>搜索</h3></li>
-<li><h3 id="新建虚拟机名称"><a href="#新建虚拟机名称" class="headerlink" title="新建虚拟机名称"></a>新建虚拟机名称</h3></li>
-<li><h3 id="点击’完成’即完成对虚拟机的克隆"><a href="#点击’完成’即完成对虚拟机的克隆" class="headerlink" title="点击’完成’即完成对虚拟机的克隆"></a>点击’完成’即完成对虚拟机的克隆</h3></li>
-<li><h3 id="对虚拟机node2进行一些简单的配置"><a href="#对虚拟机node2进行一些简单的配置" class="headerlink" title="对虚拟机node2进行一些简单的配置"></a>对虚拟机node2进行一些简单的配置</h3><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/hostname       # 1、修改主机名</span><br><span class="line"></span><br><span class="line">	linux-node2.example.com</span><br><span class="line"></span><br><span class="line">vi /etc/sysconfig/network-scripts/ifcfg-eth0 </span><br><span class="line"></span><br><span class="line">	IPADDR=192.168.179.111 #静态IP（修改）</span><br><span class="line"></span><br><span class="line">vi /etc/sysconfig/network-scripts/ifcfg-eth0　</span><br><span class="line"></span><br><span class="line">	IPADDR=192.168.56.12</span><br><span class="line"></span><br><span class="line">reboot			#重启虚拟机</span><br></pre></td></tr></tbody></table></figure>
-
-<h2 id="4-安装"><a href="#4-安装" class="headerlink" title="4.  安装"></a>4.  安装</h2><ol>
-<li><h3 id="在node1-中安装saltstack-master-和-minion"><a href="#在node1-中安装saltstack-master-和-minion" class="headerlink" title="在node1 中安装saltstack master 和 minion"></a><strong>在node1 中安装saltstack master 和 minion</strong></h3><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">yum -y install https://repo.saltstack.com/yum/redhat/salt-repo-latest-2.el7.noarch.rpm </span><br><span class="line"></span><br><span class="line">yum -y install salt-master salt-minion</span><br><span class="line"></span><br><span class="line">    /etc/salt/master（master配置文件）</span><br><span class="line"></span><br><span class="line">    /etc/salt/minion（minion配置文件）</span><br></pre></td></tr></tbody></table></figure>
-</li>
-<li><h3 id="node2-中安装saltstack-minion"><a href="#node2-中安装saltstack-minion" class="headerlink" title="node2 中安装saltstack minion"></a>node2 中安装<strong>saltstack minion</strong></h3><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">yum -y install https://repo.saltstack.com/yum/redhat/salt-repo-latest-2.el7.noarch.rpm </span><br><span class="line"></span><br><span class="line">yum -y install salt-minion</span><br><span class="line"></span><br><span class="line">	/etc/salt/minion（minion配置文件）</span><br></pre></td></tr></tbody></table></figure>
-</li>
-<li><h3 id="在linux-node1中配置-salt-minion"><a href="#在linux-node1中配置-salt-minion" class="headerlink" title="在linux-node1中配置 salt-minion"></a><strong>在linux-node1中配置 salt-minion</strong></h3><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/salt/minion</span><br><span class="line"></span><br><span class="line">    <span class="comment">#master: salt   修改为（master: 192.168.56.11） ----》配置master IP</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">#id:           修改为（id: linux-node1.example.com）   ---》告诉master自己是谁，默认会读取当前主机名</span></span><br><span class="line">    </span><br><span class="line">注：saltstack是以主机名区分不同 agent 需保证主机名唯一</span><br></pre></td></tr></tbody></table></figure>
-</li>
-<li><h3 id="在node2中配置-salt-minion"><a href="#在node2中配置-salt-minion" class="headerlink" title="在node2中配置 salt-minion"></a>在node2中配置 salt-minion</h3><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/salt/minion</span><br><span class="line"></span><br><span class="line">    <span class="comment">#master: salt   修改为（master: 192.168.56.11） ----》配置master IP</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">#id:           修改为（id: linux-node2.example.com）   ---》告诉master自己是谁，默认会读取当前主机名</span></span><br></pre></td></tr></tbody></table></figure>
-</li>
-<li><h3 id="启动node1中salt-maser-和-salt-minion"><a href="#启动node1中salt-maser-和-salt-minion" class="headerlink" title="启动node1中salt-maser 和 salt-minion"></a><strong>启动node1中salt-maser 和 salt-minion</strong></h3><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">systemctl start salt-master       <span class="comment"># 启动salt-master</span></span><br><span class="line"></span><br><span class="line">systemctl enable salt-master       <span class="comment"># 设置salt-master开机自启动</span></span><br><span class="line"></span><br><span class="line">systemctl start salt-minion        <span class="comment"># 启动</span></span><br><span class="line"></span><br><span class="line">systemctl enable salt-minion     <span class="comment"># 开机自启动</span></span><br></pre></td></tr></tbody></table></figure>
-</li>
-<li><h3 id="启动node2中salt-minion"><a href="#启动node2中salt-minion" class="headerlink" title="启动node2中salt-minion"></a><strong>启动node2中salt-minion</strong></h3><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">systemctl start salt-minion        <span class="comment"># 启动</span></span><br><span class="line"></span><br><span class="line">systemctl enable salt-minion      <span class="comment"># 开机自启动</span></span><br></pre></td></tr></tbody></table></figure>
-</li>
-<li><h3 id="认证"><a href="#认证" class="headerlink" title="认证"></a>认证</h3><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">salt-key             <span class="comment"># 在master中查看所有key的状态</span></span><br><span class="line"></span><br><span class="line">salt-key -a linux-node1.example.com      <span class="comment"># 认证 linux-node1.example.com的key</span></span><br><span class="line"></span><br><span class="line">salt-key -A          <span class="comment"># 一次性认证所有key</span></span><br></pre></td></tr></tbody></table></figure>
-</li>
-<li><h3 id="远程执行"><a href="#远程执行" class="headerlink" title="远程执行"></a>远程执行</h3><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">salt  \*  test.ping         <span class="comment"># 测试saltstack minion与master的连通性</span></span><br><span class="line"></span><br><span class="line">salt \* cmd.run <span class="string">'df -h'</span>     <span class="comment"># 在所有minion中批量执行 df -h 命令</span></span><br></pre></td></tr></tbody></table></figure>
-
-</li>
-</ol>
-</li>
-</ol>
-</body></html>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2018/03/12/saltstack%E5%AE%89%E8%A3%85/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 

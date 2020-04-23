@@ -242,7 +242,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-04-22 16:41:14" itemprop="dateModified" datetime="2020-04-22T16:41:14+08:00">2020-04-22</time>
+                <time title="修改时间：2020-04-23 17:20:51" itemprop="dateModified" datetime="2020-04-23T17:20:51+08:00">2020-04-23</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -267,33 +267,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <html><head></head><body></body></html><html><head></head><body><h2 id="一、docker的安装"><a href="#一、docker的安装" class="headerlink" title="一、docker的安装"></a>一、docker的安装</h2><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1、安装依赖包</span></span><br><span class="line">yum install -y yum-utils device-mapper-persistent-data lvm2</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2、添加Docker软件包源(否则doker安装的不是新版本)</span></span><br><span class="line">yum-config-manager \</span><br><span class="line">--add-repo \</span><br><span class="line">https://download.docker.com/linux/centos/docker-ce.repo</span><br><span class="line"></span><br><span class="line"><span class="comment"># 3、安装Docker CE</span></span><br><span class="line">yum install -y docker-ce</span><br><span class="line"></span><br><span class="line"><span class="comment"># 4、启动Docker服务并设置开机启动</span></span><br><span class="line">systemctl start docker</span><br><span class="line">systemctl enable docker</span><br><span class="line"></span><br><span class="line"><span class="comment"># 5、测试docker是否安装成功（hello-world是官方提供的一个测试镜像）</span></span><br><span class="line">docker run hello-world</span><br><span class="line"></span><br><span class="line"><span class="comment"># 6、查看docker基本信息</span></span><br><span class="line">docker info</span><br><span class="line">docker version</span><br></pre></td></tr></tbody></table></figure>
-
-<h2 id="二、docker的简单使用"><a href="#二、docker的简单使用" class="headerlink" title="二、docker的简单使用"></a>二、docker的简单使用</h2><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1、创建一个nginx容器</span></span><br><span class="line">docker run -it nginx</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2、查看docker运行的容器(可以获取到这个容器的id)</span></span><br><span class="line">docker ps</span><br><span class="line"></span><br><span class="line"><span class="comment"># 3、访问这个容器</span></span><br><span class="line"><span class="comment"># 进入这个nginx容器（进入的文件系统和宿主机是完全隔离的，有自己独立的文件系统）</span></span><br><span class="line">docker <span class="keyword">exec</span> -it <span class="number">73877e65</span>c07d bash</span><br><span class="line"></span><br><span class="line"><span class="comment"># 4、查看当前容器的 IP</span></span><br><span class="line">docker inspect <span class="number">73877e65</span>c07d   <span class="comment"># 73877e65c07d是通过docekr ps查看到的容器ID</span></span><br><span class="line">curl <span class="number">172.17</span><span class="number">.0</span><span class="number">.2</span>               <span class="comment"># 测试这个nginx容器是否可以访问</span></span><br></pre></td></tr></tbody></table></figure>
-
-<h2 id="三、docker常用命令"><a href="#三、docker常用命令" class="headerlink" title="三、docker常用命令"></a>三、docker常用命令</h2><h3 id="1、docker镜像相关"><a href="#1、docker镜像相关" class="headerlink" title="1、docker镜像相关"></a><strong>1、docker镜像相关</strong></h3><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">docker help                      		<span class="comment"># 查看docker帮助</span></span><br><span class="line"></span><br><span class="line">docker image --help              		<span class="comment"># 查看 docker中 镜像相关帮助</span></span><br><span class="line"></span><br><span class="line">docker image ls                  		<span class="comment"># 查看当前所有镜像</span></span><br><span class="line"></span><br><span class="line">docker image inspect nginx       		<span class="comment"># 查看指定镜像（nginx镜像）详细信息</span></span><br><span class="line"></span><br><span class="line">docker pull nginx:<span class="number">1.14</span>           		<span class="comment"># 下载指定版本镜像 nginx</span></span><br><span class="line"></span><br><span class="line">docker image rm nginx:<span class="number">1.14</span>       		<span class="comment"># 删除nginx 1.14版本</span></span><br><span class="line"></span><br><span class="line">docker image save nginx > nginx.tar      	<span class="comment"># 导出niginx镜像</span></span><br></pre></td></tr></tbody></table></figure>
-
-<h3 id="2、docker容器常相关"><a href="#2、docker容器常相关" class="headerlink" title="2、docker容器常相关"></a>2、docker容器常相关</h3><p><strong>docker run 常用参数</strong></p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">-d:   后台运行容器，并返回容器ID；</span><br><span class="line">-i:   以交互模式运行容器，通常与 -t 同时使用；</span><br><span class="line">-t:   为容器重新分配一个伪输入终端，通常与 -i 同时使用；</span><br><span class="line">-P:   随机端口映射，容器内部端口随机映射到主机的高端口</span><br><span class="line">-p:   指定端口映射，格式为：主机(宿主)端口:容器端口</span><br><span class="line">--name=<span class="string">"nginx-lb"</span>:   为容器指定一个名称；</span><br><span class="line">--dns <span class="number">8.8</span><span class="number">.8</span><span class="number">.8</span>:   指定容器使用的DNS服务器，默认和宿主一致；</span><br></pre></td></tr></tbody></table></figure>
-
-<p><strong>docker run 其他参数</strong></p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">--dns-search example.com: 指定容器DNS搜索域名，默认和宿主一致；</span><br><span class="line"></span><br><span class="line">-h <span class="string">"mars"</span>: 指定容器的hostname；</span><br><span class="line"></span><br><span class="line">-e username=<span class="string">"ritchie"</span>: 设置环境变量；</span><br><span class="line"></span><br><span class="line">--env-file=[]: 从指定文件读入环境变量；</span><br><span class="line"></span><br><span class="line">--cpuset=<span class="string">"0-2"</span> <span class="keyword">or</span> --cpuset=<span class="string">"0,1,2"</span>: 绑定容器到指定CPU运行；</span><br><span class="line"></span><br><span class="line">-m :设置容器使用内存最大值；</span><br><span class="line"></span><br><span class="line">--net=<span class="string">"bridge"</span>: 指定容器的网络连接类型，支持 bridge/host/none/container: 四种类型；</span><br><span class="line"></span><br><span class="line">--link=[]: 添加链接到另一个容器；</span><br><span class="line"></span><br><span class="line">--expose=[]: 开放一个端口或一组端口；</span><br><span class="line"></span><br><span class="line">--volume , -v:    绑定一个卷</span><br><span class="line"></span><br><span class="line">-a stdin: 指定标准输入输出内容类型，可选 STDIN/STDOUT/STDERR 三项；</span><br></pre></td></tr></tbody></table></figure>
-
-<p><strong>docker 容器管理</strong></p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">docker ps					<span class="comment">#查看当前正在运行的容器</span></span><br><span class="line"></span><br><span class="line">docker ps -a					<span class="comment">#查看所有的容器</span></span><br><span class="line"></span><br><span class="line">docker start 容器id				<span class="comment">#启动已停止的容器</span></span><br><span class="line"></span><br><span class="line">docker stop 容器id                		<span class="comment"># 关闭一个容器</span></span><br><span class="line"></span><br><span class="line">docker kill 容器id				<span class="comment">#强制停止容器</span></span><br><span class="line"></span><br><span class="line">docker rm 容器id				<span class="comment">#删除容器</span></span><br><span class="line"></span><br><span class="line">docker rm -f 容器id				<span class="comment">#删除正在运行的容器</span></span><br><span class="line"></span><br><span class="line">docker inspect 容器id				<span class="comment">#查看容器的所有信息</span></span><br><span class="line"></span><br><span class="line">docker container logs 容器id			<span class="comment">#查看容器日志</span></span><br><span class="line"></span><br><span class="line">docker top 容器id				<span class="comment">#查看容器里的进程</span></span><br><span class="line"></span><br><span class="line">docker <span class="keyword">exec</span> -it 容器名称 bash			<span class="comment">#进入容器</span></span><br><span class="line"></span><br><span class="line">exit						<span class="comment">#退出容器</span></span><br><span class="line"></span><br><span class="line">docker run --help                               <span class="comment"># 查看创建容器帮助</span></span><br><span class="line"></span><br><span class="line">docker run -it centos                           <span class="comment"># 创建centos镜像并进入终端</span></span><br><span class="line"></span><br><span class="line">docker run -d nginx                             <span class="comment"># 后台启动nginx容器</span></span><br><span class="line"></span><br><span class="line">docker run -itd centos                          <span class="comment"># 启用一个伪终端守护centos容器</span></span><br></pre></td></tr></tbody></table></figure>
-
-<p><strong>docker命令解析</strong></p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">docker container run -d --name web3 -e test=<span class="number">123456</span> -p <span class="number">8800</span>:<span class="number">80</span> -h webhostname --restart always nginx</span><br><span class="line">    </span><br><span class="line">-d                                       <span class="comment"># 后台启动nginx容器</span></span><br><span class="line">--name web3                              <span class="comment"># 自定义容器名字(默认会是一段随机字符串)</span></span><br><span class="line">-e test=<span class="number">123456</span>                           <span class="comment"># 启动容器添加变量 test=123456 (echo $test)</span></span><br><span class="line">-p <span class="number">8800</span>:<span class="number">80</span>                               <span class="comment"># 宿主机的8800端口映射到docker容器的80端口中</span></span><br><span class="line">-h webhostname                           <span class="comment"># docker容器主机名 (a300f394af88)</span></span><br><span class="line">--restart always                         <span class="comment"># 宿主机重启自动拉起这个docker容器</span></span><br><span class="line">nginx                                    <span class="comment"># 使用这个nginx镜像启动容器</span></span><br><span class="line"><span class="comment">#注：http://192.168.56.12:8800/     	访问这个docker  nginx</span></span><br></pre></td></tr></tbody></table></figure>
-
-
-
-
-
-
-
-
-
-</body></html>
+          <h2 id="一、docker的安装"><a href="#一、docker的安装" class="headerlink" title="一、docker的安装"></a>一、docker的安装</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1、安装依赖包</span></span><br><span class="line">yum install -y yum-utils device-mapper-persistent-data lvm2</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2、添加Docker软件包源(否则doker安装的不是新版本)</span></span><br><span class="line">yum-config-manager \</span><br><span class="line">--add-repo \</span><br><span class="line">https://download.docker.com/linux/centos/docker-ce.repo</span><br><span class="line"></span><br><span class="line"><span class="comment"># 3、安装Docker CE</span></span><br><span class="line">yum install -y docker-ce</span><br><span class="line"></span><br><span class="line"><span class="comment"># 4、启动Docker服务并设置开机启动</span></span><br><span class="line">systemctl start docker</span><br><span class="line">systemctl enable docker</span><br><span class="line"></span><br><span class="line"><span class="comment"># 5、测试docker是否安装成功（hello-world是官方提供的一个测试镜像）</span></span><br><span class="line">docker run hello-world</span><br><span class="line"></span><br><span class="line"><span class="comment"># 6、查看docker基本信息</span></span><br><span class="line">docker info</span><br><span class="line">docker version</span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/01/02/docker%E5%91%BD%E4%BB%A4/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -343,7 +325,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-04-22 16:41:04" itemprop="dateModified" datetime="2020-04-22T16:41:04+08:00">2020-04-22</time>
+                <time title="修改时间：2020-04-23 17:21:13" itemprop="dateModified" datetime="2020-04-23T17:21:13+08:00">2020-04-23</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -368,7 +350,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <html><head></head><body></body></html><html><head></head><body><h2 id="一、Docker简介"><a href="#一、Docker简介" class="headerlink" title="一、Docker简介"></a>一、Docker简介</h2><ol>
+          <h2 id="一、Docker简介"><a href="#一、Docker简介" class="headerlink" title="一、Docker简介"></a>一、Docker简介</h2><ol>
 <li><p>Docker 是应用最广泛的开源容器引擎，让开发者可以打包他们的应用以及依赖包到一个可移植的容器中 </p>
 </li>
 <li><p>然后发布到任何流行的 Linux或Windows 机器上，也可以实现虚拟化。 </p>
@@ -386,51 +368,14 @@
 <li>一种操作系统级的虚拟化技术</li>
 <li>依赖于Linux内核特性：Namespace（资源隔离） 和 Cgroups（资源限制）</li>
 </ul>
-<hr>
-<h2 id="二、docker的组成"><a href="#二、docker的组成" class="headerlink" title="二、docker的组成"></a>二、docker的组成</h2><p><strong><img src="/2020/01/02/docker/image1.png" class title="docker构成图"></strong> </p>
-<table>
-<thead>
-<tr>
-<th>DockerClient</th>
-<th>客户端</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Docker Daemon</td>
-<td>守护进程</td>
-</tr>
-<tr>
-<td>Docker Images</td>
-<td>镜像</td>
-</tr>
-<tr>
-<td>Docker Container</td>
-<td>容器</td>
-</tr>
-<tr>
-<td>Docker Registry</td>
-<td>镜像仓库</td>
-</tr>
-</tbody></table>
-<h2 id="三、docker与虚拟机比较"><a href="#三、docker与虚拟机比较" class="headerlink" title="三、docker与虚拟机比较"></a>三、docker与虚拟机比较</h2><p><strong><img src="/2020/01/02/docker/image2.png" class title="虚拟机与docker结构对比"></strong> </p>
-<p><strong><img src="/2020/01/02/docker/image3.png" class title="虚拟机与docker性能对比"></strong> </p>
-<h2 id="四、docker技术应用场景"><a href="#四、docker技术应用场景" class="headerlink" title="四、docker技术应用场景"></a>四、docker技术应用场景</h2><h3 id="1、场景一：节省项目环境部署时间"><a href="#1、场景一：节省项目环境部署时间" class="headerlink" title="1、场景一：节省项目环境部署时间"></a><strong>1、场景一：节省项目环境部署时间</strong></h3><p>　　　<strong>1）单项目打包</strong></p>
-<p>　　　　　　1. 每次部署项目到测试、生产等环境，都要部署一大堆依赖的软件、工具，时间久，出错概率大。</p>
-<p>　　　　　　2. Docker主要理念就是环境打包部署，可在任意Docker Engine运行。</p>
-<p>　　　　　　3. 我们只需要将每个项目环境打包到镜像，push到镜像仓库，当有需要部署这个项目时，直接pull镜像启动容器，这个项目就可以访问了！一次构建多次部署，一劳永逸。</p>
-<p>　　　 <strong>2）整套项目打包</strong></p>
-<p>　　　　　　1. 比如有一个产品可以整套部署到客户那里，以往都是派一名实施工程师到客户那部署。</p>
-<p>　　　　　　2. 如果用了Docker，我们可以前期将这套项目封装打包起来，实现一键部署，分分钟钟搞定，就不需要再派人过去了。比如官方的Docker Compose编排工具。</p>
-<p>　　　 <strong>3）新开源技术试用</strong></p>
-<p>　　　　　　1. 有时，我们想调研一些开源项目，我们可以直接从公共镜像仓库pull项目官方做好镜像启动容器即可。</p>
-<h3 id="2、场景二：环境一致性"><a href="#2、场景二：环境一致性" class="headerlink" title="2、场景二：环境一致性"></a><strong>2、场景二：环境一致性</strong></h3><p>　　　　　　1. 项目在开发电脑本地运行没问题，到了测试或生产环境就运行不起来。</p>
-<p>　　　　　　2. Docker将项目环境打包成镜像，可以在任何Docker Engine部署。</p>
-<h3 id="3、场景三：持续集成"><a href="#3、场景三：持续集成" class="headerlink" title="3、场景三：持续集成"></a><strong>3、场景三：持续集成</strong></h3><p>　　　　　　1. 一个项目版本快速迭代的测试场景，需要一个合理的CI（持续集成）/CD（持续部署）环境支撑。</p>
-<p>　　　　　　2. CI/CD是一个周期性自动化项目测试流程，包括构建、部署、测试、发布等工作，很少需要人工干预。</p>
-<p>　　　　　　3. Docker通过项目镜像构建和快速部署，打通测试环境与生产环境，高度保持多个环境之间一致性。</p>
-<h3 id="4、场景四：微服务"><a href="#4、场景四：微服务" class="headerlink" title="4、场景四：微服务"></a><strong>4、场景四：微服务</strong></h3><p>　　　　　　1. 微服务指尽可能细粒度拆分业务程序架构，由多个独立服务组成业务系统。</p>
-<p>　　　　　　2. Docker容器作为这些独立服务的部署单元，每个服务单独部署到一个docker容器中。</p>
-</body></html>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/01/02/docker/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -480,7 +425,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-04-22 15:30:40" itemprop="dateModified" datetime="2020-04-22T15:30:40+08:00">2020-04-22</time>
+                <time title="修改时间：2020-04-23 17:21:29" itemprop="dateModified" datetime="2020-04-23T17:21:29+08:00">2020-04-23</time>
               </span>
 
           
@@ -494,91 +439,18 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <html><head></head><body></body></html><html><head></head><body><h2 id="正则表达式"><a href="#正则表达式" class="headerlink" title="正则表达式"></a>正则表达式</h2><h3 id="正则表达式中的贪婪匹配和惰性匹配"><a href="#正则表达式中的贪婪匹配和惰性匹配" class="headerlink" title="正则表达式中的贪婪匹配和惰性匹配"></a>正则表达式中的贪婪匹配和惰性匹配</h3><ol>
+          <h2 id="正则表达式"><a href="#正则表达式" class="headerlink" title="正则表达式"></a>正则表达式</h2><h3 id="正则表达式中的贪婪匹配和惰性匹配"><a href="#正则表达式中的贪婪匹配和惰性匹配" class="headerlink" title="正则表达式中的贪婪匹配和惰性匹配"></a>正则表达式中的贪婪匹配和惰性匹配</h3><ol>
 <li>贪婪模式就是匹配最长的字符串，非贪婪模式就是匹配最短字符串。 </li>
 </ol>
 <h3 id="如何区分两种模式"><a href="#如何区分两种模式" class="headerlink" title="如何区分两种模式"></a>如何区分两种模式</h3><p>默认情况下匹配都是贪婪模式，如果要改成非贪婪模式，只需要量词后面加上一个问号? </p>
-<table>
-<thead>
-<tr>
-<th>字符</th>
-<th>功能</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>.</td>
-<td>匹配任意1个字符（除了\n）</td>
-</tr>
-<tr>
-<td>[ ]</td>
-<td>匹配[ ]中列举的字符</td>
-</tr>
-<tr>
-<td>\d</td>
-<td>匹配数字，即0-9</td>
-</tr>
-<tr>
-<td>\D</td>
-<td>匹配非数字，即不是数字</td>
-</tr>
-<tr>
-<td>\s</td>
-<td>匹配空白，即 空格</td>
-</tr>
-<tr>
-<td>\S</td>
-<td>匹配非空白</td>
-</tr>
-<tr>
-<td>\w</td>
-<td>匹配单词字符，即a-z、A-Z、0-9、_</td>
-</tr>
-<tr>
-<td>\W</td>
-<td>匹配非单词字符</td>
-</tr>
-</tbody></table>
-<table>
-<thead>
-<tr>
-<th>*</th>
-<th>匹配前一个字符出现0次或者无限次，即可有可无</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>+</td>
-<td>匹配前一个字符出现1次或者无限次，即至少有1次</td>
-</tr>
-<tr>
-<td>?</td>
-<td>匹配前一个字符出现1次或者0次，即要么有1次，要么没有</td>
-</tr>
-<tr>
-<td>{m}</td>
-<td>匹配前一个字符出现m次</td>
-</tr>
-<tr>
-<td>{m,n}</td>
-<td>匹配前一个字符出现从m到n次</td>
-</tr>
-<tr>
-<td>^</td>
-<td>匹配字符串开头是否以^后面的字符开头</td>
-</tr>
-<tr>
-<td>$</td>
-<td>匹配字符串结尾是否以$前面的字符结束</td>
-</tr>
-</tbody></table>
-<h3 id="re模块"><a href="#re模块" class="headerlink" title="re模块"></a>re模块</h3><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># re模块</span></span><br><span class="line"><span class="number">1.</span>re.findall(<span class="string">'正则表达式'</span>, <span class="string">'待匹配字符串'</span>): 返回所有满足匹配条件的结果, 以列表形式返回</span><br><span class="line"><span class="number">2.</span>re.search(<span class="string">'正则表达式'</span>, <span class="string">'带匹配字符串'</span>): 匹配到第一个就返回一个对象, 该对象使用group()进行取值, 如果为匹配到则返回<span class="literal">None</span></span><br><span class="line"><span class="number">3.</span>re.match(<span class="string">'正则表达式'</span>, <span class="string">'待匹配字符串'</span>): 只从字符串开始进行匹配, 如果匹配成功返回一个对象,同样使用group()进行取值, 匹配不成功返回<span class="literal">None</span></span><br><span class="line"><span class="number">4.</span>re.compile(<span class="string">'正则表达式'</span>): 将正则表达式编译为对象, 但需要按该正则表达式匹配是可以在直接使用该对象调用以上方法即可.</span><br><span class="line"></span><br><span class="line"><span class="comment"># 示例:    </span></span><br><span class="line">s = <span class="string">"abcabc你好"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># findall方法演示</span></span><br><span class="line">res_findall = re.findall(<span class="string">'a'</span>, s)</span><br><span class="line">print(<span class="string">'findall匹配结果:'</span>, res_findall)</span><br><span class="line"></span><br><span class="line"><span class="comment"># search方法演示, 不确定是否能匹配出结果, 不可直接使用group进行取值, 需要判断或进行异常处理</span></span><br><span class="line">res_search = re.search(<span class="string">"你"</span>, s)</span><br><span class="line"><span class="keyword">if</span> res:</span><br><span class="line">    print(<span class="string">'search匹配结果'</span>, res.group())</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    print(<span class="string">'None'</span>)</span><br><span class="line">    </span><br><span class="line"><span class="comment"># match方法演示:</span></span><br><span class="line">res_match_1 = re.match(<span class="string">'abc'</span>, s)</span><br><span class="line">res_match_2 = re.match(<span class="string">'bc'</span>, s)</span><br><span class="line">print(<span class="string">'res_match_1结果:'</span>, res_match_1)</span><br><span class="line">print(<span class="string">'res_match_2结果:'</span>, res_match_2)</span><br><span class="line"></span><br><span class="line"><span class="comment"># compile方法演示:</span></span><br><span class="line">re_obj = re.compile(<span class="string">'ab'</span>)</span><br><span class="line">res = re_obj.findall(s)</span><br><span class="line">print(res)</span><br></pre></td></tr></tbody></table></figure>
-
-
-
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 利用正则表达式抓取校花网图片</span></span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"></span><br><span class="line"><span class="comment"># 请求url, 抓取页面</span></span><br><span class="line">url = <span class="string">'http://www.xiaohuar.com/hua/'</span></span><br><span class="line">headers = {</span><br><span class="line">    <span class="string">'User-Agent'</span>:<span class="string">'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36'</span></span><br><span class="line">}</span><br><span class="line">res = requests.get(url=url, headers=headers)</span><br><span class="line">html = res.text</span><br><span class="line"></span><br><span class="line"><span class="comment"># 利用正则匹配页面中的img标签, 获取其src属性值</span></span><br><span class="line">all_src = re.findall(<span class="string">'<img.*src="(.*jpg)"'</span>, html, re.M)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 遍历获取到的图片连接, 处理连接为完整的url, 再次请求抓取图片二进制流数据, 写入文件</span></span><br><span class="line"><span class="keyword">for</span> num, url <span class="keyword">in</span> enumerate(all_src):</span><br><span class="line">    url = <span class="string">'http://www.xiaohuar.com'</span> + url</span><br><span class="line">    image = requests.get(url=url, headers=headers)</span><br><span class="line">    <span class="keyword">with</span> open(<span class="string">'%s.jpg'</span> % num, <span class="string">'wb'</span>) <span class="keyword">as</span> f:</span><br><span class="line">        f.write(image.content)</span><br></pre></td></tr></tbody></table></figure>
-
-
-
-</body></html>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2019/11/26/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -628,7 +500,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-04-22 15:16:29" itemprop="dateModified" datetime="2020-04-22T15:16:29+08:00">2020-04-22</time>
+                <time title="修改时间：2020-04-23 17:21:46" itemprop="dateModified" datetime="2020-04-23T17:21:46+08:00">2020-04-23</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -653,17 +525,19 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <html><head></head><body></body></html><html><head></head><body><h2 id="1、搭载实验环境（使用docker部署两台nginx容器）"><a href="#1、搭载实验环境（使用docker部署两台nginx容器）" class="headerlink" title="1、搭载实验环境（使用docker部署两台nginx容器）"></a>1、搭载实验环境（使用docker部署两台nginx容器）</h2><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#使用docker搭建第一台nginx服务</span></span><br><span class="line">[root@node1 ~]<span class="comment"># docker container run -d --name web01 -p 81:80 nginx</span></span><br><span class="line">测试访问：http://<span class="number">192.168</span><span class="number">.26</span><span class="number">.128</span><span class="number">.81</span>/</span><br><span class="line">[root@node1 ~]<span class="comment"># docker exec -it web01 bash</span></span><br><span class="line">root@b68021de00b8:/<span class="comment"># echo web01 > /usr/share/nginx/html/index.html</span></span><br></pre></td></tr></tbody></table></figure>
+          <h2 id="1、搭载实验环境（使用docker部署两台nginx容器）"><a href="#1、搭载实验环境（使用docker部署两台nginx容器）" class="headerlink" title="1、搭载实验环境（使用docker部署两台nginx容器）"></a>1、搭载实验环境（使用docker部署两台nginx容器）</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#使用docker搭建第一台nginx服务</span></span><br><span class="line">[root@node1 ~]<span class="comment"># docker container run -d --name web01 -p 81:80 nginx</span></span><br><span class="line">测试访问：http://<span class="number">192.168</span><span class="number">.26</span><span class="number">.128</span><span class="number">.81</span>/</span><br><span class="line">[root@node1 ~]<span class="comment"># docker exec -it web01 bash</span></span><br><span class="line">root@b68021de00b8:/<span class="comment"># echo web01 &gt; /usr/share/nginx/html/index.html</span></span><br></pre></td></tr></table></figure>
 
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#使用docker搭建第二台nginx服务</span></span><br><span class="line">[root@node1 ~]<span class="comment"># docker container run -d --name web02 -p 82:80 nginx</span></span><br><span class="line">测试访问：http://<span class="number">192.168</span><span class="number">.26</span><span class="number">.128</span><span class="number">.82</span>/</span><br><span class="line">[root@node1 ~]<span class="comment"># docker exec -it web02 bash</span></span><br><span class="line">root@ba1678e54a53:/<span class="comment"># echo web02 > /usr/share/nginx/html/index.html</span></span><br></pre></td></tr></tbody></table></figure>
-
-<hr>
-<h2 id="2、在真实主机中安装nginx并配置负载均衡"><a href="#2、在真实主机中安装nginx并配置负载均衡" class="headerlink" title="2、在真实主机中安装nginx并配置负载均衡"></a>2、<strong>在真实主机中安装nginx并配置负载均衡</strong></h2><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]<span class="comment"># yum -y install nginx</span></span><br><span class="line">[root@node1 ~]<span class="comment"># vim /etc/nginx/nginx.conf</span></span><br><span class="line"><span class="comment">#### 修改nginx.conf 默认是轮训 ####</span></span><br><span class="line"></span><br><span class="line"><span class="string">'''</span></span><br><span class="line"><span class="string"># 1. upstream是自己写的，一定要放在server外面</span></span><br><span class="line"><span class="string">upstream myservers {</span></span><br><span class="line"><span class="string">    server 192.168.56.14:81;</span></span><br><span class="line"><span class="string">    server 192.168.56.14:82;</span></span><br><span class="line"><span class="string">}</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"># 2. server其实默认已经有一个，只需要修改location中配置，指定转发代理即可</span></span><br><span class="line"><span class="string">server {</span></span><br><span class="line"><span class="string">    location / {</span></span><br><span class="line"><span class="string">       proxy_pass http://myservers;</span></span><br><span class="line"><span class="string">    }</span></span><br><span class="line"><span class="string">}</span></span><br><span class="line"><span class="string">'''</span></span><br><span class="line">[root@node1 nginx]<span class="comment"># systemctl reload nginx				#重载nginx</span></span><br><span class="line">[root@node1 nginx]<span class="comment"># systemctl start nginx				#启动nginx</span></span><br><span class="line">[root@node1 nginx]<span class="comment"># systemctl restart nginx 				#重启nginx</span></span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#使用docker搭建第二台nginx服务</span></span><br><span class="line">[root@node1 ~]<span class="comment"># docker container run -d --name web02 -p 82:80 nginx</span></span><br><span class="line">测试访问：http://<span class="number">192.168</span><span class="number">.26</span><span class="number">.128</span><span class="number">.82</span>/</span><br><span class="line">[root@node1 ~]<span class="comment"># docker exec -it web02 bash</span></span><br><span class="line">root@ba1678e54a53:/<span class="comment"># echo web02 &gt; /usr/share/nginx/html/index.html</span></span><br></pre></td></tr></table></figure>
 
 <hr>
-<h2 id="3、负载均衡常用配置梳理"><a href="#3、负载均衡常用配置梳理" class="headerlink" title="3、负载均衡常用配置梳理"></a>3、负载均衡常用配置梳理</h2><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span>、轮询（默认）</span><br><span class="line">每个请求按时间顺序逐一分配到不同的后端服务器，如果后端服务器down掉，能自动剔除。</span><br><span class="line"></span><br><span class="line">upstream backserver {</span><br><span class="line">    server <span class="number">192.168</span><span class="number">.0</span><span class="number">.14</span>;</span><br><span class="line">    server <span class="number">192.168</span><span class="number">.0</span><span class="number">.15</span>;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="number">2</span>、权重 weight</span><br><span class="line">指定轮询几率，weight和访问比率成正比，用于后端服务器性能不均的情况。</span><br><span class="line"></span><br><span class="line">upstream backserver {</span><br><span class="line">    server <span class="number">192.168</span><span class="number">.0</span><span class="number">.14</span> weight=<span class="number">3</span>;</span><br><span class="line">    server <span class="number">192.168</span><span class="number">.0</span><span class="number">.15</span> weight=<span class="number">7</span>;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="number">3</span>、ip_hash（ IP绑定）</span><br><span class="line">上述方式存在一个问题就是说，在负载均衡系统中，假如用户在某台服务器上登录了，那么该用户第二次请求的时候，因为我们是负载均衡系统，</span><br><span class="line">每次请求都会重新定位到服务器集群中的某一个，那么已经登录某一个服务器的用户再重新定位到另一个服务器，其登录信息将会丢失，这样显然是不妥的。</span><br><span class="line">我们可以采用ip_hash指令解决这个问题，如果客户已经访问了某个服务器，当用户再次访问时，会将该请求通过哈希算法，自动定位到该服务器。</span><br><span class="line">每个请求按访问ip的hash结果分配，这样每个访客固定访问一个后端服务器，可以解决session的问题。</span><br><span class="line"></span><br><span class="line">upstream backserver {</span><br><span class="line">    ip_hash;</span><br><span class="line">    server <span class="number">192.168</span><span class="number">.0</span><span class="number">.14</span>:<span class="number">88</span>;</span><br><span class="line">    server <span class="number">192.168</span><span class="number">.0</span><span class="number">.15</span>:<span class="number">80</span>;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="number">4</span>、fair（第三方插件）</span><br><span class="line">按后端服务器的响应时间来分配请求，响应时间短的优先分配。</span><br><span class="line"></span><br><span class="line">upstream backserver {</span><br><span class="line">    server server1;</span><br><span class="line">    server server2;</span><br><span class="line">    fair;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="number">5</span>、url_hash（第三方插件）</span><br><span class="line">按访问url的hash结果来分配请求，使每个url定向到同一个后端服务器，后端服务器为缓存时比较有效。</span><br><span class="line"></span><br><span class="line">upstream backserver {</span><br><span class="line">    server squid1:<span class="number">3128</span>;</span><br><span class="line">    server squid2:<span class="number">3128</span>;</span><br><span class="line">    hash $request_uri;</span><br><span class="line">    hash_method crc32;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
-
-</body></html>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2019/05/06/Nginx%E9%85%8D%E7%BD%AE%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -713,7 +587,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-04-22 15:15:09" itemprop="dateModified" datetime="2020-04-22T15:15:09+08:00">2020-04-22</time>
+                <time title="修改时间：2020-04-23 17:22:05" itemprop="dateModified" datetime="2020-04-23T17:22:05+08:00">2020-04-23</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -738,25 +612,20 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <html><head></head><body></body></html><html><head></head><body><h2 id="nginx和uWSGI的区别"><a href="#nginx和uWSGI的区别" class="headerlink" title="nginx和uWSGI的区别"></a>nginx和uWSGI的区别</h2><ul>
+          <h2 id="nginx和uWSGI的区别"><a href="#nginx和uWSGI的区别" class="headerlink" title="nginx和uWSGI的区别"></a>nginx和uWSGI的区别</h2><ul>
 <li><strong>nginx</strong>和<strong>uWSGI</strong>都是web服务器，都可以用来部署django等服务</li>
 <li><strong>nginx</strong>：处理静态资源能力非常强，还可以提供 负载均衡、反向代理、攻击拦截等</li>
 <li><strong>uWSGI</strong>：单点部署，容易部署，性能差一些，可以支持的web协议多</li>
 </ul>
-<h1 id="django-nginx-uwsgi请求处理过程"><a href="#django-nginx-uwsgi请求处理过程" class="headerlink" title="django+nginx+uwsgi请求处理过程"></a>django+nginx+uwsgi请求处理过程</h1><img src="/2019/05/04/nginx%E5%92%8CuWSGI%E5%8C%BA%E5%88%AB%E5%92%8C%E4%BD%9C%E7%94%A8/1583286059097.png" class title="流程图">
-
-<h3 id="1、请求处理整体流程"><a href="#1、请求处理整体流程" class="headerlink" title="1、请求处理整体流程"></a>1、请求处理整体流程</h3><p>nginx接收到浏览器发送过来的http请求，将包进行解析，分析url </p>
-<p><strong>静态文件请求：</strong>就直接访问用户给nginx配置的静态文件目录，直接返回用户请求的静态文件</p>
-<p><strong>动态接口请求：</strong>那么nginx就将请求转发给uWSGI，最后到达django处理</p>
-<h3 id="2、各模块作用"><a href="#2、各模块作用" class="headerlink" title="2、各模块作用"></a>2、各模块作用</h3><ol>
-<li><strong>nginx：</strong>是对外的服务器，外部浏览器通过url访问nginx，nginx主要处理静态请求</li>
-<li><strong>uWSGI：</strong>是对内的服务器，主要用来处理动态请求</li>
-<li><strong>uwsgi：</strong>是一种web协议，接收到请求之后将包进行处理，处理成wsgi可以接受的格式，并发给wsgi</li>
-<li><strong>wsgi：</strong>是python专用的web协议，根据请求调用应用程序（django）的某个文件，某个文件的某个函数</li>
-<li><strong>django：</strong>是真正干活的，查询数据等资源，把处理的结果再次返回给WSGI， WSGI 将返回值进行打包，打包成uwsgi能够接收的格式</li>
-<li>uwsgi接收wsgi发送的请求，并转发给nginx,nginx最终将返回值返回给浏览器</li>
-</ol>
-</body></html>
+<p>​
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2019/05/04/nginx%E5%92%8CuWSGI%E5%8C%BA%E5%88%AB%E5%92%8C%E4%BD%9C%E7%94%A8/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -806,7 +675,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-04-22 15:14:16" itemprop="dateModified" datetime="2020-04-22T15:14:16+08:00">2020-04-22</time>
+                <time title="修改时间：2020-04-23 17:22:31" itemprop="dateModified" datetime="2020-04-23T17:22:31+08:00">2020-04-23</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -831,29 +700,19 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <html><head></head><body></body></html><html><head></head><body><h2 id="要注意WSGI、uwsgi、uWSGI这三个概念的区分"><a href="#要注意WSGI、uwsgi、uWSGI这三个概念的区分" class="headerlink" title="要注意WSGI、uwsgi、uWSGI这三个概念的区分"></a>要注意WSGI、uwsgi、uWSGI这三个概念的区分</h2><ul>
+          <h2 id="要注意WSGI、uwsgi、uWSGI这三个概念的区分"><a href="#要注意WSGI、uwsgi、uWSGI这三个概念的区分" class="headerlink" title="要注意WSGI、uwsgi、uWSGI这三个概念的区分"></a>要注意WSGI、uwsgi、uWSGI这三个概念的区分</h2><ul>
 <li>WSGI是一种通信协议。</li>
 <li>uwsgi是一种线路协议而不是通信协议，在此常用于在uWSGI服务器与其他网络服务器的数据通信。</li>
 <li>而uWSGI是实现了uwsgi和WSGI两种协议的Web服务器。</li>
 </ul>
-<h2 id="WSGI"><a href="#WSGI" class="headerlink" title="WSGI"></a>WSGI</h2><p><strong>WSGI是一种通信协议</strong>。WSGI 不是框架，也不是一个模块，而是介于 Web应用程序（Web框架）与 Web Server 之间交互的一种规范。只要大家都遵循WSGI规范实现 Web 框架，就可以 使用 Gunicorn 来运行，规范最早在 PEP333 中被提出。 </p>
-<img src="/2019/05/04/%E6%B5%85%E8%B0%88uWSGI-uwsgi-WSGI%E7%9A%84%E5%8C%BA%E5%88%AB/20181212210028151.png" class title="This is an test image">  
-
-<p>WSGI 规定了Web服务器（Server）和应用程序（Application）双方各自需要实现什么接口，以便两者能完美的配合使用，这个和 USB Type-C 规范很像， 只要手机和充电线都遵循了 Type-C 接口规范， 大家的充电线就可以复用，不同的是充电谁快谁慢的问题，而苹果没有遵循Type-C规范，所以只有他自家的线才能充苹果手机。</p>
-<p>一个完整的 Web 应用包含两部分，一个是服务器程序（Server），一个是应用程序（Application），服务器程序负责接收浏览器发送过来的请求，应用程序负责处理具体的业务逻辑。 比如我基于 Django 框架开发一个博客应用，部署在生产环境时会用 Gunicorn 或者 Uwsgi 作为服务器程序。</p>
-<p>Python 中 Web 框架非常多，Flask、Django、Bottle、Pyramid、Tornado 等等，甚至你也自己也可以造一个 Web 框架，那么这么多框架，为什么他们都可以用 Gunicorn 或者 Uwsgi 来部署呢？</p>
-<p>答案就是 WSGI 规范。</p>
-<h2 id="uwsgi"><a href="#uwsgi" class="headerlink" title="uwsgi"></a>uwsgi</h2><p>uwsgi是一个二进制协议，能够携带任何类型的信息。uwsgi数据包的前4个字节用于描述信息的类型。uwsgi协议主要工作在TCP方式下。uwsgi是一种线路协议而不是通信协议，在此常用于在uWSGI服务器与其他网络服务器的数据通信。 </p>
-<p>uwsgi协议是一个uWSGI服务器自有的协议，它用于定义传输信息的类型（type of information），每一个uwsgi packet前4byte为传输信息类型描述，它与WSGI相比是两样东西。</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Struct uwsgi_packet_header{</span><br><span class="line">uint8_t modifier1;</span><br><span class="line">uint16_t datasize;</span><br><span class="line">uint8_t modifier2;</span><br><span class="line">};</span><br></pre></td></tr></tbody></table></figure>
-
-
-
-<h2 id="uWSGI"><a href="#uWSGI" class="headerlink" title="uWSGI"></a>uWSGI</h2><p>uWSGI是一个快速的、自维护、对开发者和系统管理者友好的应用程序容器，是纯c语言开发的服务器。uWSGI是实现了uwsgi和WSGI两种协议的Web服务器。</p>
-<p>uWSGI是一个Web服务器，它实现了WSGI协议、uwsgi、http等协议。Nginx中HttpUwsgiModule的作用是与uWSGI服务器进行交换。WSGI是一种Web服务器网关接口。它是一个Web服务器（如nginx，uWSGI等服务器）与web应用（如用Flask框架写的程序）通信的一种规范。</p>
-<p>对于管理人员来说，uWSGI服务器提供了各种配置方法：命令行、环境变量、XML、INI、YAML、JSON、SQlite3数据库和LDAP。</p>
-<p>除此之外，它的设计完全模块化，这意味着，可以使用不同的插件以便满足不同的技术应用，从而实现兼容性</p>
-</body></html>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2019/05/04/%E6%B5%85%E8%B0%88uWSGI-uwsgi-WSGI%E7%9A%84%E5%8C%BA%E5%88%AB/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -903,7 +762,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-04-22 15:12:48" itemprop="dateModified" datetime="2020-04-22T15:12:48+08:00">2020-04-22</time>
+                <time title="修改时间：2020-04-23 17:23:26" itemprop="dateModified" datetime="2020-04-23T17:23:26+08:00">2020-04-23</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -928,45 +787,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <html><head></head><body></body></html><html><head></head><body><h2 id="1、Django-Uwsgi-Nginx-部署的作用"><a href="#1、Django-Uwsgi-Nginx-部署的作用" class="headerlink" title="1、Django + Uwsgi + Nginx 部署的作用"></a>1、Django + Uwsgi + Nginx 部署的作用</h2><p>   <strong>1、Django + Uwsgi + Nginx方案</strong></p>
-<p> 　　　　　　<strong><img src="/2019/05/03/Django-uWSGI-Nginx%E7%9A%84%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2/DUN.png" class title="This is an test image"></strong> </p>
-<p>　　1. web项目，使用nginx的目的是为了安全和负载均衡，配置了nginx做前端代理，uwsgi作后端代理的服务器。</p>
-<p>　　2. 在处理来自Internet的请求时，要先经过nginx的处理，nginx把请求再交给uwsgi，经过uwsgi才能访问到项目本身。</p>
-<p>　<strong>2、Django + uwsgi方案</strong></p>
-<p>　　1. 没有nginx而只有uwsgi的服务器，则是Internet请求直接由uwsgi处理，并反馈到web项目中。</p>
-<p>　　2. nginx可以实现安全过滤，防DDOS等保护安全的操作，并且如果配置了多台服务器，nginx可以保证服务器的负载相对均衡。</p>
-<p>　　3. 而uwsgi则是一个web服务器，实现了WSGI协议(Web Server Gateway Interface)，http协议等，它可以接收和处理请求，发出响应等。<br>　　 所以只用uwsgi也是可以的。</p>
-<p>　<strong>3、nginx和uWSGI特点</strong></p>
-<p>　　　<strong>1）nginx的作用</strong></p>
-<p>　　　　　　1.反向代理，可以拦截一些web攻击，保护后端的web服务器</p>
-<p>　　　　　　2.负载均衡，根据轮询算法，分配请求到多节点web服务器</p>
-<p>　　　　　　3.缓存静态资源，加快访问速度，释放web服务器的内存占用，专项专用</p>
-<p>　　　2）uWSGI的适用**</p>
-<p>　　　　　　1.单节点服务器的简易部署</p>
-<p>　　　　　　2.轻量级，好部署</p>
-<h2 id="2、Django-Uwsgi-Nginx-的生产环境部署"><a href="#2、Django-Uwsgi-Nginx-的生产环境部署" class="headerlink" title="2、Django + Uwsgi + Nginx 的生产环境部署"></a>2、Django + Uwsgi + Nginx 的生产环境部署</h2><h3 id="1、在centos-7中安装python3环境"><a href="#1、在centos-7中安装python3环境" class="headerlink" title="1、在centos 7中安装python3环境"></a><strong>1、在centos 7中安装python3环境</strong></h3><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1、yum更新yum源</span></span><br><span class="line">yum update</span><br><span class="line"><span class="comment"># 2、安装Python 3.7所需的依赖否则安装后没有pip3包</span></span><br><span class="line">yum install zlib-devel bzip2-devel openssl-devel ncurses-devel sqlite-devel readline-devel tk-devel libffi-devel gcc make</span><br><span class="line"><span class="comment"># 3、在官网下载所需版本，这里用的是3.7.0版本</span></span><br><span class="line">wget https://www.python.org/ftp/<span class="number">3.7</span><span class="number">.0</span>/Python<span class="number">-3.7</span><span class="number">.0</span>.tgz</span><br><span class="line"><span class="number">2</span>、安装Python</span><br><span class="line"></span><br><span class="line"><span class="comment"># 1、解压</span></span><br><span class="line">tar -xvf Python<span class="number">-3.7</span><span class="number">.0</span>.tgz</span><br><span class="line"></span><br><span class="line"><span class="comment">#2、配置编译</span></span><br><span class="line">cd Python<span class="number">-3.7</span><span class="number">.0</span></span><br><span class="line">./configure --prefix=/usr/local/python3  <span class="comment"># 配置编译的的路径（这里--prefix是指定编译安装的文件夹）</span></span><br><span class="line">./configure --enable-optimizations  <span class="comment"># 执行该代码后，会编译安装到 /usr/local/bin/ 下，且不用添加软连接或环境变量</span></span><br><span class="line">make && make install</span><br><span class="line">ln -s /usr/local/python3/bin/python3 /usr/bin/python3  <span class="comment"># 添加软连接</span></span><br><span class="line">ln -s /usr/local/python3/bin/pip3 /usr/bin/pip3</span><br><span class="line"></span><br><span class="line"><span class="comment">#3、将/usr/local/python3/bin加入PATH</span></span><br><span class="line">[root@linux-node1 testProj]<span class="comment"># vim /etc/profile</span></span><br><span class="line"><span class="comment">#然后在文件末尾添加</span></span><br><span class="line">export PATH=$PATH:/usr/local/python3/bin</span><br><span class="line"></span><br><span class="line">[root@linux-node1 testProj]<span class="comment"># source /etc/profile # 修改完后，还需要让这个环境变量在配置信息中生效，执行命令</span></span><br></pre></td></tr></tbody></table></figure>
-
-
-
-
-
-<h3 id="2、初始化一个django项目"><a href="#2、初始化一个django项目" class="headerlink" title="2、初始化一个django项目"></a><strong>2、初始化一个django项目</strong></h3><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 /]<span class="comment"># pip3 install django==2.0.4</span></span><br><span class="line">[root@node1 /]<span class="comment"># mkdir /code/</span></span><br><span class="line">[root@node1 /]<span class="comment"># cd /code/</span></span><br><span class="line">[root@node1 testProj]<span class="comment"># django-admin startproject mmcsite</span></span><br><span class="line">[root@node1 testProj]<span class="comment"># cd /code/mmcsite</span></span><br><span class="line">[root@node1 testProj]<span class="comment"># python3 manage.py runserver 0.0.0.0:8000</span></span><br><span class="line"><span class="comment"># 页面中访问：http://192.168.56.11:8000/</span></span><br></pre></td></tr></tbody></table></figure>
-
-
-
-<h3 id="3、安装uwsgi-并使用uWSGI启动这个服务"><a href="#3、安装uwsgi-并使用uWSGI启动这个服务" class="headerlink" title="3、安装uwsgi 并使用uWSGI启动这个服务"></a><strong>3、安装uwsgi 并使用uWSGI启动这个服务</strong></h3><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">'''1. 安装uwsgi'''</span></span><br><span class="line">[root@node1 /]<span class="comment"># pip3 install uwsgi</span></span><br><span class="line">[root@node1 /]<span class="comment"># ln -s /usr/local/python3/bin/uwsgi /usr/bin/uwsgi</span></span><br><span class="line"></span><br><span class="line"><span class="string">'''2. 配置uwsgi.ini启动文件'''</span></span><br><span class="line">[root@node1 /]<span class="comment"># vim uwsgi.ini</span></span><br><span class="line">[uwsgi]</span><br><span class="line">socket = <span class="number">0.0</span><span class="number">.0</span><span class="number">.0</span>:<span class="number">3031</span></span><br><span class="line">chdir = /code/mmcsite</span><br><span class="line">wsgi-file = /code/mmcsite/wsgi.py</span><br><span class="line">processes = <span class="number">5</span></span><br><span class="line">threads = <span class="number">30</span></span><br><span class="line">master = true</span><br><span class="line">daemonize = /code/mmcsite/uwsgi.log</span><br><span class="line">module=mmcsite.wsgi</span><br><span class="line">pidfile = /code/mmcsite/uwsgi.pid</span><br><span class="line">chmod-socket=<span class="number">666</span></span><br><span class="line">enable-threads = true</span><br><span class="line"></span><br><span class="line"><span class="string">'''3. 使用uwsgi启动django：一定要在这个项目目录中'''</span></span><br><span class="line">[root@node1 /]<span class="comment"># uwsgi --http 192.168.26.128:80 --file mmcsite/wsgi.py --static-map=/static=static</span></span><br><span class="line">访问项目：http://<span class="number">192.168</span><span class="number">.26</span><span class="number">.128</span></span><br></pre></td></tr></tbody></table></figure>
-
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 /]<span class="comment"># vim /code/mmcsite/uwsgi.ini  # uwsgi.ini文件</span></span><br><span class="line">[uwsgi]</span><br><span class="line">socket = <span class="number">0.0</span><span class="number">.0</span><span class="number">.0</span>:<span class="number">3031</span>                  <span class="comment"># 指定socket监听的地址和端口</span></span><br><span class="line">chdir = /code/mmcsite                  <span class="comment"># 项目路径 </span></span><br><span class="line">wsgi-file = /code/mmcsite/wsgi.py      <span class="comment"># django的wsgi文件路径</span></span><br><span class="line">processes = <span class="number">5</span>                          <span class="comment"># 启动五个进程</span></span><br><span class="line">threads = <span class="number">30</span>                           <span class="comment"># 每个进程启动30个线程</span></span><br><span class="line">master = true</span><br><span class="line">daemonize = /code/mmcsite/uwsgi.log    <span class="comment"># 日志存放路径</span></span><br><span class="line">module=mmcsite.wsgi                    <span class="comment"># 使用mmcsite.wsgi模块</span></span><br><span class="line">pidfile = /code/mmcsite/uwsgi.pid      <span class="comment"># uwsgi启动进程id存放路径</span></span><br><span class="line">chmod-socket=<span class="number">666</span>                       <span class="comment"># socket权限</span></span><br><span class="line">enable-threads = true                  <span class="comment"># 允许用内嵌的语言启动线程，这将允许你在app程序中产生一个子线程</span></span><br></pre></td></tr></tbody></table></figure>
-
-<h3 id="4、安装配置nginx"><a href="#4、安装配置nginx" class="headerlink" title="4、安装配置nginx"></a>4、安装配置nginx</h3><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">'''1. 配置nginx YUM源'''</span></span><br><span class="line">[root@node1 /] vim /etc/yum.repos.d/nginx.repo</span><br><span class="line"><span class="string">'''</span></span><br><span class="line"><span class="string">[nginx]</span></span><br><span class="line"><span class="string">name=nginx repo</span></span><br><span class="line"><span class="string"># 下面这行centos根据你自己的操作系统修改比如：OS/rehel</span></span><br><span class="line"><span class="string"># 6是你Linux系统的版本，可以通过URL查看路径是否正确</span></span><br><span class="line"><span class="string">baseurl=http://nginx.org/packages/centos/7/$basearch/</span></span><br><span class="line"><span class="string">gpgcheck=0</span></span><br><span class="line"><span class="string">enabled=1</span></span><br><span class="line"><span class="string">'''</span></span><br><span class="line"><span class="string">'''2. 安装nginx'''</span></span><br><span class="line">[root@node1 /] yum -y install nginx</span><br></pre></td></tr></tbody></table></figure>
-
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 /]<span class="comment"># vim /etc/nginx/conf.d/django.conf </span></span><br><span class="line">server {</span><br><span class="line">    listen       <span class="number">8888</span>;</span><br><span class="line">    server_name  <span class="number">192.168</span><span class="number">.26</span><span class="number">.128</span>;</span><br><span class="line">    client_max_body_size <span class="number">5</span>M;</span><br><span class="line">    gzip on;</span><br><span class="line">    gzip_buffers <span class="number">32</span> <span class="number">4</span>K;<span class="comment">#压缩在内存中缓冲32块 每块4K</span></span><br><span class="line">    gzip_comp_level <span class="number">6</span> ;<span class="comment">#压缩级别 推荐6</span></span><br><span class="line">    gzip_min_length <span class="number">4000</span>;<span class="comment">#开始压缩的最小长度4bit</span></span><br><span class="line">        gzip_types text/plain application/json application/javascript application/x-javascript application/css application/xml application/xml+rss text/javascript application/x-httpd-php image/jpeg image/gif image/png image/x-ms-bmp;</span><br><span class="line">        location / {</span><br><span class="line">              include uwsgi_params;</span><br><span class="line">              uwsgi_pass <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">3031</span>;</span><br><span class="line">              uwsgi_ignore_client_abort on;</span><br><span class="line">        }</span><br><span class="line"></span><br><span class="line">        error_page <span class="number">404</span> /<span class="number">404.</span>html;</span><br><span class="line">            location = /<span class="number">40</span>x.html {</span><br><span class="line">        }</span><br><span class="line"></span><br><span class="line">        error_page <span class="number">500</span> <span class="number">502</span> <span class="number">503</span> <span class="number">504</span> /<span class="number">50</span>x.html;</span><br><span class="line">            location = /<span class="number">50</span>x.html {</span><br><span class="line">        }</span><br><span class="line"></span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
-
-<h3 id="5、启动项目"><a href="#5、启动项目" class="headerlink" title="5、启动项目"></a>5、启动项目</h3><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 demo2]<span class="comment"># systemctl restart nginx   # 开启nginx</span></span><br><span class="line">[root@node1 demo2]<span class="comment"># uwsgi --ini uwsgi.ini     # 启动uwsgi的django项目</span></span><br><span class="line"><span class="comment"># http://192.168.56.11:8888/ 访问项目</span></span><br><span class="line">[root@node1 demo2]<span class="comment"># uwsgi --stop uwsgi.pid    # 关闭uwsgi</span></span><br></pre></td></tr></tbody></table></figure>
-
-
-
-<h3 id><a href="#" class="headerlink" title></a></h3></body></html>
+          <h2 id="1、Django-Uwsgi-Nginx-部署的作用"><a href="#1、Django-Uwsgi-Nginx-部署的作用" class="headerlink" title="1、Django + Uwsgi + Nginx 部署的作用"></a>1、Django + Uwsgi + Nginx 部署的作用</h2>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2019/05/03/Django-uWSGI-Nginx%E7%9A%84%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1016,7 +845,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-04-22 15:17:27" itemprop="dateModified" datetime="2020-04-22T15:17:27+08:00">2020-04-22</time>
+                <time title="修改时间：2020-04-23 17:23:45" itemprop="dateModified" datetime="2020-04-23T17:23:45+08:00">2020-04-23</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1041,67 +870,16 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <html><head></head><body></body></html><html><head></head><body><h2 id="一、基本介绍"><a href="#一、基本介绍" class="headerlink" title="一、基本介绍"></a>一、基本介绍</h2><p>Nginx是一个高性能的<strong>HTTP和反向代理服务器</strong>，也是一个<strong>IMAP/POP3/SMTP</strong>代理服务器。 </p>
+          <h2 id="一、基本介绍"><a href="#一、基本介绍" class="headerlink" title="一、基本介绍"></a>一、基本介绍</h2><p>Nginx是一个高性能的<strong>HTTP和反向代理服务器</strong>，也是一个<strong>IMAP/POP3/SMTP</strong>代理服务器。 </p>
 <p>Nginx是一款轻量级的Web服务器/反向代理服务器以及电子邮件代理服务器，并在一个BSD-like协议下发行。由俄罗斯的程序设计师lgor Sysoev所开发，供俄国大型的入口网站及搜索引擎Rambler使用。其特点是<strong>占有内存少，并发能力强</strong>，事实上nginx的并发能力确实在同类型的网页服务器中表现较好。 </p>
-<p><strong>1、nginx高并发原理（ 多进程+epoll实现高并发 ）</strong></p>
-<ol>
-<li>Nginx 在启动后，会有一个 master 进程和多个相互独立的 worker 进程。</li>
-<li>每个子进程只有一个线程(协程)，采用的 IO多路复用模型epoll，实现高并发。</li>
-</ol>
-<p><strong>2、epoll能实现高并发原理</strong></p>
-<ol>
-<li>epoll() 中内核则维护一个链表，epoll_wait 方法可以获取到链表长度，不为0就知道文件描述符准备好了。</li>
-<li>在内核实现中 epoll 是根据每个 sockfd 上面的与设备驱动程序建立起来的回调函数实现的。</li>
-<li>某个 sockfd 上的事件发生时，与它对应的回调函数就会被调用，来把这个 sockfd 加入链表，其他处于“空闲的”状态的则不会。</li>
-<li>epoll上面链表中获取文件描述，这里使用内存映射（mmap）技术， 避免了复制大量文件描述符带来的开销</li>
-<li><strong>内存映射（mmap）</strong>：内存映射文件，是由一个文件到一块内存的映射，将不必再对文件执行I/O操作</li>
-</ol>
-<p><strong>3、nginx和apache比较</strong> </p>
-<ol>
-<li><strong>nginx相对于apache的优点</strong> <ol>
-<li>轻量级，同样起web 服务，比apache 占用更少的内存及资源 </li>
-<li>抗并发，nginx 处理请求是异步非阻塞的，而apache 则是阻塞型的，在高并发下nginx 能保持低资源低消耗高性能 </li>
-<li>高度模块化的设计，编写模块相对简单，社区活跃，各种高性能模块出品迅速啊 </li>
-</ol>
-</li>
-<li><strong>apache 相对于nginx 的优点</strong> <ol>
-<li>apache 更为成熟，少 bug ，稳定性好 </li>
-<li>rewrite ，比nginx 的rewrite 强大 </li>
-<li>模块超多，基本想到的都可以找到 </li>
-</ol>
-</li>
-</ol>
-<h2 id="二、名词解释"><a href="#二、名词解释" class="headerlink" title="二、名词解释"></a>二、名词解释</h2><h3 id="代理服务器"><a href="#代理服务器" class="headerlink" title="代理服务器"></a><strong>代理服务器</strong></h3><p>一般是指局域网内部的机器<strong>通过代理服务器</strong>发送请求到互联网上的服务器，代理服务器一般作用在客户端。</p>
-<h3 id="正向代理"><a href="#正向代理" class="headerlink" title="正向代理"></a><strong>正向代理</strong></h3><p><strong><img src="/2019/05/01/Nginx%E6%98%AF%E4%BB%80%E4%B9%88/timg1.png" class title="This is an test image"></strong> </p>
-<ol>
-<li>我访问不了某网站，但是我能访问一个代理服务器，这个代理服务器呢,他能访问那个我不能访问的网站</li>
-<li>于是我先连上代理服务器,告诉他我需要那个无法访问网站的内容，代理服务器去取回来,然后返回给我。</li>
-<li>客户端必须设置正向代理服务器，当然前提是要知道正向代理服务器的IP地址，还有代理程序的端口。</li>
-<li>例如之前使用过这类软件例如CCproxy，<a href="http://www.ccproxy.com/" target="_blank" rel="noopener">http://www.ccproxy.com/</a> 需要在浏览器中配置代理的地址。</li>
-</ol>
-<h3 id="正向代理的作用"><a href="#正向代理的作用" class="headerlink" title="正向代理的作用"></a>正向代理的作用</h3><ol>
-<li>访问原来无法访问的资源，如google </li>
-<li>可以做缓存，加速访问资源</li>
-<li>对客户端访问授权，上网进行认证</li>
-<li>代理可以记录用户访问记录（上网行为管理），对外隐藏用户信息</li>
-</ol>
-<h3 id="反向代理"><a href="#反向代理" class="headerlink" title="反向代理"></a>反向代理</h3><p><strong><img src="/2019/05/01/Nginx%E6%98%AF%E4%BB%80%E4%B9%88/timg4.png" class title="This is an test image"></strong> </p>
-<ol>
-<li><p>反向代理对用户透明，客户端无需任何配置即可访问服务。</p>
-</li>
-<li><p>实际运行方式是指以代理服务器来接受internet上的连接请求，然后将请求转发给内部网络上的服务器。</p>
-</li>
-<li><p>并将从服务器上得到的结果返回给internet上请求连接的客户端，此时代理服务器对外就表现为一个服务器。</p>
-</li>
-</ol>
-<h3 id="反向代理的使用场景"><a href="#反向代理的使用场景" class="headerlink" title="反向代理的使用场景"></a>反向代理的使用场景</h3><p><strong>1. 保证内网的安全，可以使用反向代理提供WAF功能，阻止web攻击</strong></p>
-<p>​        <strong>例：</strong>大型网站，通常将反向代理作为公网访问地址，Web服务器是内网 </p>
-<p><strong><img src="/2019/05/01/Nginx%E6%98%AF%E4%BB%80%E4%B9%88/timg3.png" class title="This is an test image"></strong> </p>
-<p><strong>2. 负载均衡，通过反向代理服务器来优化网站的负载</strong></p>
-<p><strong><img src="/2019/05/01/Nginx%E6%98%AF%E4%BB%80%E4%B9%88/timg4.png" class title="This is an test image"></strong> </p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>正向代理代理的对象是客户端，为客户端服务 </p>
-<p>反向代理代理的对象是服务端，为服务端服务 </p>
-</body></html>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2019/05/01/Nginx%E6%98%AF%E4%BB%80%E4%B9%88/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1151,7 +929,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-04-22 15:19:33" itemprop="dateModified" datetime="2020-04-22T15:19:33+08:00">2020-04-22</time>
+                <time title="修改时间：2020-04-23 17:24:05" itemprop="dateModified" datetime="2020-04-23T17:24:05+08:00">2020-04-23</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1176,7 +954,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <html><head></head><body></body></html><html><head></head><body><h2 id="获取第三方账号登录授权"><a href="#获取第三方账号登录授权" class="headerlink" title="获取第三方账号登录授权"></a>获取第三方账号登录授权</h2><p><strong><img src="/2019/04/22/%E7%94%A8%E6%88%B7%E7%99%BB%E5%BD%95%E5%AF%B9%E6%8E%A5QQ%E3%80%81%E5%BE%AE%E4%BF%A1%E3%80%81%E5%BE%AE%E5%8D%9A%E7%AD%89%E4%B8%89%E6%96%B9%E7%99%BB%E5%BD%95/nan.png" class title="登录授权"></strong> </p>
+          <h2 id="获取第三方账号登录授权"><a href="#获取第三方账号登录授权" class="headerlink" title="获取第三方账号登录授权"></a>获取第三方账号登录授权</h2><p><strong><img src="/2019/04/22/%E7%94%A8%E6%88%B7%E7%99%BB%E5%BD%95%E5%AF%B9%E6%8E%A5QQ%E3%80%81%E5%BE%AE%E4%BF%A1%E3%80%81%E5%BE%AE%E5%8D%9A%E7%AD%89%E4%B8%89%E6%96%B9%E7%99%BB%E5%BD%95/nan.png" class="" title="登录授权"></strong> </p>
 <p>申请第三方开发平台的账号</p>
 <p>三家开放平台的申请地址：</p>
 <table>
@@ -1195,349 +973,14 @@
 <td><a href="https://connect.qq.com/" target="_blank" rel="noopener">https://connect.qq.com</a></td>
 </tr>
 </tbody></table>
-<h2 id="三方登录流程（以微博登录为例）"><a href="#三方登录流程（以微博登录为例）" class="headerlink" title="三方登录流程（以微博登录为例）"></a>三方登录流程（以微博登录为例）</h2><p>开发文档：<a href="https://open.weibo.com/wiki/%E6%8E%88%E6%9D%83%E6%9C%BA%E5%88%B6" target="_blank" rel="noopener">https://open.weibo.com/wiki/%E6%8E%88%E6%9D%83%E6%9C%BA%E5%88%B6</a> </p>
-<h3 id="1）前端获取认证code"><a href="#1）前端获取认证code" class="headerlink" title="1）前端获取认证code"></a>1）前端获取认证code</h3><figure class="highlight html"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1. 在Vue页面加载时动态发送请求获取微博授权url</span><br><span class="line">2. django收到请求的url后，通过微博应用ID(client_id)和回调地址(redirect_uri)动态生成授权url返回给Vue</span><br><span class="line">3. 当用户点击上面的url进行扫码，授权成功会跳转我们的回调界面并附加code参数</span><br><span class="line">4. Vue获取到微博返回的code后，会将code发送给django后端(上面的redirect_uri)</span><br></pre></td></tr></tbody></table></figure>
-
-<p>微博登录标识的地址如下： </p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://api.weibo.com/oauth2/authorize?client_id=YOUR_CLIENT_ID&response_type=code&redirect_uri=YOUR_REGISTERED_REDIRECT_URI</span><br></pre></td></tr></tbody></table></figure>
-
-<p>参数</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th>必选</th>
-<th>类型及范围</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>client_id</td>
-<td>true</td>
-<td>string</td>
-<td>申请应用时分配的AppKey。</td>
-</tr>
-<tr>
-<td>redirect_uri</td>
-<td>true</td>
-<td>string</td>
-<td>授权回调地址，站外应用需与设置的回调地址一致，站内应用需填写canvas page的地址。</td>
-</tr>
-<tr>
-<td>response_type</td>
-<td>false</td>
-<td>string</td>
-<td>code</td>
-</tr>
-</tbody></table>
-<p> 返回值</p>
-<table>
-<thead>
-<tr>
-<th>返回值字段</th>
-<th>字段类型</th>
-<th>字段说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>code</td>
-<td>string</td>
-<td>用于第二步调用oauth2/access_token接口，获取授权后的access token。</td>
-</tr>
-<tr>
-<td>state</td>
-<td>string</td>
-<td>如果传递参数，会回传该参数。</td>
-</tr>
-</tbody></table>
-<h3 id="2）获取微博access-token"><a href="#2）获取微博access-token" class="headerlink" title="2）获取微博access_token"></a>2）获取微博access_token</h3><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">后端获取code后，结合client_id、client_secret、redirect_uri参数进行传递,获取微博access_token</span><br></pre></td></tr></tbody></table></figure>
-
-<p>请求地址：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://api.weibo.com/oauth2/access_token?client_id=YOUR_CLIENT_ID&client_secret=YOUR_CLIENT_SECRET&grant_type=authorization_code&redirect_uri=YOUR_REGISTERED_REDIRECT_URI&code=CODE</span><br></pre></td></tr></tbody></table></figure>
-
-<p>请求方式：</p>
-<p>POST</p>
-<p>请求参数：</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th>必选</th>
-<th>类型及范围</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>client_id</td>
-<td>true</td>
-<td>string</td>
-<td>申请应用时分配的AppKey。</td>
-</tr>
-<tr>
-<td>client_secret</td>
-<td>true</td>
-<td>string</td>
-<td>申请应用时分配的AppSecret。</td>
-</tr>
-<tr>
-<td>grant_type</td>
-<td>true</td>
-<td>string</td>
-<td>请求的类型，填写authorization_code</td>
-</tr>
-<tr>
-<td>code</td>
-<td>ture</td>
-<td>string</td>
-<td>调用authorize获得的code值。</td>
-</tr>
-<tr>
-<td>rediect_url</td>
-<td>ture</td>
-<td>string</td>
-<td>回调地址，需需与注册应用里的回调地址一致。</td>
-</tr>
-</tbody></table>
-<p>返回值</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">{</span><br><span class="line">    "access_token": "SlAV32hkKG",</span><br><span class="line">    "remind_in": 3600,</span><br><span class="line">    "expires_in": 3600,</span><br><span class="line">    "uid":1887188234</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
-
-
-
-<h3 id="3-获取微博用户基本信息并保存到数据库"><a href="#3-获取微博用户基本信息并保存到数据库" class="headerlink" title="3)获取微博用户基本信息并保存到数据库"></a>3)获取微博用户基本信息并保存到数据库</h3><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">使用获得的access_token调用获取用户基本信息的接口，获取用户第三方平台的基本信息</span><br><span class="line">用户基本信息保存到数据库，然后关联本地用户，然后将用户信息返回给前端</span><br></pre></td></tr></tbody></table></figure>
-
-<h3 id="4）生成token给vue"><a href="#4）生成token给vue" class="headerlink" title="4）生成token给vue"></a>4）生成token给vue</h3><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">django后端借助微博认证成功后，可以使用JWT生成token，返回给Vue</span><br><span class="line">Vue将token存储到localStorage中，以便用户访问其他页面进行身份验证</span><br></pre></td></tr></tbody></table></figure>
-
-<h3 id="5）也可以获取用户的全部信息"><a href="#5）也可以获取用户的全部信息" class="headerlink" title="5）也可以获取用户的全部信息"></a>5）也可以获取用户的全部信息</h3><p>获取用户信息API：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://api.weibo.com/2/users/show.json</span><br></pre></td></tr></tbody></table></figure>
-
-
-
-<p>请求参数:</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th>必选</th>
-<th>类型及范围</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>access_token</td>
-<td>true</td>
-<td>string</td>
-<td>采用OAuth授权方式为必填参数，OAuth授权后获得。</td>
-</tr>
-<tr>
-<td>uid</td>
-<td>false</td>
-<td>int64</td>
-<td>需要查询的用户ID。</td>
-</tr>
-<tr>
-<td>screen_name</td>
-<td>false</td>
-<td>string</td>
-<td>需要查询的用户昵称。</td>
-</tr>
-</tbody></table>
-<p> 参数uid与screen_name二者必选其一，且只能选其一；</p>
-<p>返回示例：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">{</span><br><span class="line">  "id": 1404376560,</span><br><span class="line">    "screen_name": "zaku",</span><br><span class="line">    "name": "zaku",</span><br><span class="line">    "province": "11",</span><br><span class="line">    "city": "5",</span><br><span class="line">    "location": "北京 朝阳区",</span><br><span class="line">    "description": "人生五十年，乃如梦如幻；有生斯有死，壮士复何憾。",</span><br><span class="line">    "url": "http://blog.sina.com.cn/zaku",</span><br><span class="line">    "profile_image_url": "http://tp1.sinaimg.cn/1404376560/50/0/1",</span><br><span class="line">    "domain": "zaku",</span><br><span class="line">    "gender": "m",</span><br><span class="line">    "followers_count": 1204,</span><br><span class="line">    "friends_count": 447,</span><br><span class="line">    "statuses_count": 2908,</span><br><span class="line">    "favourites_count": 0,</span><br><span class="line">    "created_at": "Fri Aug 28 00:00:00 +0800 2009",</span><br><span class="line">    "following": false,</span><br><span class="line">    "allow_all_act_msg": false,</span><br><span class="line">    "geo_enabled": true,</span><br><span class="line">    "verified": false,</span><br><span class="line">    "status": {</span><br><span class="line">        "created_at": "Tue May 24 18:04:53 +0800 2011",</span><br><span class="line">        "id": 11142488790,</span><br><span class="line">        "text": "我的相机到了。",</span><br><span class="line">        "source": "<a href="http://weibo.com" target="_blank" rel="nofollow noopener">新浪微博</a>",</span><br><span class="line">        "favorited": false,</span><br><span class="line">        "truncated": false,</span><br><span class="line">        "in_reply_to_status_id": "",</span><br><span class="line">        "in_reply_to_user_id": "",</span><br><span class="line">        "in_reply_to_screen_name": "",</span><br><span class="line">        "geo": null,</span><br><span class="line">        "mid": "5610221544300749636",</span><br><span class="line">        "annotations": [],</span><br><span class="line">        "reposts_count": 5,</span><br><span class="line">        "comments_count": 8</span><br><span class="line">    },</span><br><span class="line">    "allow_all_comment": true,</span><br><span class="line">    "avatar_large": "http://tp1.sinaimg.cn/1404376560/180/0/1",</span><br><span class="line">    "verified_reason": "",</span><br><span class="line">    "follow_me": false,</span><br><span class="line">    "online_status": 0,</span><br><span class="line">    "bi_followers_count": 215</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
-
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">返回值：</span><br></pre></td></tr></tbody></table></figure>
-
-<table>
-<thead>
-<tr>
-<th>返回值字段</th>
-<th>字段类型</th>
-<th>字段说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>id</td>
-<td>int64</td>
-<td>用户UID</td>
-</tr>
-<tr>
-<td>idstr</td>
-<td>string</td>
-<td>字符串型的用户UID</td>
-</tr>
-<tr>
-<td>screen_name</td>
-<td>string</td>
-<td>用户昵称</td>
-</tr>
-<tr>
-<td>name</td>
-<td>string</td>
-<td>友好显示名称</td>
-</tr>
-<tr>
-<td>province</td>
-<td>int</td>
-<td>用户所在省级ID</td>
-</tr>
-<tr>
-<td>city</td>
-<td>int</td>
-<td>用户所在城市ID</td>
-</tr>
-<tr>
-<td>location</td>
-<td>string</td>
-<td>用户所在地</td>
-</tr>
-<tr>
-<td>description</td>
-<td>string</td>
-<td>用户个人描述</td>
-</tr>
-<tr>
-<td>url</td>
-<td>string</td>
-<td>用户博客地址</td>
-</tr>
-<tr>
-<td>profile_image_url</td>
-<td>string</td>
-<td>用户头像地址（中图），50×50像素</td>
-</tr>
-<tr>
-<td>profile_url</td>
-<td>string</td>
-<td>用户的微博统一URL地址</td>
-</tr>
-<tr>
-<td>domain</td>
-<td>string</td>
-<td>用户的个性化域名</td>
-</tr>
-<tr>
-<td>weihao</td>
-<td>string</td>
-<td>用户的微号</td>
-</tr>
-<tr>
-<td>gender</td>
-<td>string</td>
-<td>性别，m：男、f：女、n：未知</td>
-</tr>
-<tr>
-<td>followers_count</td>
-<td>int</td>
-<td>粉丝数</td>
-</tr>
-<tr>
-<td>friends_count</td>
-<td>int</td>
-<td>关注数</td>
-</tr>
-<tr>
-<td>statuses_count</td>
-<td>int</td>
-<td>微博数</td>
-</tr>
-<tr>
-<td>favourites_count</td>
-<td>int</td>
-<td>收藏数</td>
-</tr>
-<tr>
-<td>created_at</td>
-<td>string</td>
-<td>用户创建（注册）时间</td>
-</tr>
-<tr>
-<td>following</td>
-<td>boolean</td>
-<td>暂未支持</td>
-</tr>
-<tr>
-<td>allow_all_act_msg</td>
-<td>boolean</td>
-<td>是否允许所有人给我发私信，true：是，false：否</td>
-</tr>
-<tr>
-<td>geo_enabled</td>
-<td>boolean</td>
-<td>是否允许标识用户的地理位置，true：是，false：否</td>
-</tr>
-<tr>
-<td>verified</td>
-<td>boolean</td>
-<td>是否是微博认证用户，即加V用户，true：是，false：否</td>
-</tr>
-<tr>
-<td>verified_type</td>
-<td>int</td>
-<td>暂未支持</td>
-</tr>
-<tr>
-<td>remark</td>
-<td>string</td>
-<td>用户备注信息，只有在查询用户关系时才返回此字段</td>
-</tr>
-<tr>
-<td>status</td>
-<td>object</td>
-<td>用户的最近一条微博信息字段 <a href="http://open.weibo.com/wiki/%E5%B8%B8%E8%A7%81%E8%BF%94%E5%9B%9E%E5%AF%B9%E8%B1%A1%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84#.E5.BE.AE.E5.8D.9A.EF.BC.88status.EF.BC.89" target="_blank" rel="noopener">详细</a></td>
-</tr>
-<tr>
-<td>allow_all_comment</td>
-<td>boolean</td>
-<td>是否允许所有人对我的微博进行评论，true：是，false：否</td>
-</tr>
-<tr>
-<td>avatar_large</td>
-<td>string</td>
-<td>用户头像地址（大图），180×180像素</td>
-</tr>
-<tr>
-<td>avatar_hd</td>
-<td>string</td>
-<td>用户头像地址（高清），高清头像原图</td>
-</tr>
-<tr>
-<td>verified_reason</td>
-<td>string</td>
-<td>认证原因</td>
-</tr>
-<tr>
-<td>follow_me</td>
-<td>boolean</td>
-<td>该用户是否关注当前登录用户，true：是，false：否</td>
-</tr>
-<tr>
-<td>online_status</td>
-<td>int</td>
-<td>用户的在线状态，0：不在线、1：在线</td>
-</tr>
-<tr>
-<td>bi_followers_count</td>
-<td>int</td>
-<td>用户的互粉数</td>
-</tr>
-<tr>
-<td>lang</td>
-<td>string</td>
-<td>用户当前的语言版本，zh-cn：简体中文，zh-tw：繁体中文，en：英语</td>
-</tr>
-</tbody></table>
-<h2 id="其实像微信登陆、QQ登陆的原理都一样，都是："><a href="#其实像微信登陆、QQ登陆的原理都一样，都是：" class="headerlink" title="其实像微信登陆、QQ登陆的原理都一样，都是："></a>其实像微信登陆、QQ登陆的原理都一样，都是：</h2><p>1、获取用户授权，取得code</p>
-<p>2、将code发送到授权服务器获取Access Token</p>
-<p>3、通过Access Token调取API接口获取用户信息</p>
-<h2 id="第三方账号绑定流程"><a href="#第三方账号绑定流程" class="headerlink" title="第三方账号绑定流程"></a>第三方账号绑定流程</h2><h3 id="a-未登录"><a href="#a-未登录" class="headerlink" title="a)    未登录"></a>a)    未登录</h3><p><strong><img src="/2019/04/22/%E7%94%A8%E6%88%B7%E7%99%BB%E5%BD%95%E5%AF%B9%E6%8E%A5QQ%E3%80%81%E5%BE%AE%E4%BF%A1%E3%80%81%E5%BE%AE%E5%8D%9A%E7%AD%89%E4%B8%89%E6%96%B9%E7%99%BB%E5%BD%95/150061410519672646.png" class title="三方登录流程"></strong> </p>
-<p>用户在登录界面点击第三方账号，授权通过后，我们获得用户第三方账号的OpenID，由此判断用户的第三方账号之前是否绑定过，如果绑定过则直接登录成功。</p>
-<p>如果没有绑定过，则跳到账号绑定页面。账号绑定页面需要分成已有账号直接绑定，和没有账号，新注册账号进行绑定两种情况。</p>
-<p>当用户已有账号时，通过输入账号密码校验身份，校验通过后即可绑定成功/登录成功。</p>
-<p>当用户没有账号时，用户可通过注册新账号，注册成功后即可绑定成功/登录成功。</p>
-<h3 id="b-登录状态"><a href="#b-登录状态" class="headerlink" title="b)    登录状态"></a>b)    登录状态</h3><p>在个人账号中心里提供绑定管理的功能和界面，在用户已经登录的情况下，可以直接绑定第三方账号，只要获得授权通过，即可绑定成功。 </p>
-<h3 id="c-解绑流程"><a href="#c-解绑流程" class="headerlink" title="c)    解绑流程"></a>c)    解绑流程</h3><p><strong><img src="/2019/04/22/%E7%94%A8%E6%88%B7%E7%99%BB%E5%BD%95%E5%AF%B9%E6%8E%A5QQ%E3%80%81%E5%BE%AE%E4%BF%A1%E3%80%81%E5%BE%AE%E5%8D%9A%E7%AD%89%E4%B8%89%E6%96%B9%E7%99%BB%E5%BD%95/150061415069006935.png" class title="解绑流程"></strong> </p>
-<p>在个人账号中心>绑定管理中，可以对已经绑定的第三方账号进行解绑操作。在这里需要注意，由于用户长期使用第三方账号登录，实际上是由第三方账号承担了提交账号和保护账号安全的工作，因此在解绑第三方账号时，我们需要提醒用户，解绑以后只能通过本平台账号密码方式来登录。最好是提示用户记住当前账号 </p>
-</body></html>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2019/04/22/%E7%94%A8%E6%88%B7%E7%99%BB%E5%BD%95%E5%AF%B9%E6%8E%A5QQ%E3%80%81%E5%BE%AE%E4%BF%A1%E3%80%81%E5%BE%AE%E5%8D%9A%E7%AD%89%E4%B8%89%E6%96%B9%E7%99%BB%E5%BD%95/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1587,7 +1030,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-04-22 15:03:47" itemprop="dateModified" datetime="2020-04-22T15:03:47+08:00">2020-04-22</time>
+                <time title="修改时间：2020-04-23 17:24:22" itemprop="dateModified" datetime="2020-04-23T17:24:22+08:00">2020-04-23</time>
               </span>
 
           
@@ -1601,35 +1044,16 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <html><head></head><body></body></html><html><head></head><body><p>支付宝开发网址</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">支付宝开放平台： https://open.alipay.com/platform/home.htm</span><br><span class="line">支付宝沙箱环境： https://openhome.alipay.com/platform/appDaily.htm?tab=info</span><br><span class="line">支付宝开发者文档：https://openhome.alipay.com/developmentDocument.htm</span><br><span class="line">电脑网站支付流程：https://docs.open.alipay.com/270</span><br><span class="line">生成签名：https://docs.open.alipay.com/291/106103/</span><br></pre></td></tr></tbody></table></figure>
-
-<h3 id="创建应用（这里使用沙箱环境测试）"><a href="#创建应用（这里使用沙箱环境测试）" class="headerlink" title="创建应用（这里使用沙箱环境测试）"></a><strong>创建应用（这里使用沙箱环境测试）</strong></h3><p><strong>1）沙箱环境说明</strong></p>
-<p>　　　　　　　　1. 线上环境需要创建应用，因为我们不是企业，没有资质，所以只能申请沙箱环境</p>
-<p>　　　　　　　　2. 简单来讲沙箱环境就是给开发者使用的测试环境</p>
-<p>　　　　　　　　3. 沙箱环境地址：<a href="https://openhome.alipay.com/platform/appDaily.htm?tab=info" target="_blank" rel="noopener">https://openhome.alipay.com/platform/appDaily.htm?tab=info</a></p>
-<p> 　　　　　　</p>
-<p><strong><img src="/2019/04/22/python%E5%AF%B9%E6%8E%A5%E6%94%AF%E4%BB%98%E5%AE%9D/1080958-20200220223507691-831979751.png" class title="This is an test image"></strong> </p>
-<p><strong>2）按照官方要求生成秘钥</strong> </p>
-<p><strong>生成秘钥参考官网：</strong><a href="https://docs.open.alipay.com/291/105971" target="_blank" rel="noopener">https://docs.open.alipay.com/291/105971</a>　 </p>
-<p><strong><img src="/2019/04/22/python%E5%AF%B9%E6%8E%A5%E6%94%AF%E4%BB%98%E5%AE%9D/1080958-20200220224215550-1818649484.png" class title="This is an test image"></strong> </p>
-<p><strong>3）把生成的app公钥粘贴到沙箱环境的app中</strong> </p>
-<p><strong><img src="/2019/04/22/python%E5%AF%B9%E6%8E%A5%E6%94%AF%E4%BB%98%E5%AE%9D/1080958-20200220224854732-1698182211.png" class title="This is an test image"></strong> </p>
-<p><strong><img src="/2019/04/22/python%E5%AF%B9%E6%8E%A5%E6%94%AF%E4%BB%98%E5%AE%9D/1080958-20200220225205004-1139301747.png" class title="This is an test image"></strong> </p>
-<h3 id="支付宝加密原理"><a href="#支付宝加密原理" class="headerlink" title="支付宝加密原理"></a>支付宝加密原理</h3><p><strong><img src="/2019/04/22/python%E5%AF%B9%E6%8E%A5%E6%94%AF%E4%BB%98%E5%AE%9D/1582267585674.png" class title="This is an test image"></strong> </p>
-<h3 id="支付宝保证接口数据安全"><a href="#支付宝保证接口数据安全" class="headerlink" title="支付宝保证接口数据安全"></a>支付宝保证接口数据安全</h3><h4 id="1-1-敏感信息使用场景"><a href="#1-1-敏感信息使用场景" class="headerlink" title="1.1 敏感信息使用场景"></a>1.1 敏感信息使用场景</h4><p>敏感信息指用户的 身份证号、银行卡号、手机号 等身份信息。重要敏感信 息的脱敏规范如下。</p>
-<h5 id="1-1-1-敏感信息用于展示的场景"><a href="#1-1-1-敏感信息用于展示的场景" class="headerlink" title="1.1.1. 敏感信息用于展示的场景"></a>1.1.1. 敏感信息用于展示的场景</h5><p>原则：敏感信息的展示请严格按照脱敏规范进行脱敏 说明：脱敏的逻辑必 须在服务端完成，不能使用 Javascript 在客户端进行脱敏，包括代码注 释、隐藏域、url 参数、cookies 等处的数据也必须脱敏。 说明：不能使用 可逆的编码/加密方式，如 base64 编码等代替脱敏规范。 说明：若敏感信 息明文展示在应用中，没有按照脱敏规范完成脱敏。支付宝开放平台将有 权暂停敏感数据相关接口的开放。</p>
-<h5 id="1-1-2-敏感信息用于身份校验的场景"><a href="#1-1-2-敏感信息用于身份校验的场景" class="headerlink" title="1.1.2. 敏感信息用于身份校验的场景"></a>1.1.2. 敏感信息用于身份校验的场景</h5><p>原则：不要直接将敏感信息的明文信息在客户端与服务端之间传递 说明： 可以将敏感信息在服务端关联到用户标识 ID，在客户端保存用户标识 ID 并提交到服务端，服务端根据 ID 取出对应信息后进行校验。 说明：如果 服务端没有用户标识 ID 的机制，同时也必须在客户端与服务端之间传递敏 感信息，请使用 AES128 对称加密算法进行加密后传输，并且不能将解密 密钥传输给用户端。 1.2. HTML 页面渲染<br>原则：所有在页面渲染的敏感数据 (身份证、银行卡号、手机号) 必须进行 脱敏<br>原则：禁止在 Cookie 中 明文写入 敏感数据<br>原则：禁止向 HTML 页面输出未经安全过滤或未正确转义的用户数据<br>原则：HTML 页面动态输出 JSON、JavaScript 必须对其中的字符串值做 XSS 防御处理<br>原则：默认设置 HTTP Header 中的 HttpOnly 属性为 true<br>原则：如果网站使用 HTTPS 协议，默认设置 HTTP Header 中的 secure 属性为 true</p>
-<h4 id="1-3-接口调用操作"><a href="#1-3-接口调用操作" class="headerlink" title="1.3. 接口调用操作"></a>1.3. 接口调用操作</h4><p>原则：AJAX 接口必须执行 CSRF 过滤<br>原则：AJAX 接口输出 JSON 字符串禁止通过字符串拼接构造，且输出的 JSON 需要经过安全过滤<br>原则：AJAX 接口返回头必须设置 Content-Type 为 application/json;charset=utf-8 </p>
-<h4 id="1-4-表单提交操作"><a href="#1-4-表单提交操作" class="headerlink" title="1.4. 表单提交操作"></a>1.4. 表单提交操作</h4><p>原则：统一使用 POST 方式提交表单 说明：Get 请求可以通过构造 img 等 标签发起，造成 CSRF<br>原则：Form 表单提交必须执行 CSRF 过滤<br>原则：用户输入的富文本浏览器展示之前必须由服务器端做安全过滤 </p>
-<h4 id="1-5-数据库操作"><a href="#1-5-数据库操作" class="headerlink" title="1.5. 数据库操作"></a>1.5. 数据库操作</h4><p>原则：用户密码存储须加盐存储，各用户盐值不同 原则：若涉及证件号等 敏感信息的存储，须使用 AES-128 算法加密存储 原则：编写的 SQL 必须 预编译，不允许通过字符串拼接的方式合成 说明：部分特殊场景，必须通 过拼接合成，则拼接的变量必须经过处理，只允许 [a-zA-Z0-9_-.]＋ 字符。 </p>
-<h4 id="1-6-URL-重定向"><a href="#1-6-URL-重定向" class="headerlink" title="1.6. URL 重定向"></a>1.6. URL 重定向</h4><p>原则：URL 重定向的目标地址必须执行白名单过滤 1.7. 跨域操作 </p>
-<h4 id="1-7-1-JSONP-跨域"><a href="#1-7-1-JSONP-跨域" class="headerlink" title="1.7.1. JSONP 跨域"></a>1.7.1. JSONP 跨域</h4><p>原则：JSONP 接口 Callback 必须验证有效性 原则：JSONP 接口输出 JSON 字符串禁止通过字符串拼接构造，且输出的 JSON 需要经过安全过滤 说 明：参考章节 2.1 跨站脚本（XSS）漏洞 原则：JSONP 接口必须对 REFERER 进行白名单校验，或执行 CSRF 检查 原则：JSONP 接口返回头必 须正确设置 Content-Type 为 application/javascript;charset=utf-8</p>
-<h4 id="1-7-2-CORS-跨域"><a href="#1-7-2-CORS-跨域" class="headerlink" title="1.7.2. CORS 跨域"></a>1.7.2. CORS 跨域</h4><p>原则：支持 CORS 跨域的接口，返回头 Access-Control-Allow-Origin 必须 使用白名单验证，禁止直接返回*</p>
-<h4 id="1-8-文件上传与下载"><a href="#1-8-文件上传与下载" class="headerlink" title="1.8. 文件上传与下载"></a>1.8. 文件上传与下载</h4><p>原则：限制可下载文件所在的目录为预期范围，并通过指定文件编号的方 式来定位待下载文件</p>
-<p>原则：保存上传文件的目录不提供直接访问 原则：对上传文件的大小和类 型进行校验，定义上传文件类型白名单 </p>
-<h4 id="1-9-加密与签名"><a href="#1-9-加密与签名" class="headerlink" title="1.9. 加密与签名"></a>1.9. 加密与签名</h4><p><strong><img src="/2019/04/22/python%E5%AF%B9%E6%8E%A5%E6%94%AF%E4%BB%98%E5%AE%9D/1582513156(1).png" class title="This is an test image"></strong> </p>
-</body></html>
+          <p>支付宝开发网址</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">支付宝开放平台： https:&#x2F;&#x2F;open.alipay.com&#x2F;platform&#x2F;home.htm</span><br><span class="line">支付宝沙箱环境： https:&#x2F;&#x2F;openhome.alipay.com&#x2F;platform&#x2F;appDaily.htm?tab&#x3D;info</span><br><span class="line">支付宝开发者文档：https:&#x2F;&#x2F;openhome.alipay.com&#x2F;developmentDocument.htm</span><br><span class="line">电脑网站支付流程：https:&#x2F;&#x2F;docs.open.alipay.com&#x2F;270</span><br><span class="line">生成签名：https:&#x2F;&#x2F;docs.open.alipay.com&#x2F;291&#x2F;106103&#x2F;</span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2019/04/22/python%E5%AF%B9%E6%8E%A5%E6%94%AF%E4%BB%98%E5%AE%9D/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 

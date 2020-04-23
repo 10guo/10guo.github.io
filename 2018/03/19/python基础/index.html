@@ -47,15 +47,15 @@
   };
 </script>
 
-  <meta name="description" content="&#x3D;&#x3D;与is的区别在Python中一切都是对象。 Python中对象包含的三个基本要素，分别是：  id(身份标识) type(数据类型) value(值)  对象之间比较是否相等可以用 &#x3D;&#x3D; ，也可以用 is 。  is 比较的是两个对象的id值是否相等，也就是比较两个对象是否为同一个实例对象，是否指向同一个内存地址。 &#x3D;&#x3D; 比较的是两个对象的内容是否相等，默认会调用对象的 eq 方法。 &#x3D;&#x3D; 是">
+  <meta name="description" content="&#x3D;&#x3D;与is的区别在Python中一切都是对象。 Python中对象包含的三个基本要素，分别是：  id(身份标识) type(数据类型) value(值)">
 <meta property="og:type" content="article">
 <meta property="og:title" content="python基础">
 <meta property="og:url" content="http://obsessed.top/2018/03/19/python%E5%9F%BA%E7%A1%80/index.html">
 <meta property="og:site_name" content="Ares">
-<meta property="og:description" content="&#x3D;&#x3D;与is的区别在Python中一切都是对象。 Python中对象包含的三个基本要素，分别是：  id(身份标识) type(数据类型) value(值)  对象之间比较是否相等可以用 &#x3D;&#x3D; ，也可以用 is 。  is 比较的是两个对象的id值是否相等，也就是比较两个对象是否为同一个实例对象，是否指向同一个内存地址。 &#x3D;&#x3D; 比较的是两个对象的内容是否相等，默认会调用对象的 eq 方法。 &#x3D;&#x3D; 是">
+<meta property="og:description" content="&#x3D;&#x3D;与is的区别在Python中一切都是对象。 Python中对象包含的三个基本要素，分别是：  id(身份标识) type(数据类型) value(值)">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2018-03-19T06:00:10.000Z">
-<meta property="article:modified_time" content="2020-04-22T07:05:32.815Z">
+<meta property="article:modified_time" content="2020-04-23T09:30:01.896Z">
 <meta property="article:author" content="Ares">
 <meta property="article:tag" content="Python">
 <meta name="twitter:card" content="summary">
@@ -244,7 +244,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-04-22 15:05:32" itemprop="dateModified" datetime="2020-04-22T15:05:32+08:00">2020-04-22</time>
+                <time title="修改时间：2020-04-23 17:30:01" itemprop="dateModified" datetime="2020-04-23T17:30:01+08:00">2020-04-23</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -269,18 +269,20 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <html><head></head><body></body></html><html><head></head><body><h2 id="与is的区别"><a href="#与is的区别" class="headerlink" title="==与is的区别"></a>==与is的区别</h2><p>在Python中一切都是对象。</p>
+        <h2 id="与is的区别"><a href="#与is的区别" class="headerlink" title="==与is的区别"></a>==与is的区别</h2><p>在Python中一切都是对象。</p>
 <p>Python中对象包含的三个基本要素，分别是：</p>
 <ol>
 <li>id(身份标识)</li>
 <li>type(数据类型)</li>
 <li>value(值)</li>
 </ol>
+<a id="more"></a>
+
 <p>对象之间比较是否相等可以用 == ，也可以用 is 。 </p>
 <p>is 比较的是两个对象的id值是否相等，也就是比较两个对象是否为同一个实例对象，是否指向同一个内存地址。</p>
 <p>== 比较的是两个对象的内容是否相等，默认会调用对象的 <strong>eq</strong> 方法。</p>
 <p>== 是python标准操作符中的比较操作符，用来比较判断两个对象的值是否相等。</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">>>> </span>a = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]</span><br><span class="line"><span class="meta">>>> </span>b = a</span><br><span class="line"><span class="meta">>>> </span>b <span class="keyword">is</span> a </span><br><span class="line"><span class="literal">True</span></span><br><span class="line"><span class="meta">>>> </span>b == a</span><br><span class="line"><span class="literal">True</span></span><br><span class="line"><span class="meta">>>> </span>b = a[:]</span><br><span class="line"><span class="meta">>>> </span>b <span class="keyword">is</span> a</span><br><span class="line"><span class="literal">False</span></span><br><span class="line"><span class="meta">>>> </span>b == a</span><br><span class="line"><span class="literal">True</span></span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b = a</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b <span class="keyword">is</span> a </span><br><span class="line"><span class="literal">True</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b == a</span><br><span class="line"><span class="literal">True</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b = a[:]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b <span class="keyword">is</span> a</span><br><span class="line"><span class="literal">False</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b == a</span><br><span class="line"><span class="literal">True</span></span><br></pre></td></tr></table></figure>
 
 
 
@@ -290,7 +292,7 @@
 <p>浅拷贝是对于一个对象的顶层拷贝，通俗的理解是：拷贝了引用，并没有拷贝内容 </p>
 <p><strong>深拷贝</strong></p>
 <p>拷贝会完全复制原变量相关的所有数据，在内存中生成一套完全一样的内容，我们对这两个变量中任意一个修改都不会影响其他变量 </p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> copy</span><br><span class="line">sourceList = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,[<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>]]</span><br><span class="line">copyList = copy.copy(sourceList)</span><br><span class="line">deepcopyList = copy.deepcopy(sourceList)</span><br><span class="line"></span><br><span class="line">sourceList[<span class="number">3</span>][<span class="number">0</span>]=<span class="number">100</span></span><br><span class="line"></span><br><span class="line">print(sourceList)           <span class="comment"># [1, 2, 3, [100, 5, 6]]</span></span><br><span class="line">print(copyList)             <span class="comment"># [1, 2, 3, [100, 5, 6]]</span></span><br><span class="line">print(deepcopyList)         <span class="comment"># [1, 2, 3, [4, 5, 6]]</span></span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> copy</span><br><span class="line">sourceList = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,[<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>]]</span><br><span class="line">copyList = copy.copy(sourceList)</span><br><span class="line">deepcopyList = copy.deepcopy(sourceList)</span><br><span class="line"></span><br><span class="line">sourceList[<span class="number">3</span>][<span class="number">0</span>]=<span class="number">100</span></span><br><span class="line"></span><br><span class="line">print(sourceList)           <span class="comment"># [1, 2, 3, [100, 5, 6]]</span></span><br><span class="line">print(copyList)             <span class="comment"># [1, 2, 3, [100, 5, 6]]</span></span><br><span class="line">print(deepcopyList)         <span class="comment"># [1, 2, 3, [4, 5, 6]]</span></span><br></pre></td></tr></table></figure>
 
 
 
@@ -339,21 +341,21 @@
 <li>with 语句适用于对资源进行访问的场合，确保不管使用过程中是否发生异常都会执行必要的“清理”操作，释放资源 </li>
 <li>比如文件使用后自动关闭、线程中锁的自动获取和释放等。</li>
 </ul>
-<h3 id="with处理文件操作的实例"><a href="#with处理文件操作的实例" class="headerlink" title="with处理文件操作的实例"></a>with处理文件操作的实例</h3><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> open(<span class="string">'/etc/passwd'</span>) <span class="keyword">as</span> f:</span><br><span class="line">    <span class="keyword">for</span> line <span class="keyword">in</span> f:</span><br><span class="line">        print(line)</span><br><span class="line">  <span class="comment"># 这段代码的作用：打开一个文件，如果一切正常，把文件对象赋值给f，然后用迭代器遍历文件中每一行，当完成时，关闭文件；</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># 而无论在这段代码的任何地方，如果发生异常，此时文件仍会被关闭。</span></span><br></pre></td></tr></tbody></table></figure>
+<h3 id="with处理文件操作的实例"><a href="#with处理文件操作的实例" class="headerlink" title="with处理文件操作的实例"></a>with处理文件操作的实例</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> open(<span class="string">'/etc/passwd'</span>) <span class="keyword">as</span> f:</span><br><span class="line">    <span class="keyword">for</span> line <span class="keyword">in</span> f:</span><br><span class="line">        print(line)</span><br><span class="line">  <span class="comment"># 这段代码的作用：打开一个文件，如果一切正常，把文件对象赋值给f，然后用迭代器遍历文件中每一行，当完成时，关闭文件；</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># 而无论在这段代码的任何地方，如果发生异常，此时文件仍会被关闭。</span></span><br></pre></td></tr></table></figure>
 
 <h2 id="高阶函数"><a href="#高阶函数" class="headerlink" title="高阶函数"></a>高阶函数</h2><h3 id="map函数"><a href="#map函数" class="headerlink" title="map函数"></a>map函数</h3><p>将第一个参数 function 依次作用在参数可迭代对象中的每一个元素上，在python3中返回包含每次 function 函数返回值的新迭代器 </p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">map(function,iterable)</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">map(function,iterable)</span><br></pre></td></tr></table></figure>
 
 <p>实例：</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">f</span><span class="params">(x)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> x*x</span><br><span class="line">r = map(f, [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>])</span><br><span class="line">print(list(r))</span><br><span class="line">运行结果：</span><br><span class="line">[<span class="number">1</span>, <span class="number">4</span>, <span class="number">9</span>, <span class="number">16</span>, <span class="number">25</span>, <span class="number">36</span>, <span class="number">49</span>, <span class="number">64</span>, <span class="number">81</span>]</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">f</span><span class="params">(x)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> x*x</span><br><span class="line">r = map(f, [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>])</span><br><span class="line">print(list(r))</span><br><span class="line">运行结果：</span><br><span class="line">[<span class="number">1</span>, <span class="number">4</span>, <span class="number">9</span>, <span class="number">16</span>, <span class="number">25</span>, <span class="number">36</span>, <span class="number">49</span>, <span class="number">64</span>, <span class="number">81</span>]</span><br></pre></td></tr></table></figure>
 
 
 
 <h3 id="filter函数"><a href="#filter函数" class="headerlink" title="filter函数"></a>filter函数</h3><p>filter()接收一个函数function 和一个list，这个function 的作用是对list的每个元素进行判断，返回True或False，filter()根据判断结果自动过滤掉不符合条件的元素，返回由符合条件元素组成的新list。 </p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">filter(function, iterable)</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">filter(function, iterable)</span><br></pre></td></tr></table></figure>
 
 <p>实例：</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">is_contain_s</span><span class="params">(s)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> <span class="string">'E'</span> <span class="keyword">in</span> s:</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">    </span><br><span class="line">result = filter(is_contain_s, [<span class="string">'sTEst'</span>, <span class="string">'abc'</span>, <span class="string">'str'</span>, <span class="string">' '</span>, <span class="string">'END'</span>])</span><br><span class="line">print(list(result))</span><br><span class="line"></span><br><span class="line">运行结果：</span><br><span class="line">[<span class="string">'sTEst'</span>, <span class="string">'END'</span>]</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">is_contain_s</span><span class="params">(s)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> <span class="string">'E'</span> <span class="keyword">in</span> s:</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">    </span><br><span class="line">result = filter(is_contain_s, [<span class="string">'sTEst'</span>, <span class="string">'abc'</span>, <span class="string">'str'</span>, <span class="string">' '</span>, <span class="string">'END'</span>])</span><br><span class="line">print(list(result))</span><br><span class="line"></span><br><span class="line">运行结果：</span><br><span class="line">[<span class="string">'sTEst'</span>, <span class="string">'END'</span>]</span><br></pre></td></tr></table></figure>
 
 
 
@@ -361,18 +363,18 @@
 
 <h3 id="reduce函数"><a href="#reduce函数" class="headerlink" title="reduce函数"></a>reduce函数</h3><p>reduce()函数也接收一个函数function, 和一个list。但reduce()传入的函数必须接收两个参数，reduce()对list的每个元素反复调用函数function, 并返回最终结果值。 </p>
 <p>在Python3里，reduce()函数已经被从全局名字空间里移除了，它现在被放置在fucntools模块里， 要使用的话要 先引入</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> functools <span class="keyword">import</span> reduce </span><br><span class="line">reduce(function, iterable)</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> functools <span class="keyword">import</span> reduce </span><br><span class="line">reduce(function, iterable)</span><br></pre></td></tr></table></figure>
 
 
 
 <p>实例：</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">f</span><span class="params">(x, y)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> x + y</span><br><span class="line"></span><br><span class="line">result = reduce(f, [<span class="number">1</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">7</span>, <span class="number">9</span>])</span><br><span class="line">print(result)</span><br><span class="line">运行结果：</span><br><span class="line"><span class="number">25</span></span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">f</span><span class="params">(x, y)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> x + y</span><br><span class="line"></span><br><span class="line">result = reduce(f, [<span class="number">1</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">7</span>, <span class="number">9</span>])</span><br><span class="line">print(result)</span><br><span class="line">运行结果：</span><br><span class="line"><span class="number">25</span></span><br></pre></td></tr></table></figure>
 
 
 
 <h3 id="sorted函数"><a href="#sorted函数" class="headerlink" title="sorted函数"></a>sorted函数</h3><p>对所有可迭代的对象进行排序操作 </p>
 <p>对于list也可以使用<code>list.sort()</code>方法，这个方法会修改原始的 list（返回值为None）。通常这个方法不如<code>sorted()</code>方便-如果你不需要原始的 list，<code>list.sort()</code>方法效率会稍微高一些。 </p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sorted(iterable, key=<span class="literal">None</span>, reverse=<span class="literal">False</span>)</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sorted(iterable, key=<span class="literal">None</span>, reverse=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>iterable – 可迭代对象</li>
@@ -380,9 +382,9 @@
 <li>reverse – 排序规则，reverse = True 降序 ， reverse = False 升序（默认）</li>
 </ul>
 <p>实例：</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">>>>example_list = [<span class="number">5</span>, <span class="number">0</span>, <span class="number">6</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">7</span>, <span class="number">3</span>, <span class="number">4</span>]</span><br><span class="line"><span class="meta">>>> </span>sorted(example_list, reverse=<span class="literal">True</span>)</span><br><span class="line">[<span class="number">7</span>, <span class="number">6</span>, <span class="number">5</span>, <span class="number">4</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">1</span>, <span class="number">0</span>]</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt;example_list = [<span class="number">5</span>, <span class="number">0</span>, <span class="number">6</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">7</span>, <span class="number">3</span>, <span class="number">4</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>sorted(example_list, reverse=<span class="literal">True</span>)</span><br><span class="line">[<span class="number">7</span>, <span class="number">6</span>, <span class="number">5</span>, <span class="number">4</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">1</span>, <span class="number">0</span>]</span><br></pre></td></tr></table></figure>
 
-</body></html>
+
     </div>
 
     

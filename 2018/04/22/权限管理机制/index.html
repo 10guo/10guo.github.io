@@ -57,7 +57,7 @@
 <meta property="og:image" content="http://obsessed.top/2018/04/22/%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86%E6%9C%BA%E5%88%B6/462684-20190129231355786-1268233138.png">
 <meta property="og:image" content="http://obsessed.top/2018/04/22/%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86%E6%9C%BA%E5%88%B6/462684-20190129231837693-35611593.png">
 <meta property="article:published_time" content="2018-04-22T11:58:06.000Z">
-<meta property="article:modified_time" content="2020-04-22T07:07:14.167Z">
+<meta property="article:modified_time" content="2020-04-23T09:28:54.351Z">
 <meta property="article:author" content="Ares">
 <meta property="article:tag" content="Django">
 <meta name="twitter:card" content="summary">
@@ -247,7 +247,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-04-22 15:07:14" itemprop="dateModified" datetime="2020-04-22T15:07:14+08:00">2020-04-22</time>
+                <time title="修改时间：2020-04-23 17:28:54" itemprop="dateModified" datetime="2020-04-23T17:28:54+08:00">2020-04-23</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -272,21 +272,23 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <html><head></head><body></body></html><html><head></head><body><h2 id="一、RBAC概述"><a href="#一、RBAC概述" class="headerlink" title="一、RBAC概述"></a>一、RBAC概述</h2><p>RBAC(Role-Based Access Control,基于角色的访问控制)，通过角色绑定权限，然后给用户划分角色。</p>
+        <h2 id="一、RBAC概述"><a href="#一、RBAC概述" class="headerlink" title="一、RBAC概述"></a>一、RBAC概述</h2><p>RBAC(Role-Based Access Control,基于角色的访问控制)，通过角色绑定权限，然后给用户划分角色。</p>
 <p>从企业的角度来说，基本上是按照角色来划分职能。比如，CEO，具有公司全局的权限；部门经理，具有部门全局的权限；部门主管，具有部门部分的权限；普通员工，具有部门一小部分权限。</p>
 <p>不同的角色，能够获取的资源是不一样的，所以RBAC就是按照这个思维为公司建设权限系统。</p>
 <p>角色的引入，让权限管理非常灵活。</p>
 <p>例如：某个员工要离职了，替换他的是一个新员工，这时你需要一一的告诉该新员工他应该做什么，他不能做什么，当工作项非常多的时候，这将是非常繁琐的过程，且非常容易出错。如果你把这个职位定义为某个角色，且为这个角色分配固定的权限，不管来多少新人，不管什么职位，只要他对号入座，权限自然就根据角色分配好。当新员工升职后，比如升职成主管或经理，你这时只是角色变换，权限自动分配给他。</p>
-<h2 id="二、流程图"><a href="#二、流程图" class="headerlink" title="二、流程图"></a>二、流程图</h2><p><strong><img src="/2018/04/22/%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86%E6%9C%BA%E5%88%B6/462684-20190129231355786-1268233138.png" class title="This is an test image"></strong> </p>
+<a id="more"></a>
+
+<h2 id="二、流程图"><a href="#二、流程图" class="headerlink" title="二、流程图"></a>二、流程图</h2><p><strong><img src="/2018/04/22/%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86%E6%9C%BA%E5%88%B6/462684-20190129231355786-1268233138.png" class="" title="This is an test image"></strong> </p>
 <p>1、人员属于某个角色，首先给他分配角色，例如：总监、经理、主管、助理等；</p>
 <p>2、人员赋予角色后，则给他分配权限，不同的角色，规定有不同的权限。比如：总监级别，能够增删改查，无所不能；而经理级别，只能增改查，如果需要删除，则需要总监审批；主管只有增加和查看，修改需要向经理申请，让经理审批。</p>
 <p>3、不同的权限，实际上是对应数据库中的某张表，也就是Django中的某个model。</p>
-<h2 id="三、实现过程"><a href="#三、实现过程" class="headerlink" title="三、实现过程"></a>三、实现过程</h2><p><strong><img src="/2018/04/22/%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86%E6%9C%BA%E5%88%B6/462684-20190129231837693-35611593.png" class title="This is an test image"></strong> </p>
+<h2 id="三、实现过程"><a href="#三、实现过程" class="headerlink" title="三、实现过程"></a>三、实现过程</h2><p><strong><img src="/2018/04/22/%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86%E6%9C%BA%E5%88%B6/462684-20190129231837693-35611593.png" class="" title="This is an test image"></strong> </p>
 <p>1、人员登录后，先验证用户是否OK；</p>
 <p>2、验证用户OK后，则根据人员属于什么角色，进行权限获取，并写入session中；</p>
 <p>3、用户登录成功，进入index页面，则根据用户session中的权限，展示不同的页面，正所谓：千人千面；</p>
 <p>4、用户根据不同的页面，进行不同的操作。</p>
-</body></html>
+
     </div>
 
     
