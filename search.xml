@@ -1,8 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Python爬虫错误</title>
-    <url>/2020/05/04/Python%E7%88%AC%E8%99%AB%E9%94%99%E8%AF%AF/</url>
+    <title>SpiderKeeper的使用</title>
+    <url>/2020/05/04/SpiderKeeper%E7%9A%84%E4%BD%BF%E7%94%A8/</url>
+    <content><![CDATA[<img src="/2020/05/04/SpiderKeeper%E7%9A%84%E4%BD%BF%E7%94%A8/e3a9efd8beb4131a7ebda45b43bf4cd.png" class="">  
+
+<a id="more"></a>
+
+<h3 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h3><p><code>pip install scrapy</code><br><code>pip install scrapyd</code><br><code>pip install scrapyd-client</code><br><code>pip install spiderkeeper</code></p>
+<p>新建一个文件夹，进入到文件夹后，输入scrapyd启动scrapyd服务： </p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">E:\Django+Scrapy\mypro\spiderpro&gt;scrapyd</span><br><span class="line">2020-05-04T20:02:33+0800 [-] Loading c:\users\administrator\appdata\local\programs\python\python37\lib\site-packages\scrapyd\txapp.py...</span><br><span class="line">2020-05-04T20:02:33+0800 [-] Scrapyd web console available at http:&#x2F;&#x2F;127.0.0.1:6800&#x2F;</span><br><span class="line">2020-05-04T20:02:33+0800 [-] Loaded.</span><br><span class="line">2020-05-04T20:02:33+0800 [twisted.application.app.AppLogger#info] twistd 19.7.0 (c:\users\administrator\appdata\local\programs\python\python37\python.exe 3.7.0) starting up.</span><br><span class="line">2020-05-04T20:02:33+0800 [twisted.application.app.AppLogger#info] reactor class: twisted.internet.selectreactor.SelectReactor.</span><br><span class="line">2020-05-04T20:02:33+0800 [-] Site starting on 6800</span><br><span class="line">2020-05-04T20:02:33+0800 [twisted.web.server.Site#info] Starting factory &lt;twisted.web.server.Site object at 0x000001ED926976D8&gt;</span><br><span class="line">2020-05-04T20:02:33+0800 [Launcher] Scrapyd 1.2.1 started: max_proc&#x3D;48, runner&#x3D;&#39;scrapyd.runner&#39;</span><br></pre></td></tr></table></figure>
+
+<p>然后再启动spiderkeeper，命令行输入spiderkeeper： </p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">E:\Django+Scrapy\mypro\spiderpro&gt;spiderkeeper</span><br><span class="line">c:\users\administrator\appdata\local\programs\python\python37\lib\site-packages\flask_restful_swagger\swagger.py:14: ExtDeprecationWarning: Importing flask.ext.restful is deprecated, use flask_restful instead.</span><br><span class="line">  from flask.ext.restful import Resource, fields</span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line">INFO in run [c:\users\administrator\appdata\local\programs\python\python37\lib\site-packages\SpiderKeeper\run.py:22]:</span><br><span class="line">SpiderKeeper startd on 0.0.0.0:5000 username:admin&#x2F;password:admin with scrapyd servers:http:&#x2F;&#x2F;localhost:6800</span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line">2020-05-04 19:03:15,108 - SpiderKeeper.app - INFO - SpiderKeeper startd on 0.0.0.0:5000 username:admin&#x2F;password:admin with scrapyd servers:http:&#x2F;&#x2F;localhost:6800</span><br></pre></td></tr></table></figure>
+
+<p>打开浏览器访问spiderkeeper的地址，我这里是127.0.0.1:5000，然后输入用户名、密码，默认都是admin </p>
+<img src="/2020/05/04/SpiderKeeper%E7%9A%84%E4%BD%BF%E7%94%A8/5728077-56dcdfd61bbce401.png" class="">  
+
+<p>至此，环境准备完毕。 </p>
+<h3 id="部署爬虫"><a href="#部署爬虫" class="headerlink" title="部署爬虫"></a>部署爬虫</h3><p>我的爬虫程序是在自己的windows电脑上的，打开命令行进入到爬虫根目录： 执行命令：<code>scrapyd-deploy --build-egg output.egg</code>生成egg文件。 </p>
+<p>然后在spiderkeeper可视化界面点击<code>creat project</code>: </p>
+<img src="/2020/05/04/SpiderKeeper%E7%9A%84%E4%BD%BF%E7%94%A8/5728077-1a070e0774f35681.png" class="">  
+
+<p>随便输入一个名字： </p>
+<img src="/2020/05/04/SpiderKeeper%E7%9A%84%E4%BD%BF%E7%94%A8/1588594163.png" class="">  
+
+<p>点击创建，跳到这个界面： </p>
+<img src="/2020/05/04/SpiderKeeper%E7%9A%84%E4%BD%BF%E7%94%A8/1588594399.png" class="">  
+
+<p>上传egg文件： </p>
+<img src="/2020/05/04/SpiderKeeper%E7%9A%84%E4%BD%BF%E7%94%A8/1588594926.png" class="">  
+
+<p>不要忘记点击提交</p>
+<p>此时，部署完成。</p>
+<h3 id="运行爬虫"><a href="#运行爬虫" class="headerlink" title="运行爬虫"></a>运行爬虫</h3><p>部署完后，点击 Dashboard 这个按钮，再选择 spiderpro项目，然后点击 RunOnce 按钮创建爬虫： </p>
+<img src="/2020/05/04/SpiderKeeper%E7%9A%84%E4%BD%BF%E7%94%A8/1588595047.png" class="">  
+
+<p>这里参数都默认即可： </p>
+<img src="/2020/05/04/SpiderKeeper%E7%9A%84%E4%BD%BF%E7%94%A8/1588595111.png" class="">  
+
+<p>点击创建爬虫按钮：然后刷新网页</p>
+<img src="/2020/05/04/SpiderKeeper%E7%9A%84%E4%BD%BF%E7%94%A8/1588595204(1).png" class="">  
+
+<p>至此，爬虫运行完毕。 </p>
+<p>查看日志点 log 即可，停止爬虫点 stop 即可，其他操作请查看官方文档：<a href="https://github.com/DormyMo/SpiderKeeper" target="_blank" rel="noopener">https://github.com/DormyMo/SpiderKeeper</a></p>
+]]></content>
+      <categories>
+        <category>Python</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>scrapyd-deploy错误</title>
+    <url>/2020/05/04/scrapyd-deploy%E9%94%99%E8%AF%AF/</url>
     <content><![CDATA[<h4 id="‘scrapyd-deploy’-不是内部或外部命令，也不是可运行的程序或批处理文件"><a href="#‘scrapyd-deploy’-不是内部或外部命令，也不是可运行的程序或批处理文件" class="headerlink" title="‘scrapyd-deploy’ 不是内部或外部命令，也不是可运行的程序或批处理文件"></a>‘scrapyd-deploy’ 不是内部或外部命令，也不是可运行的程序或批处理文件</h4><p>在编写好 python 爬虫程序，准备部署到云服务器上时，遇到一个问题。 </p>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">$ scrapyd-deploy mmbuy -p spiderpro</span><br></pre></td></tr></table></figure>
 
@@ -15,19 +67,32 @@
 
 <h4 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h4><p><strong>1.</strong>  找到 Python 的安装路径，进入 Scripts 文件夹。</p>
 <p><strong>2.</strong>  创建两个文件，scrapy.bat 和 scrapyd-deploy.bat （新建 txt 文本文档，然后更改后缀名为 .bat）</p>
-<img src="/2020/05/04/Python%E7%88%AC%E8%99%AB%E9%94%99%E8%AF%AF/20181124215946769.png" class="">  
+<img src="/2020/05/04/scrapyd-deploy%E9%94%99%E8%AF%AF/20181124215946769.png" class="">  
 
 <p><strong>3.</strong>  编辑 scrapy.bat （右键 —&gt; 编辑），添加以下内容，保存。（注：路径改成自己电脑的路径） </p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">@echo off</span></span><br><span class="line">C:\Users\Administrator\AppData\Local\Programs\Python\Python37\Scripts\scrapy %*</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">@echo off</span><br><span class="line">C:\Users\Administrator\AppData\Local\Programs\Python\Python37\python.exe C:\Users\Administrator\AppData\Local\Programs\Python\Python37\Scripts\scrapy %*</span><br></pre></td></tr></table></figure>
 
 <p><strong>4.</strong>  同样，编辑 scrapyd-deploy.bat ，添加以下内容，保存。（注：路径改成自己电脑的路径） </p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">@echo off</span><br><span class="line">C:\Users\Administrator\AppData\Local\Programs\Python\Python37\Scripts\scrapyd-deploy %*</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">@echo off</span><br><span class="line">C:\Users\Administrator\AppData\Local\Programs\Python\Python37\python.exe C:\Users\Administrator\AppData\Local\Programs\Python\Python37\Scripts\scrapyd-deploy %*</span><br></pre></td></tr></table></figure>
 
 <p><strong>5.</strong>  两个文件保存之后，重新运行部署指令，成功。 </p>
 <p><strong>6.</strong>  在这里可能会出现一些问题，就是有人的 Python 路径并非全英文，路径中会有空格、或者中文，可能会报错。</p>
 <p>​     这个问题解决方法也很简单，就是在带有空格 / 中文的路径两边打双引号（英文双引号）即可，比如：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">@echo off</span><br><span class="line">&quot;C:\用户\Administrator\App Data&quot;\Local\Programs\Python\Python37\Scripts\scrapyd-deploy %*</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">@echo off</span><br><span class="line">&quot;C:\用户\Administrator\AppData\Local\Programs\Python\Python37\python.exe&quot; C:\Users\Administrator\AppData\Local\Programs\Python\Python37\Scripts\scrapyd-deploy %*</span><br></pre></td></tr></table></figure>
 
+<p><strong>7.</strong>可以测试一下</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">C:\Users\Administrator&gt;scrapyd-deploy -h</span><br><span class="line">C:\Users\Administrator\AppData\Local\Programs\Python\Python37\Scripts\scrapyd-deploy:23: ScrapyDeprecationWarning: Module &#96;scrapy.utils.http&#96; is deprecated, Please import from &#96;w3lib.http&#96; instead.</span><br><span class="line">  from scrapy.utils.http import basic_auth_header</span><br><span class="line">Usage: scrapyd-deploy [options] [ [target] | -l | -L &lt;target&gt; ]</span><br><span class="line"></span><br><span class="line">Deploy Scrapy project to Scrapyd server</span><br><span class="line"></span><br><span class="line">Options:</span><br><span class="line">  -h, --help            show this help message and exit</span><br><span class="line">  -p PROJECT, --project&#x3D;PROJECT</span><br><span class="line">                        the project name in the target</span><br><span class="line">  -v VERSION, --version&#x3D;VERSION</span><br><span class="line">                        the version to deploy. Defaults to current timestamp</span><br><span class="line">  -l, --list-targets    list available targets</span><br><span class="line">  -a, --deploy-all-targets</span><br><span class="line">                        deploy all targets</span><br><span class="line">  -d, --debug           debug mode (do not remove build dir)</span><br><span class="line">  -L TARGET, --list-projects&#x3D;TARGET</span><br><span class="line">                        list available projects on TARGET</span><br><span class="line">  --egg&#x3D;FILE            use the given egg, instead of building it</span><br><span class="line">  --build-egg&#x3D;FILE      only build the egg, don&#39;t deploy it</span><br></pre></td></tr></table></figure>
+
+<p><strong>这样就成功了</strong></p>
+<h4 id="在执行命令：scrapyd-deploy时遇报错："><a href="#在执行命令：scrapyd-deploy时遇报错：" class="headerlink" title="在执行命令：scrapyd-deploy时遇报错："></a>在执行命令：scrapyd-deploy时遇报错：</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">E:\Django+Scrapy\mypro\spiderpro&gt;scrapyd-deploy demo -p spiderpro</span><br><span class="line">ScrapyDeprecationWarning: Module `scrapy.utils.http` <span class="keyword">is</span> deprecated, Please <span class="keyword">import</span> <span class="keyword">from</span> `w3lib.http` instead.</span><br><span class="line"><span class="keyword">from</span> scrapy.utils.http <span class="keyword">import</span> basic_auth_header</span><br></pre></td></tr></table></figure>
+
+<p>  乍一看以为是路径问题导致找不到scrapy项目，其实不然，报错已经说明，由于底层scrapyd-deploy的模块‘scrapy.utils.http’已经弃用，建议更新为<code>w3lib.http</code>替代 解决办法其实很简单，只需要修改一下底层代码即可： </p>
+<img src="/2020/05/04/scrapyd-deploy%E9%94%99%E8%AF%AF/1541850-20200222125238828-40383557.png" class="">  
+
+<p>再次运行</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">E:\Django+Scrapy\mypro\spiderpro&gt;scrapyd-deploy demo -p spiderpro</span><br><span class="line">Packing version <span class="number">1588585484</span></span><br><span class="line">Deploying to project <span class="string">"spiderpro"</span> <span class="keyword">in</span> http://localhost:<span class="number">6800</span>/addversion.json</span><br><span class="line">Server response (<span class="number">200</span>):</span><br><span class="line">&#123;<span class="string">"node_name"</span>: <span class="string">"PC-20200326UBAK"</span>, <span class="string">"status"</span>: <span class="string">"ok"</span>, <span class="string">"project"</span>: <span class="string">"spiderpro"</span>, <span class="string">"version"</span>: <span class="string">"1588585484"</span>, <span class="string">"spiders"</span>: <span class="number">1</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<p>😊</p>
 ]]></content>
       <categories>
         <category>Python</category>

@@ -49,20 +49,21 @@
 
   <meta name="description" content="‘scrapyd-deploy’ 不是内部或外部命令，也不是可运行的程序或批处理文件在编写好 python 爬虫程序，准备部署到云服务器上时，遇到一个问题。  1$ scrapyd-deploy mmbuy -p spiderpro  执行上述部署的代码时，报错：  1&#39;scrapyd-deploy&#39; 不是内部或外部命令，也不是可运行的程序或批处理文件。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Python爬虫错误">
-<meta property="og:url" content="http://obsessed.top/2020/05/04/Python%E7%88%AC%E8%99%AB%E9%94%99%E8%AF%AF/index.html">
+<meta property="og:title" content="scrapyd-deploy错误">
+<meta property="og:url" content="http://obsessed.top/2020/05/04/scrapyd-deploy%E9%94%99%E8%AF%AF/index.html">
 <meta property="og:site_name" content="Ares">
 <meta property="og:description" content="‘scrapyd-deploy’ 不是内部或外部命令，也不是可运行的程序或批处理文件在编写好 python 爬虫程序，准备部署到云服务器上时，遇到一个问题。  1$ scrapyd-deploy mmbuy -p spiderpro  执行上述部署的代码时，报错：  1&#39;scrapyd-deploy&#39; 不是内部或外部命令，也不是可运行的程序或批处理文件。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://obsessed.top/2020/05/04/Python%E7%88%AC%E8%99%AB%E9%94%99%E8%AF%AF/20181124215946769.png">
+<meta property="og:image" content="http://obsessed.top/2020/05/04/scrapyd-deploy%E9%94%99%E8%AF%AF/20181124215946769.png">
+<meta property="og:image" content="http://obsessed.top/2020/05/04/scrapyd-deploy%E9%94%99%E8%AF%AF/1541850-20200222125238828-40383557.png">
 <meta property="article:published_time" content="2020-05-04T07:43:50.000Z">
-<meta property="article:modified_time" content="2020-05-04T07:53:28.999Z">
+<meta property="article:modified_time" content="2020-05-04T10:32:41.722Z">
 <meta property="article:author" content="Ares">
 <meta property="article:tag" content="Python">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://obsessed.top/2020/05/04/Python%E7%88%AC%E8%99%AB%E9%94%99%E8%AF%AF/20181124215946769.png">
+<meta name="twitter:image" content="http://obsessed.top/2020/05/04/scrapyd-deploy%E9%94%99%E8%AF%AF/20181124215946769.png">
 
-<link rel="canonical" href="http://obsessed.top/2020/05/04/Python%E7%88%AC%E8%99%AB%E9%94%99%E8%AF%AF/">
+<link rel="canonical" href="http://obsessed.top/2020/05/04/scrapyd-deploy%E9%94%99%E8%AF%AF/">
 
 
 <script id="page-configurations">
@@ -76,7 +77,7 @@
   };
 </script>
 
-  <title>Python爬虫错误 | Ares</title>
+  <title>scrapyd-deploy错误 | Ares</title>
   
 
 
@@ -216,7 +217,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://obsessed.top/2020/05/04/Python%E7%88%AC%E8%99%AB%E9%94%99%E8%AF%AF/">
+    <link itemprop="mainEntityOfPage" href="http://obsessed.top/2020/05/04/scrapyd-deploy%E9%94%99%E8%AF%AF/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/20160228201627_f5vax.png">
@@ -229,7 +230,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Python爬虫错误
+          scrapyd-deploy错误
         </h1>
 
         <div class="post-meta">
@@ -240,7 +241,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-05-04 15:43:50 / 修改时间：15:53:28" itemprop="dateCreated datePublished" datetime="2020-05-04T15:43:50+08:00">2020-05-04</time>
+              <time title="创建时间：2020-05-04 15:43:50 / 修改时间：18:32:41" itemprop="dateCreated datePublished" datetime="2020-05-04T15:43:50+08:00">2020-05-04</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -277,19 +278,32 @@
 
 <h4 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h4><p><strong>1.</strong>  找到 Python 的安装路径，进入 Scripts 文件夹。</p>
 <p><strong>2.</strong>  创建两个文件，scrapy.bat 和 scrapyd-deploy.bat （新建 txt 文本文档，然后更改后缀名为 .bat）</p>
-<img src="/2020/05/04/Python%E7%88%AC%E8%99%AB%E9%94%99%E8%AF%AF/20181124215946769.png" class="">  
+<img src="/2020/05/04/scrapyd-deploy%E9%94%99%E8%AF%AF/20181124215946769.png" class="">  
 
 <p><strong>3.</strong>  编辑 scrapy.bat （右键 —&gt; 编辑），添加以下内容，保存。（注：路径改成自己电脑的路径） </p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@echo off</span></span><br><span class="line">C:\Users\Administrator\AppData\Local\Programs\Python\Python37\Scripts\scrapy %*</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">@echo off</span><br><span class="line">C:\Users\Administrator\AppData\Local\Programs\Python\Python37\python.exe C:\Users\Administrator\AppData\Local\Programs\Python\Python37\Scripts\scrapy %*</span><br></pre></td></tr></table></figure>
 
 <p><strong>4.</strong>  同样，编辑 scrapyd-deploy.bat ，添加以下内容，保存。（注：路径改成自己电脑的路径） </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">@echo off</span><br><span class="line">C:\Users\Administrator\AppData\Local\Programs\Python\Python37\Scripts\scrapyd-deploy %*</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">@echo off</span><br><span class="line">C:\Users\Administrator\AppData\Local\Programs\Python\Python37\python.exe C:\Users\Administrator\AppData\Local\Programs\Python\Python37\Scripts\scrapyd-deploy %*</span><br></pre></td></tr></table></figure>
 
 <p><strong>5.</strong>  两个文件保存之后，重新运行部署指令，成功。 </p>
 <p><strong>6.</strong>  在这里可能会出现一些问题，就是有人的 Python 路径并非全英文，路径中会有空格、或者中文，可能会报错。</p>
 <p>​     这个问题解决方法也很简单，就是在带有空格 / 中文的路径两边打双引号（英文双引号）即可，比如：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">@echo off</span><br><span class="line">&quot;C:\用户\Administrator\App Data&quot;\Local\Programs\Python\Python37\Scripts\scrapyd-deploy %*</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">@echo off</span><br><span class="line">&quot;C:\用户\Administrator\AppData\Local\Programs\Python\Python37\python.exe&quot; C:\Users\Administrator\AppData\Local\Programs\Python\Python37\Scripts\scrapyd-deploy %*</span><br></pre></td></tr></table></figure>
 
+<p><strong>7.</strong>可以测试一下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">C:\Users\Administrator&gt;scrapyd-deploy -h</span><br><span class="line">C:\Users\Administrator\AppData\Local\Programs\Python\Python37\Scripts\scrapyd-deploy:23: ScrapyDeprecationWarning: Module &#96;scrapy.utils.http&#96; is deprecated, Please import from &#96;w3lib.http&#96; instead.</span><br><span class="line">  from scrapy.utils.http import basic_auth_header</span><br><span class="line">Usage: scrapyd-deploy [options] [ [target] | -l | -L &lt;target&gt; ]</span><br><span class="line"></span><br><span class="line">Deploy Scrapy project to Scrapyd server</span><br><span class="line"></span><br><span class="line">Options:</span><br><span class="line">  -h, --help            show this help message and exit</span><br><span class="line">  -p PROJECT, --project&#x3D;PROJECT</span><br><span class="line">                        the project name in the target</span><br><span class="line">  -v VERSION, --version&#x3D;VERSION</span><br><span class="line">                        the version to deploy. Defaults to current timestamp</span><br><span class="line">  -l, --list-targets    list available targets</span><br><span class="line">  -a, --deploy-all-targets</span><br><span class="line">                        deploy all targets</span><br><span class="line">  -d, --debug           debug mode (do not remove build dir)</span><br><span class="line">  -L TARGET, --list-projects&#x3D;TARGET</span><br><span class="line">                        list available projects on TARGET</span><br><span class="line">  --egg&#x3D;FILE            use the given egg, instead of building it</span><br><span class="line">  --build-egg&#x3D;FILE      only build the egg, don&#39;t deploy it</span><br></pre></td></tr></table></figure>
+
+<p><strong>这样就成功了</strong></p>
+<h4 id="在执行命令：scrapyd-deploy时遇报错："><a href="#在执行命令：scrapyd-deploy时遇报错：" class="headerlink" title="在执行命令：scrapyd-deploy时遇报错："></a>在执行命令：scrapyd-deploy时遇报错：</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">E:\Django+Scrapy\mypro\spiderpro&gt;scrapyd-deploy demo -p spiderpro</span><br><span class="line">ScrapyDeprecationWarning: Module `scrapy.utils.http` <span class="keyword">is</span> deprecated, Please <span class="keyword">import</span> <span class="keyword">from</span> `w3lib.http` instead.</span><br><span class="line"><span class="keyword">from</span> scrapy.utils.http <span class="keyword">import</span> basic_auth_header</span><br></pre></td></tr></table></figure>
+
+<p>  乍一看以为是路径问题导致找不到scrapy项目，其实不然，报错已经说明，由于底层scrapyd-deploy的模块‘scrapy.utils.http’已经弃用，建议更新为<code>w3lib.http</code>替代 解决办法其实很简单，只需要修改一下底层代码即可： </p>
+<img src="/2020/05/04/scrapyd-deploy%E9%94%99%E8%AF%AF/1541850-20200222125238828-40383557.png" class="">  
+
+<p>再次运行</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">E:\Django+Scrapy\mypro\spiderpro&gt;scrapyd-deploy demo -p spiderpro</span><br><span class="line">Packing version <span class="number">1588585484</span></span><br><span class="line">Deploying to project <span class="string">"spiderpro"</span> <span class="keyword">in</span> http://localhost:<span class="number">6800</span>/addversion.json</span><br><span class="line">Server response (<span class="number">200</span>):</span><br><span class="line">&#123;<span class="string">"node_name"</span>: <span class="string">"PC-20200326UBAK"</span>, <span class="string">"status"</span>: <span class="string">"ok"</span>, <span class="string">"project"</span>: <span class="string">"spiderpro"</span>, <span class="string">"version"</span>: <span class="string">"1588585484"</span>, <span class="string">"spiders"</span>: <span class="number">1</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<p>😊</p>
 
     </div>
 
@@ -305,7 +319,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="http://obsessed.top/2020/05/04/Python%E7%88%AC%E8%99%AB%E9%94%99%E8%AF%AF/" title="Python爬虫错误">http://obsessed.top/2020/05/04/Python%E7%88%AC%E8%99%AB%E9%94%99%E8%AF%AF/</a>
+    <a href="http://obsessed.top/2020/05/04/scrapyd-deploy%E9%94%99%E8%AF%AF/" title="scrapyd-deploy错误">http://obsessed.top/2020/05/04/scrapyd-deploy%E9%94%99%E8%AF%AF/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/null" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -328,7 +342,10 @@
     <a href="/2020/05/03/Celery/" rel="prev" title="Celery">
       <i class="fa fa-chevron-left"></i> Celery
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2020/05/04/SpiderKeeper%E7%9A%84%E4%BD%BF%E7%94%A8/" rel="next" title="SpiderKeeper的使用">
+      SpiderKeeper的使用 <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -366,7 +383,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#‘scrapyd-deploy’-不是内部或外部命令，也不是可运行的程序或批处理文件"><span class="nav-text">‘scrapyd-deploy’ 不是内部或外部命令，也不是可运行的程序或批处理文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#解决方案"><span class="nav-text">解决方案</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#‘scrapyd-deploy’-不是内部或外部命令，也不是可运行的程序或批处理文件"><span class="nav-text">‘scrapyd-deploy’ 不是内部或外部命令，也不是可运行的程序或批处理文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#解决方案"><span class="nav-text">解决方案</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#在执行命令：scrapyd-deploy时遇报错："><span class="nav-text">在执行命令：scrapyd-deploy时遇报错：</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -382,7 +399,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-count">45</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
