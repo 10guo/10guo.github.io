@@ -1,58 +1,172 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Python爬虫错误</title>
+    <url>/2020/05/04/Python%E7%88%AC%E8%99%AB%E9%94%99%E8%AF%AF/</url>
+    <content><![CDATA[<h4 id="‘scrapyd-deploy’-不是内部或外部命令，也不是可运行的程序或批处理文件"><a href="#‘scrapyd-deploy’-不是内部或外部命令，也不是可运行的程序或批处理文件" class="headerlink" title="‘scrapyd-deploy’ 不是内部或外部命令，也不是可运行的程序或批处理文件"></a>‘scrapyd-deploy’ 不是内部或外部命令，也不是可运行的程序或批处理文件</h4><p>在编写好 python 爬虫程序，准备部署到云服务器上时，遇到一个问题。 </p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">$ scrapyd-deploy mmbuy -p spiderpro</span><br></pre></td></tr></table></figure>
+
+<p>执行上述部署的代码时，报错： </p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="string">'scrapyd-deploy'</span> 不是内部或外部命令，也不是可运行的程序或批处理文件。</span><br></pre></td></tr></table></figure>
+
+
+
+<a id="more"></a>
+
+<h4 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h4><p><strong>1.</strong>  找到 Python 的安装路径，进入 Scripts 文件夹。</p>
+<p><strong>2.</strong>  创建两个文件，scrapy.bat 和 scrapyd-deploy.bat （新建 txt 文本文档，然后更改后缀名为 .bat）</p>
+<img src="/2020/05/04/Python%E7%88%AC%E8%99%AB%E9%94%99%E8%AF%AF/20181124215946769.png" class="">  
+
+<p><strong>3.</strong>  编辑 scrapy.bat （右键 —&gt; 编辑），添加以下内容，保存。（注：路径改成自己电脑的路径） </p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">@echo off</span></span><br><span class="line">C:\Users\Administrator\AppData\Local\Programs\Python\Python37\Scripts\scrapy %*</span><br></pre></td></tr></table></figure>
+
+<p><strong>4.</strong>  同样，编辑 scrapyd-deploy.bat ，添加以下内容，保存。（注：路径改成自己电脑的路径） </p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">@echo off</span><br><span class="line">C:\Users\Administrator\AppData\Local\Programs\Python\Python37\Scripts\scrapyd-deploy %*</span><br></pre></td></tr></table></figure>
+
+<p><strong>5.</strong>  两个文件保存之后，重新运行部署指令，成功。 </p>
+<p><strong>6.</strong>  在这里可能会出现一些问题，就是有人的 Python 路径并非全英文，路径中会有空格、或者中文，可能会报错。</p>
+<p>​     这个问题解决方法也很简单，就是在带有空格 / 中文的路径两边打双引号（英文双引号）即可，比如：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">@echo off</span><br><span class="line">&quot;C:\用户\Administrator\App Data&quot;\Local\Programs\Python\Python37\Scripts\scrapyd-deploy %*</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>Python</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Celery</title>
+    <url>/2020/05/03/Celery/</url>
+    <content><![CDATA[<h4 id="什么是Celery"><a href="#什么是Celery" class="headerlink" title="什么是Celery"></a>什么是Celery</h4><p>Celery 是一个 基于python开发的分布式异步消息任务队列，通过它可以轻松的实现任务的异步处理 </p>
+<h4 id="Celery的优点"><a href="#Celery的优点" class="headerlink" title="Celery的优点"></a>Celery的优点</h4><p>简单：一旦熟悉celery的工作流程后，配置和使用还是比较简单的 </p>
+<p>高可用：当任务执行失败或执行过程中发生链接中断，celery会自动尝试重新执行任务 </p>
+<p>快速：一个单进程的celery没分钟可处理上百万个任务 </p>
+<p>灵活：几乎celery的各个组件都可以被扩展及自定制 </p>
+<a id="more"></a>
+
+<h4 id="Celery架构"><a href="#Celery架构" class="headerlink" title="Celery架构"></a>Celery架构</h4><img src="/2020/05/03/Celery/2522678-d369b6a4c4265225.png" class="">  
+
+<p>Celery的架构由三部分组成，消息中间件（message broker），任务执行单元（worker）和任务执行结果存储（task result store）组成。 </p>
+<h5 id="消息中间件"><a href="#消息中间件" class="headerlink" title="消息中间件"></a>消息中间件</h5><p>Celery本身不提供消息服务，但是可以方便的和第三方提供的消息中间件集成。包括，RabbitMQ, Redis等等</p>
+<h5 id="任务执行单元"><a href="#任务执行单元" class="headerlink" title="任务执行单元"></a>任务执行单元</h5><p>Worker是Celery提供的任务执行的单元，worker并发的运行在分布式的系统节点中。</p>
+<h5 id="任务结果存储"><a href="#任务结果存储" class="headerlink" title="任务结果存储"></a>任务结果存储</h5><p>Task result store用来存储Worker执行的任务的结果，Celery支持以不同方式存储任务的结果，包括AMQP, redis等</p>
+<h4 id="版本支持情况"><a href="#版本支持情况" class="headerlink" title="版本支持情况"></a>版本支持情况</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">Celery version <span class="number">4.0</span> runs on</span><br><span class="line">        Python ❨<span class="number">2.7</span>, <span class="number">3.4</span>, <span class="number">3.5</span>❩</span><br><span class="line">        PyPy ❨<span class="number">5.4</span>, <span class="number">5.5</span>❩</span><br><span class="line">    This <span class="keyword">is</span> the last version to support Python <span class="number">2.7</span>, <span class="keyword">and</span> <span class="keyword">from</span> the next version (Celery <span class="number">5.</span>x) Python <span class="number">3.5</span> <span class="keyword">or</span> newer <span class="keyword">is</span> required.</span><br><span class="line"></span><br><span class="line">    If you’re running an older version of Python, you need to be running an older version of Celery:</span><br><span class="line"></span><br><span class="line">        Python <span class="number">2.6</span>: Celery series <span class="number">3.1</span> <span class="keyword">or</span> earlier.</span><br><span class="line">        Python <span class="number">2.5</span>: Celery series <span class="number">3.0</span> <span class="keyword">or</span> earlier.</span><br><span class="line">        Python <span class="number">2.4</span> was Celery series <span class="number">2.2</span> <span class="keyword">or</span> earlier.</span><br><span class="line"></span><br><span class="line">    Celery <span class="keyword">is</span> a project <span class="keyword">with</span> minimal funding, so we don’t support Microsoft Windows. Please don’t open any issues related to that platform.</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+]]></content>
+      <categories>
+        <category>Python</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Scrapy框架</title>
+    <url>/2020/05/02/Scrapy%E6%A1%86%E6%9E%B6/</url>
+    <content><![CDATA[<h4 id="1-scrapy安装与环境依赖"><a href="#1-scrapy安装与环境依赖" class="headerlink" title="1.scrapy安装与环境依赖"></a>1.scrapy安装与环境依赖</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 1.在安装scrapy前需要安装好相应的依赖库, 再安装scrapy, 具体安装步骤如下:</span></span><br><span class="line">    (<span class="number">1</span>).安装lxml库: pip install lxml</span><br><span class="line">    (<span class="number">2</span>).安装wheel: pip install wheel</span><br><span class="line">    (<span class="number">3</span>).安装twisted: pip install twisted文件路径</span><br><span class="line">    	(twisted需下载后本地安装,下载地址:http://www.lfd.uci.edu/~gohlke/pythonlibs/<span class="comment">#twisted)</span></span><br><span class="line">    	(版本选择如下图,版本后面有解释,请根据自己实际选择)</span><br><span class="line">    (<span class="number">4</span>).安装pywin32: pip install pywin32</span><br><span class="line">    	(注意:以上安装步骤一定要确保每一步安装都成功,没有报错信息,如有报错自行百度解决)</span><br><span class="line">    (<span class="number">5</span>).安装scrapy: pip install scrapy</span><br><span class="line">    	(注意:以上安装步骤一定要确保每一步安装都成功,没有报错信息,如有报错自行百度解决)</span><br><span class="line">    (<span class="number">6</span>).成功验证:在cmd命令行输入scrapy,显示Scrapy1<span class="number">.6</span><span class="number">.0</span>-no active project,证明安装成功</span><br></pre></td></tr></table></figure>
+
+<a id="more"></a>
+
+<img src="/2020/05/02/Scrapy%E6%A1%86%E6%9E%B6/1323490-20190610094141435-249109686.png" class="">  
+
+
+
+<h4 id="2-创建项目"><a href="#2-创建项目" class="headerlink" title="2.创建项目"></a>2.创建项目</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="number">1.</span>手动创建一个目录test</span><br><span class="line"><span class="number">2.</span>在test文件夹下创建爬虫项目为spiderpro: scrapy startproject spiderpro</span><br><span class="line"><span class="number">3.</span>进入项目文件夹: cd spiderpro</span><br><span class="line"><span class="number">4.</span>创建爬虫文件: scrapy genspider 爬虫名 域名</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-项目目录介绍"><a href="#3-项目目录介绍" class="headerlink" title="3.项目目录介绍"></a>3.项目目录介绍</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">spiderpro</span><br><span class="line">　　spiderpro <span class="comment"># 项目目录</span></span><br><span class="line">　　　　__init__</span><br><span class="line">　　　　spiders:爬虫文件目录</span><br><span class="line">　　　　　　__init__</span><br><span class="line">　　　　　　tests.py:爬虫文件</span><br><span class="line">　　　　items.py:定义爬取数据持久化的数据结构</span><br><span class="line">　　　　middlewares.py:定义中间件</span><br><span class="line">　　　　pipelines.py:管道,持久化存储相关</span><br><span class="line">　　　　settings.py:配置文件</span><br><span class="line">　　venv:虚拟环境目录</span><br><span class="line">　 scrapy.cfg: scrapy项目配置文件</span><br></pre></td></tr></table></figure>
+
+<p><strong>说明:</strong><br>　　(1).spiders:其内包含一个个Spider的实现, 每个Spider是一个单独的文件<br>　　(2).items.py:它定义了Item数据结构, 爬取到的数据存储为哪些字段<br>　　(3).pipelines.py:它定义Item Pipeline的实现<br>　　(4).settings.py:项目的全局配置<br>　　(5).middlewares.py:定义中间件, 包括爬虫中间件和下载中间件<br>　　(6).scrapy.cfg:它是scrapy项目的配置文件, 其内定义了项目的配置路径, 部署相关的信息等</p>
+<h4 id="4-scrapy框架介绍-5大核心组件与数据流向"><a href="#4-scrapy框架介绍-5大核心组件与数据流向" class="headerlink" title="4.scrapy框架介绍: 5大核心组件与数据流向"></a>4.scrapy框架介绍: 5大核心组件与数据流向</h4><img src="/2020/05/02/Scrapy%E6%A1%86%E6%9E%B6/1323490-20190610094204518-1935146640.png" class="">  
+
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">(<span class="number">1</span>).架构:</span><br><span class="line"></span><br><span class="line">　　Scrapy Engine: 这是引擎，负责Spiders、ItemPipeline、Downloader、Scheduler中间的通讯，信号、数据传递等等!</span><br><span class="line"></span><br><span class="line">　　Scheduler(调度器): 它负责接受引擎发送过来的requests请求，并按照一定的方式进行整理排列，入队、并等待Scrapy Engine(引擎)来请求时，交给引擎。</span><br><span class="line"></span><br><span class="line">　　Downloader（下载器)：负责下载Scrapy Engine(引擎)发送的所有Requests请求，并将其获取到的Responses交还给Scrapy Engine(引擎)，由引擎交给Spiders来处理，</span><br><span class="line"></span><br><span class="line">　　Spiders：它负责处理所有Responses,从中分析提取数据，获取Item字段需要的数据，并将需要跟进的URL提交给引擎，再次进入Scheduler(调度器)，</span><br><span class="line"></span><br><span class="line">　　Item Pipeline：它负责处理Spiders中获取到的Item，并进行处理，比如去重，持久化存储（存数据库，写入文件，总之就是保存数据用的）</span><br><span class="line"></span><br><span class="line">　　Downloader Middlewares(下载中间件)：你可以当作是一个可以自定义扩展下载功能的组件</span><br><span class="line"></span><br><span class="line">　　Spider Middlewares(Spider中间件)：你可以理解为是一个可以自定扩展和操作引擎和Spiders中间‘通信‘的功能组件（比如进入Spiders的Responses;和从Spiders出去的Requests）</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">(<span class="number">2</span>).工作流:</span><br><span class="line"></span><br><span class="line">　　<span class="number">1.</span>spider将请求发送给引擎, 引擎将request发送给调度器进行请求调度</span><br><span class="line"></span><br><span class="line">　　<span class="number">2.</span>调度器把接下来要请求的request发送给引擎, 引擎传递给下载器, 中间会途径下载中间件</span><br><span class="line"></span><br><span class="line">　　<span class="number">3.</span>下载携带request访问服务器, 并将爬取内容response返回给引擎, 引擎将response返回给spider</span><br><span class="line"></span><br><span class="line">　　<span class="number">4.</span>spider将response传递给自己的parse进行数据解析处理及构建item一系列的工作, 最后将item返回给引擎, 引擎传递个pipeline</span><br><span class="line"></span><br><span class="line">　　<span class="number">5.</span>pipe获取到item后进行数据持久化</span><br><span class="line"></span><br><span class="line">　　<span class="number">6.</span>以上过程不断循环直至爬虫程序终止</span><br></pre></td></tr></table></figure>
+
+<h4 id="5-使用scrapy框架爬取慢慢买"><a href="#5-使用scrapy框架爬取慢慢买" class="headerlink" title="5.使用scrapy框架爬取慢慢买"></a>5.使用scrapy框架爬取慢慢买</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 需求: 爬取慢慢买手机板块,每一条的标题、图片、价格、销售数量,解析爬取的信息数据,定制item数据存储结构,最终将数据存储于MongoDB数据库中.</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 创建项目:</span></span><br><span class="line">scrapy startproject spiderpro <span class="comment"># 创建项目</span></span><br><span class="line">cd spiderpro <span class="comment"># 切换到项目目录</span></span><br><span class="line">scrapy genspider mmbuy http://www.manmanbuy.com <span class="comment"># 创建爬虫文件, qsbk_hot为爬虫名, www...com为爬取范围</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> scrapy</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SpiderproItem</span><span class="params">(scrapy.Item)</span>:</span></span><br><span class="line">    title = scrapy.Field() 	<span class="comment"># 标题</span></span><br><span class="line">    imgs = scrapy.Field()	<span class="comment">#图片</span></span><br><span class="line">    price = scrapy.Field()	<span class="comment">#价格</span></span><br><span class="line">    number = scrapy.Field(	<span class="comment">#销售数量</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># spider文件中定义解析数据的方法</span></span><br><span class="line"><span class="keyword">import</span> scrapy</span><br><span class="line"><span class="keyword">from</span> ..items <span class="keyword">import</span> SpiderproItem</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MmbuySpider</span><span class="params">(scrapy.Spider)</span>:</span></span><br><span class="line">    name = <span class="string">'mmbuy'</span></span><br><span class="line">    <span class="comment"># allowed_domains = ['baidu.com']	无用, 可注释掉</span></span><br><span class="line">    start_urls = list(<span class="string">'http://www.manmanbuy.com/cpl_57_qz_0_0_0_0_0_0_0_0_0_0_0_%s.aspx'</span>%page <span class="keyword">for</span> page <span class="keyword">in</span> range(<span class="number">1</span>,<span class="number">11</span>))</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">parse</span><span class="params">(self, response)</span>:</span></span><br><span class="line">        </span><br><span class="line">        li_list = response.xpath(<span class="string">'//*[@id="ctl00_ContentPlaceMain_prolist"]/div[2]/ul'</span>)</span><br><span class="line">	    <span class="comment"># 循环li标签组成的列表, 先实例化item, 再取需要的字段, 并该item对象的相应属性赋值</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> li_list:</span><br><span class="line">            <span class="comment"># 实例化item对象</span></span><br><span class="line">            item = SpiderproItem()</span><br><span class="line">            </span><br><span class="line">            <span class="comment"># 解析获取title(标题), price(价格), number(销售数量), imgs(图片)等信息</span></span><br><span class="line">            title = i.xpath(<span class="string">'.//div[@class="name"]/a/@title'</span>).extract_first()</span><br><span class="line">            price = i.xpath(<span class="string">'.//div[@class="price"]/text()'</span>).extract_first()</span><br><span class="line">            number = i.xpath(<span class="string">'.//div[@class="sales"]/span/text()'</span>).extract_first()</span><br><span class="line">            imgs = i.xpath(<span class="string">'.//div[@class="pic"]/a/img/@original'</span>).extract_first()</span><br><span class="line"></span><br><span class="line">            item[<span class="string">'title'</span>] = title</span><br><span class="line">            item[<span class="string">'imgs'</span>] = imgs</span><br><span class="line">            item[<span class="string">'price'</span>] = price</span><br><span class="line">            item[<span class="string">'number'</span>] = number</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">yield</span> scrapy.Request(url=imgs,callback=self.img_parse,meta=&#123;<span class="string">'item'</span>:item&#125;)</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">img_parse</span><span class="params">(self,response)</span>:</span></span><br><span class="line">        content = response.body</span><br><span class="line">        item = response.meta[<span class="string">'item'</span>]</span><br><span class="line">        item[<span class="string">'imgs'</span>] = content</span><br><span class="line">        <span class="keyword">yield</span> item</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 在pipeline中定义管道类进行数据的存储</span></span><br><span class="line"><span class="keyword">import</span> pymongo</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SpiderproPipeline</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="comment">#连接MongoDB数据库</span></span><br><span class="line">    conn = pymongo.MongoClient(<span class="string">"localhost"</span>, <span class="number">27017</span>)</span><br><span class="line">    db = conn.manmanbuy</span><br><span class="line">    table = db.mmy</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">process_item</span><span class="params">(self, item, spider)</span>:</span></span><br><span class="line">        <span class="comment"># 向数据库中出入数据</span></span><br><span class="line">        self.table.insert_one(dict(item))</span><br><span class="line">        <span class="comment"># 此处return item是为了下一个管道类能够接收到item进行存储</span></span><br><span class="line">        <span class="keyword">return</span> item</span><br><span class="line">　　</span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">close_spider</span><span class="params">(self)</span>:</span></span><br><span class="line">　　　　<span class="comment"># 关闭数据库连接</span></span><br><span class="line">　　　　self.conn.close()</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 此示例中配置文件中的配置的项, 注意是不是全部的配置, 是针对该项目增加或修改的配置项</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 忽略robots协议</span></span><br><span class="line">ROBOTSTXT_OBEY =<span class="literal">False</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># UA伪装</span></span><br><span class="line">USER_AGENT = <span class="string">'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.87 Safari/537.36'</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 管道类的注册配置</span></span><br><span class="line">ITEM_PIPELINES =&#123;</span><br><span class="line"><span class="string">'qsbk.pipelines.QsbkPipeline'</span>:<span class="number">300</span>,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#运行爬虫</span></span><br><span class="line">scrapy crawl mmbuy --no log		<span class="comment">#不打印日志</span></span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>Python</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Centos7下安装MongoDB</title>
     <url>/2020/05/01/Centos7%E4%B8%8B%E5%AE%89%E8%A3%85MongoDB/</url>
-    <content><![CDATA[<html><head></head><body></body></html><html><head></head><body><p>安装前注意: 此教程是通过yum安装的.仅限64位centos系统 </p>
+    <content><![CDATA[<p>安装前注意: 此教程是通过yum安装的.仅限64位centos系统 </p>
 <p>安装步骤：</p>
 <p>1 、创建仓库文件：</p>
-<figure class="highlight python"><table><tbody><tr><td class="code"><pre><span class="line">vi /etc/yum.repos.d/mongodb-org<span class="number">-3.4</span>.repo</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">vi /etc/yum.repos.d/mongodb-org<span class="number">-3.4</span>.repo</span><br></pre></td></tr></table></figure>
 
 <p>然后复制下面配置,保存退出 </p>
-<figure class="highlight python"><table><tbody><tr><td class="code"><pre><span class="line">[mongodb-org<span class="number">-3.4</span>]</span><br><span class="line">name=MongoDB Repository</span><br><span class="line">baseurl=https://repo.mongodb.org/yum/redhat/$releasever/mongodb-org/<span class="number">3.4</span>/x86_64/</span><br><span class="line">gpgcheck=<span class="number">1</span></span><br><span class="line">enabled=<span class="number">1</span></span><br><span class="line">gpgkey=https://www.mongodb.org/static/pgp/server<span class="number">-3.4</span>.asc</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">[mongodb-org<span class="number">-3.4</span>]</span><br><span class="line">name=MongoDB Repository</span><br><span class="line">baseurl=https://repo.mongodb.org/yum/redhat/$releasever/mongodb-org/<span class="number">3.4</span>/x86_64/</span><br><span class="line">gpgcheck=<span class="number">1</span></span><br><span class="line">enabled=<span class="number">1</span></span><br><span class="line">gpgkey=https://www.mongodb.org/static/pgp/server<span class="number">-3.4</span>.asc</span><br></pre></td></tr></table></figure>
+
+<a id="more"></a>
 
 <p>2、yum安装 </p>
-<figure class="highlight python"><table><tbody><tr><td class="code"><pre><span class="line">yum install -y mongodb-org</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">yum install -y mongodb-org</span><br></pre></td></tr></table></figure>
 
 <p>没有权限就在前面加：sudo</p>
 <p>安装完毕后修改配置文件：</p>
-<figure class="highlight python"><table><tbody><tr><td class="code"><pre><span class="line">vi /etc/mongod.conf</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">vi /etc/mongod.conf</span><br></pre></td></tr></table></figure>
 
 <p>修改配置文件的 <code>bind_ip,</code> 默认是 <code>127.0.0.1 只限于本机连接</code>。所以安装完成后必须把这个修改为 0.0.0.0 ,否则通过别的机器是没法连接的! </p>
 <p>3、启动、停止、重启</p>
 <p>MongoDB默认将数据文件存储在<code>/var/lib/mongo</code>目录，默认日志文件在<code>/var/log/mongodb</code>中。如果要修改,可以在 <code>/etc/mongod.conf</code> 配置中指定备用日志和数据文件目录。 </p>
 <p>启动命令：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">service mongod start</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">service mongod start</span><br></pre></td></tr></table></figure>
 
 <p>停止命令：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">service mongod stop</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">service mongod stop</span><br></pre></td></tr></table></figure>
 
 <p>重启命令：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">service mongod restart</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">service mongod restart</span><br></pre></td></tr></table></figure>
 
 
 
 <p>查看mongoDB是否启动成功:</p>
 <p>可以通过查看日志文件</p>
-<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">cat /var/log/mongodb/mongod.log</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cat &#x2F;var&#x2F;log&#x2F;mongodb&#x2F;mongod.log</span><br></pre></td></tr></table></figure>
 
 <p> 日志文件应该会出现如下一句说明 </p>
-<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">[initandlisten] waiting for connections on port <port></span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[initandlisten] waiting for connections on port &lt;port&gt;</span><br></pre></td></tr></table></figure>
 
 <p>port 是mongodb运行端口</p>
 <p>设置开机启动</p>
-<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">chkconfig mongod on</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">chkconfig mongod on</span><br></pre></td></tr></table></figure>
 
 <p>4、使用</p>
-<figure class="highlight python"><table><tbody><tr><td class="code"><pre><span class="line">[root@node1 ~]<span class="comment"># mongo</span></span><br><span class="line"> </span><br><span class="line"><span class="comment">## 查看数据库</span></span><br><span class="line">> show dbs;</span><br><span class="line"> </span><br><span class="line"><span class="comment">## 查看数据库版本</span></span><br><span class="line">> db.version();</span><br><span class="line"> </span><br><span class="line"><span class="comment">## 常用命令帮助</span></span><br><span class="line">> db.help();</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">[root@node1 ~]<span class="comment"># mongo</span></span><br><span class="line"> </span><br><span class="line"><span class="comment">## 查看数据库</span></span><br><span class="line">&gt; show dbs;</span><br><span class="line"> </span><br><span class="line"><span class="comment">## 查看数据库版本</span></span><br><span class="line">&gt; db.version();</span><br><span class="line"> </span><br><span class="line"><span class="comment">## 常用命令帮助</span></span><br><span class="line">&gt; db.help();</span><br></pre></td></tr></table></figure>
 
 <p>5、卸载移除MongoDB</p>
-<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">yum erase $(rpm -qa | grep mongodb-org)</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">yum erase $(rpm -qa | grep mongodb-org)</span><br></pre></td></tr></table></figure>
 
 <p>6、移除数据库文件和日志文件</p>
-<figure class="highlight python"><table><tbody><tr><td class="code"><pre><span class="line">rm -r /var/log/mongodb</span><br><span class="line">rm -r /var/lib/mongo</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">rm -r /var/log/mongodb</span><br><span class="line">rm -r /var/lib/mongo</span><br></pre></td></tr></table></figure>
 
-</body></html>]]></content>
+]]></content>
       <categories>
         <category>Linux</category>
       </categories>
